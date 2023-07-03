@@ -1,0 +1,81 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.13'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+bootJar.enabled = false
+
+repositories {
+	mavenCentral()
+}
+
+
+subprojects {
+	group = 'com.myapp'
+	version = '0.0.1-SNAPSHOT'
+
+	java {
+		sourceCompatibility = '11'
+	}
+
+	apply plugin: 'java'
+	// build.gradle에서 api() 를 사용하려면 java-library 사용
+	apply plugin: 'java-library'
+	apply plugin: 'org.springframework.boot'
+	// spring boot dependency를 사용하여 사용중인 부트 버전에서 자동으로 의존성을 가져온다.
+	apply plugin: 'io.spring.dependency-management'
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+
+		implementation 'org.springframework.security:spring-security-core'
+		implementation 'org.springframework.security:spring-security-web'
+		implementation 'org.springframework.security:spring-security-config'
+		implementation 'org.springframework.boot:spring-boot-starter-security'
+		testImplementation 'org.springframework.security:spring-security-test'
+		implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'org.mariadb.jdbc:mariadb-java-client'
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		developmentOnly 'org.springframework.boot:spring-boot-devtools'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+//		annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+	}
+
+
+}
+
+
+
+project(":core-module") {
+	bootJar.enabled = false
+	jar.enabled = true
+
+	dependencies {
+
+	}
+}
+
+project(":api-module") {
+
+	bootJar {
+		archiveBaseName.set('myapp')
+		archiveFileName.set("myapp-api-module-0.0.1.jar")
+		archiveVersion.set("0.0.1")
+	}
+
+	dependencies {
+		implementation fileTree(dir: 'libs', include: ['*.jar'])
+		implementation project(':core-module')
+	}
+}
