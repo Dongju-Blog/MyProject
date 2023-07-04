@@ -11,13 +11,13 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class SignUpDto {
 
-    @NotBlank(message = "100")
+    @NotBlank(message = "4")
     private String username;
-    @NotBlank(message = "104")
+    @NotBlank(message = "4")
     private String password;
-    @NotBlank(message = "104")
+    @NotBlank(message = "4")
     private String checkedPassword;
-    @NotBlank(message = "112")
+    @NotBlank(message = "4")
     private String name;
 
     private Role role;
