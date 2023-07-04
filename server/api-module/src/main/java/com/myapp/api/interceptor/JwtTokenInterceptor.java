@@ -2,6 +2,8 @@ package com.myapp.api.interceptor;
 
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
+import com.myapp.core.exception.CustomException;
+import com.myapp.core.exception.ErrorCode;
 import com.myapp.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -18,11 +20,11 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenProvider refreshTokenProvider;
-    private final UserRepository userRepository;
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
 
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader == null) {
@@ -37,7 +39,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 액세스 토큰이 유효하지 않은 경우
+        // 액세스 토큰이 유효하지 않은 경우, 리프레시 토큰 확인 및 액세스 토큰 재발급 절차로 넘어간다.
         String refreshToken = refreshTokenProvider.getExistedRefreshToken(request);
 
         //  && jwtTokenProvider.validateToken(refreshToken)
@@ -55,8 +57,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         }
 
         // 유효한 토큰이 없는 경우 또는 토큰 재발급에 실패한 경우에는 요청 거부
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return false;
+        throw new CustomException(ErrorCode.INVALID_TOKEN);
     }
 
 }

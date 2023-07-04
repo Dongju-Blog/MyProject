@@ -6,6 +6,8 @@ import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.constant.Role;
 import com.myapp.core.entity.User;
+import com.myapp.core.exception.CustomException;
+import com.myapp.core.exception.ErrorCode;
 import com.myapp.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
 
         if (!requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
-            // 에러 Throw
+            throw new CustomException(ErrorCode.NOT_MATCHED_CHECKED_PASSWORD);
         }
 
         user.encodePassword(passwordEncoder);
@@ -60,6 +62,7 @@ public class UserServiceImpl implements UserService {
             // 받은 비밀번호를 인코딩하면 다르게 인코딩(암호화)돼서 비교가 안됌
             if (!passwordEncoder.matches(user.getPassword(), userInfo.get().getPassword())) {        // DB의 인코딩 비밀번호를 복호화해서 비교함
                 // 에러 Throw
+                throw new CustomException(ErrorCode.INVALID_PASSWORD);
             }
 
             String refreshToken = refreshTokenProvider.getRefreshToken(user);
@@ -74,7 +77,7 @@ public class UserServiceImpl implements UserService {
             return response;
         } else {
             // 에러 Throw
-            return null;
+            throw new CustomException(ErrorCode.INVALID_USERNAME);
         }
 
     }

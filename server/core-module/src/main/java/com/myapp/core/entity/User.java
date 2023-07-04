@@ -46,8 +46,6 @@ public class User {
 
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
-//        SecurityConfig securityConfig = new SecurityConfig();
-//        this.password = securityConfig.passwordEncoder().encode(password);
         this.password = passwordEncoder.encode(password);
     }
 
