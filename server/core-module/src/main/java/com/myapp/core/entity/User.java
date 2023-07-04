@@ -41,7 +41,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
+    @Column
+    private String refreshToken;
 
 
     public void encodePassword(PasswordEncoder passwordEncoder) {

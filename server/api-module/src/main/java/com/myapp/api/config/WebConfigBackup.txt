@@ -1,0 +1,22 @@
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final JwtInterceptor jwtInterceptor;
+    private final AnotherInterceptor anotherInterceptor;
+
+    @Autowired
+    public WebMvcConfig(JwtInterceptor jwtInterceptor, AnotherInterceptor anotherInterceptor) {
+        this.jwtInterceptor = jwtInterceptor;
+        this.anotherInterceptor = anotherInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(jwtInterceptor)
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/public");
+
+        registry.addInterceptor(anotherInterceptor)
+                .addPathPatterns("/api/**");
+    }
+}
