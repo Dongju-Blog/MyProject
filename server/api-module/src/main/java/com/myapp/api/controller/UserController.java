@@ -31,7 +31,7 @@ public class UserController {
      * @return id
      */
     @PostMapping("/signup")
-    @Authorize({Role.USER})
+    @Authorize({Role.GUEST})
     public ResponseEntity<HttpStatus> studentSignUp(@Valid @RequestBody SignUpDto requestDto) {
         userService.signUp(requestDto);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -44,6 +44,7 @@ public class UserController {
      * @return token
      */
     @PostMapping("/login")
+    @Authorize({Role.GUEST})
     public ResponseEntity<?> getToken(@RequestBody LoginDto user) {
         return new ResponseEntity<>(userService.login(user), HttpStatus.OK);
     }

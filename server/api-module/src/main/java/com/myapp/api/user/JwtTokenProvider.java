@@ -8,6 +8,8 @@ import java.util.Map;
 import com.myapp.api.dto.user.LoginDto;
 import com.myapp.core.constant.Role;
 import com.myapp.core.entity.User;
+import com.myapp.core.exception.CustomException;
+import com.myapp.core.exception.ErrorCode;
 import com.myapp.core.repository.UserRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -80,12 +82,12 @@ public class JwtTokenProvider {
 
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             User userInfo = userRepository.findByUsername(user.getUsername())
-                    .orElseThrow(() -> null); // null을 에러 throw로 변경할 것.
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USERNAME));
             claims.put("id", userInfo.getId());
             claims.put("username", userInfo.getUsername());
             claims.put("role", userInfo.getRole());
         } else {
-            // 에러 throw
+            throw new CustomException(ErrorCode.NOT_FOUND_USERNAME);
         }
 
         return claims;

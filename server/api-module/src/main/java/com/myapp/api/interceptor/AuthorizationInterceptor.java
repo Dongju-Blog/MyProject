@@ -3,6 +3,8 @@ package com.myapp.api.interceptor;
 import com.myapp.api.annotation.user.Authorize;
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.core.constant.Role;
+import com.myapp.core.exception.CustomException;
+import com.myapp.core.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -32,7 +34,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 return true;
             }
 
-//            String token = getToken(request);
             String token = jwtTokenProvider.getExistedAccessToken(request);
             Role[] roles = authorizeAnnotation.value();
             Set<Role> allowedRoles = new HashSet<>(Arrays.asList(roles));
@@ -40,8 +41,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             if ((token == null && allowedRoles.contains(Role.GUEST)) || (token != null && isAuthorizedUser(token, allowedRoles))) {
                 return true;
             } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return false;
+                throw new CustomException(ErrorCode.INVALID_TOKEN);
             }
         }
 
@@ -64,8 +64,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         if (userRole != null && allowedRoles.contains(userRole)) {
             return true;
         }
-
-        return false;
+        throw new CustomException(ErrorCode.PROHIBITED);
     }
 
     private Role getUserRoleFromToken(String token) {
