@@ -4,6 +4,7 @@ import com.myapp.api.annotation.user.Authorize;
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.core.constant.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,10 +15,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+@Component
 @RequiredArgsConstructor
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -31,8 +32,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 return true;
             }
 
-            String token = getToken(request);
-
+//            String token = getToken(request);
+            String token = jwtTokenProvider.getExistedAccessToken(request);
             Role[] roles = authorizeAnnotation.value();
             Set<Role> allowedRoles = new HashSet<>(Arrays.asList(roles));
 
@@ -55,16 +56,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         // 뷰가 렌더링된 후에 호출됩니다.
-    }
-
-    private String getToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
-        }
-
-        return null;
     }
 
     private boolean isAuthorizedUser(String token, Set<Role> allowedRoles) {
