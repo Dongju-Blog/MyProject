@@ -1,0 +1,136 @@
+package com.myapp.api.interceptor;
+
+import com.myapp.api.annotation.user.Authorize;
+import com.myapp.api.user.JwtTokenProvider;
+import com.myapp.core.constant.Role;
+import com.myapp.core.entity.User;
+import com.myapp.core.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+
+public class AuthorizationInterceptor implements HandlerInterceptor {
+
+    private JwtTokenProvider jwtTokenProvider;
+
+    public AuthorizationInterceptor(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 컨트롤러 실행 전에 호출됩니다.
+
+        // 컨트롤러 메서드의 Authorize 애노테이션을 확인합니다.
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            Authorize authorizeAnnotation = handlerMethod.getMethodAnnotation(Authorize.class);
+
+            // Authorize 애노테이션이 없으면 통과합니다.
+            if (authorizeAnnotation == null) {
+                return true;
+            }
+
+            // 토큰의 유무를 판단하는 로직을 구현합니다.
+            String token = getToken(request); // 토큰 유효성 검사 로직 호출
+
+            // Authorize 애노테이션의 역할들을 가져옵니다.
+            Role[] roles = authorizeAnnotation.value();
+            Set<Role> allowedRoles = new HashSet<>(Arrays.asList(roles));
+
+            if (token != null && (allowedRoles.contains(Role.GUEST) || isAuthorizedUser(request, allowedRoles))) {
+                return true; // 토큰이 유효하고, 역할이 GUEST이거나 인가된 사용자인 경우 컨트롤러 실행을 허용합니다.
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return false; // 토큰이 유효하지 않거나, 역할이 GUEST가 아니고 인가되지 않은 사용자인 경우 401 Unauthorized 응답을 반환하고 컨트롤러 실행을 중지합니다.
+            }
+
+
+        }
+
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        // 컨트롤러 실행 후, 뷰가 렌더링되기 전에 호출됩니다.
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        // 뷰가 렌더링된 후에 호출됩니다.
+    }
+
+    private String getToken(HttpServletRequest request) {
+        // 토큰 유효성 검사 로직을 구현합니다.
+        // 실제로는 여기에서 토큰을 확인하고 유효한지 여부를 반환해야 합니다.
+        // 예시로 "Authorization" 헤더에 Bearer 토큰이 있는지만 확인하는 코드를 작성합니다.
+
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 문자열 추출
+
+            // 토큰 유효성 검사 로직
+            // ...
+
+            return token; // 토큰이 유효하면 true를 반환합니다.
+        }
+
+        return null; // 토큰이 없거나 유효하지 않으면 false를 반환합니다.
+    }
+
+    private boolean isAuthorizedUser(HttpServletRequest request, Set<Role> allowedRoles) {
+        // 사용자의 역할을 확인하는 로직을 구현합니다.
+        // 실제로는 여기에서 사용자 정보를 가져오고 역할을 확인하는 로직을 작성해야 합니다.
+        // 예시로 세션 또는 토큰에서 사용자 정보를 확인하고 역할에 따라 인가 여부를 판단하는 코드를 작성합니다.
+
+        // 로그인 여부를 확인하는 로직
+        // ...
+        String token = getToken(request);
+
+        if (token != null) {
+            Role userRole = getUserRoleFromToken(request);
+
+            if (userRole != null && allowedRoles.contains(userRole)) {
+                return true; // 토큰의 역할이 허용 목록에 포함되었으므로 인가됨
+            }
+        }
+
+        // 로그인이 되어 있지 않은 경우
+        if (token == null && allowedRoles.contains(Role.GUEST)) {
+            return true; // 역할이 GUEST이므로 허용
+        }
+
+        // 사용자 역할 확인 로직
+        // ...
+
+        return false; // 역할이 허용 목록에 없으므로 인가되지 않은 사용자
+    }
+
+
+    private Role getUserRoleFromToken(HttpServletRequest request) {
+        // 토큰에서 사용자의 역할을 가져오는 로직을 구현합니다.
+        // 실제로는 여기에서 토큰을 해독하여 사용자의 역할 정보를 반환해야 합니다.
+
+        // 예시로 "Authorization" 헤더에서 토큰을 추출한 후, 토큰을 해독하여 역할 정보를 반환하는 코드를 작성합니다.
+        String token = getToken(request);
+
+        if (token != null) {
+            Role userRole = jwtTokenProvider.getRole(token); // 토큰에서 역할(Role) 정보 추출
+
+            return userRole;
+        }
+
+        return null; // 토큰이 없거나 역할 정보를 가져올 수 없는 경우 null 반환
+    }
+}
