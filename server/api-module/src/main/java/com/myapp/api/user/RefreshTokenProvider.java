@@ -4,59 +4,77 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.myapp.api.dto.user.LoginDto;
 import com.myapp.core.constant.Role;
 import com.myapp.core.entity.User;
 import com.myapp.core.repository.UserRepository;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
 import javax.servlet.http.HttpServletRequest;
+
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JwtTokenProvider {
+public class RefreshTokenProvider {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
-    static final long EXPIRATIONTIME = 3600000;
-    public static final String PREFIX = "Bearer";
+
+    // 리프레시 토큰 만료 시간 (2주)
+    static final long EXPIRATIONTIME = 14L * 24 * 60 * 60 * 1000;
+    static final String PREFIX = "Refresh";
 
     private final Key key;
 
 
     // 서명된 JWT 토큰 생성
-    public String getToken(LoginDto user) {
-        String token = Jwts.builder()
+    public String getRefreshToken(LoginDto user) {
+        String refreshToken = Jwts.builder()
                 .setSubject(user.getUsername())
                 .setHeader(createHeader())
                 .setClaims(createClaims(user))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
-                .signWith(key)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
 
-        return token;
+        return refreshToken;
     }
 
+    public String getNewAccessToken(String refreshToken) {
+//        String refreshToken = getExistedRefreshToken(request);
+        Long userId = getId(refreshToken);
+        Optional<User> currentUser = userRepository.findById(userId);
 
-    // 액세스 토큰 유효성 검사
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException ex) {
-            // 유효하지 않은 토큰
-            return false;
+        if (currentUser.isPresent()) {
+            User user = currentUser.get();
+
+            LoginDto loginDto = new LoginDto();
+            loginDto.setUsername(user.getUsername());
+            loginDto.setPassword(user.getPassword());
+
+            String accessToken = Jwts.builder()
+                    .setSubject(loginDto.getUsername())
+                    .setHeader(createHeader())
+                    .setClaims(createClaims(loginDto))
+                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
+                    .signWith(key)
+                    .compact();
+
+            return accessToken;
         }
+        return null; // 에러 Throw
     }
 
 
-    public String getExistedAccessToken(HttpServletRequest request) {
+    public String getExistedRefreshToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-
 
         if (authorizationHeader != null && authorizationHeader.startsWith(PREFIX + " ")) {
 //            return authorizationHeader.substring(7);

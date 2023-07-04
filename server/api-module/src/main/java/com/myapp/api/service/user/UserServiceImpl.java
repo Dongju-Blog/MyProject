@@ -1,9 +1,9 @@
 package com.myapp.api.service.user;
 
-import com.myapp.api.annotation.user.Authorize;
 import com.myapp.api.dto.user.LoginDto;
 import com.myapp.api.dto.user.SignUpDto;
 import com.myapp.api.user.JwtTokenProvider;
+import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.constant.Role;
 import com.myapp.core.entity.User;
 import com.myapp.core.repository.UserRepository;
@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -23,8 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-
-
+    private final RefreshTokenProvider refreshTokenProvider;
 
 
     @Override
@@ -36,7 +37,6 @@ public class UserServiceImpl implements UserService {
                 .name(requestDto.getName())
                 .role(Role.USER)
                 .build();
-
 
 
         if (!requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
@@ -51,8 +51,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String login(LoginDto user) {
+    public Map<String, String> login(LoginDto user) {
         Optional<User> userInfo = userRepository.findByUsername(user.getUsername());
+        Map<String, String> response = new HashMap<>();
 
 
         if (userInfo.isPresent()) {
@@ -60,7 +61,17 @@ public class UserServiceImpl implements UserService {
             if (!passwordEncoder.matches(user.getPassword(), userInfo.get().getPassword())) {        // DB의 인코딩 비밀번호를 복호화해서 비교함
                 // 에러 Throw
             }
-            return jwtTokenProvider.getToken(user);
+
+            String refreshToken = refreshTokenProvider.getRefreshToken(user);
+            String accessToken = jwtTokenProvider.getToken(user);
+
+            response.put("accessToken", accessToken);
+            response.put("refreshToken", refreshToken);
+            User existingUser = userInfo.get();
+            existingUser.setRefreshToken(refreshToken);
+            userRepository.save(existingUser);
+
+            return response;
         } else {
             // 에러 Throw
             return null;
