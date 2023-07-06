@@ -4,7 +4,7 @@ services:
     build: ./api-module
     image: back/api-module
     ports:
-      - "443:443"
+      - "8081:8081"
     environment:
       TZ: "Asia/Seoul"
     logging:
