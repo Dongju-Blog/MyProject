@@ -3,10 +3,13 @@ logging:
     root: DEBUG
 spring:
   datasource:
-    password: 1356
-    url: jdbc:mariadb://localhost:3306/portfolio
+    password: pw192837
+    url: jdbc:mariadb://portfolio-maria-db.cbt4fdfoovm1.us-east-2.rds.amazonaws.com:3306/portfolio
     username: root
   jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
     generate-ddl: true
 #    hibernate:
 #      ddl-auto: create-drop

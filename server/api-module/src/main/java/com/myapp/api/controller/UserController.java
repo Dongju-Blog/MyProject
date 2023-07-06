@@ -44,7 +44,7 @@ public class UserController {
      * @return token
      */
     @PostMapping("/login")
-    @Authorize({Role.GUEST})
+    @Authorize({Role.USER})
     public ResponseEntity<?> getToken(@RequestBody LoginDto user) {
         return new ResponseEntity<>(userService.login(user), HttpStatus.OK);
     }
