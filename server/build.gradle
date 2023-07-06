@@ -28,6 +28,10 @@ subprojects {
 
 	repositories {
 		mavenCentral()
+
+		flatDir {
+			dirs 'libs'
+		}
 	}
 
 	dependencies {

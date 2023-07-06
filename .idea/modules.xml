@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/MyProject.iml" filepath="$PROJECT_DIR$/.idea/MyProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-module/com.myapp.portfolio.api-module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-module/com.myapp.portfolio.api-module.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-module/com.myapp.portfolio.api-module.test.iml" filepath="$PROJECT_DIR$/.idea/modules/api-module/com.myapp.portfolio.api-module.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core-module/com.myapp.portfolio.core-module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core-module/com.myapp.portfolio.core-module.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-module/portfolio.api-module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-module/portfolio.api-module.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core-module/portfolio.core-module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core-module/portfolio.core-module.main.iml" />
     </modules>
