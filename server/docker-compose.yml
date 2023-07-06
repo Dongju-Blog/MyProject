@@ -1,0 +1,13 @@
+version: '3'
+services:
+  api-module:
+    build: ./api-module
+    image: back/api-module
+    ports:
+      - "8081:8081"
+    environment:
+      TZ: "Asia/Seoul"
+    logging:
+      driver: syslog
+      options:
+        tag: back
