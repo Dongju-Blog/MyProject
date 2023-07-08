@@ -13,12 +13,9 @@ import { css } from "@emotion/react";
 import { throttle, debounce } from "lodash";
 
 type ContainerPropsType = {
-  steps: number[];
+  currentStep: number;
   duration: number;
-  setStep: (
-    value: React.SetStateAction<number>,
-    kind?: "immediate" | "reserve"
-  ) => void;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
   children?: ReactNode;
 };
 
@@ -46,130 +43,97 @@ const useContainer = ({
   init: number;
   duration: number;
 }) => {
-  const [steps, setSteps] = useState([init - 1, init, init + 1]);
-  const [reserveStep, setReserveStep] = useState(0);
+  const [step, setStep] = useState(init);
   const [completeStep, setCompleteStep] = useState(init);
 
   useEffect(() => {
-    const position = steps[1] > reserveStep ? "left" : "right";
-    if (reserveStep !== 0) {
-      if (position === "left") {
-        setSteps(() => [steps[0] - 1, steps[0], steps[1]]);
-      } else if (position === "right") {
-        setSteps(() => [steps[1], steps[2], steps[2] + 1]);
-      }
-      setReserveStep(() => 0);
-    }
-
     setTimeout(() => {
-      setCompleteStep(() => steps[1]);
+      setCompleteStep(() => step);
     }, duration);
-    console.log(steps, reserveStep);
-  }, [steps]);
+  }, [step]);
 
-  useEffect(() => {
-    if (reserveStep !== 0) {
-      const position = steps[1] > reserveStep ? "left" : "right";
-      if (position === "left") {
-        setSteps(() => [reserveStep, steps[1], steps[2]]);
-      } else if (position === "right") {
-        setSteps(() => [steps[0], steps[1], reserveStep]);
-      }
-      setTimeout(() => {
-        setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
-      }, duration);
+  const setStepHandler = throttle((param: any) => {
+    if (step === completeStep) {
+      setStep(param);
     }
-  }, [reserveStep]);
-
-  const setStepHandler = throttle(
-    (value: any, kind: "immediate" | "reserve" = "reserve") => {
-      if (steps[1] === completeStep) {
-        if (kind === "immediate") {
-          setSteps(value);
-        } else if (kind === "reserve") {
-          setReserveStep(value);
-        }
-      }
-    },
-    duration
-  );
+  }, duration);
 
   const setCondition = (currentStep: number): conditionType => {
     const condition = {
-      maintain: currentStep === steps[1] || currentStep === completeStep,
-      immediate: currentStep === steps[1],
+      maintain: currentStep === step || currentStep === completeStep,
+      immediate: currentStep === step,
     };
 
     return condition;
   };
 
-  return [steps, setStepHandler, setCondition] as const;
+  return [step, completeStep, setStepHandler, setCondition] as const;
 };
 
 const Container = ({
-  steps,
+  currentStep,
   setStep,
   duration,
   children,
 }: ContainerPropsType) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // const [completeStep, setCompleteStep] = useState(steps[1]);
+  const [completeStep, setCompleteStep] = useState(currentStep);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setCompleteStep(() => steps[1]);
-  //   }, duration);
-  // }, [steps]);
+  useEffect(() => {
+    setTimeout(() => {
+      setCompleteStep(() => currentStep);
+    }, duration);
+  }, [currentStep]);
 
   const onScrollHandler = throttle((e: React.WheelEvent<HTMLDivElement>) => {
     console.log(containerRef);
     const last = validChildren && validChildren.length;
     if (containerRef.current) {
-      if (e.deltaY > 0 && steps[1] < Number(last) - 1) {
+      if (e.deltaY > 0 && currentStep < Number(last)) {
         if (
           containerRef.current.clientHeight >=
             containerRef.current.scrollHeight ||
           containerRef.current.scrollHeight <=
             containerRef.current.clientHeight + containerRef.current.scrollTop
         ) {
-          setStep(() => steps[1] + 1);
+          setStep((prev) => prev + 1);
         }
-      } else if (e.deltaY < 0 && steps[1] > 1) {
+      } else if (e.deltaY < 0 && currentStep > 1) {
         if (
           containerRef.current.clientHeight >=
             containerRef.current.scrollHeight ||
           containerRef.current.scrollTop === 0
         ) {
-          setStep(() => steps[1] - 1);
+          setStep((prev) => prev - 1);
         }
       }
     }
   }, duration);
 
-  const validChildren = children && [
-    <div />,
-    ...(Children.toArray(children) as Array<ReactElement<StepPropsType>>),
-  ];
+  const validChildren =
+    children &&
+    (Children.toArray(children) as Array<ReactElement<StepPropsType>>);
 
   const render =
     validChildren &&
     useMemo(
       () =>
         validChildren.map((el, idx) => {
-          const valid = steps.indexOf(idx);
-          if (valid !== -1) {
+          if (
+            (idx + 1 === currentStep - 1 && completeStep <= currentStep) ||
+            idx + 1 === currentStep ||
+            (idx + 1 === currentStep + 1 && completeStep >= currentStep)
+          ) {
             return (
               <div
-                id={`container-${idx}`}
+                id={`container-${idx + 1}`}
                 onWheel={onScrollHandler}
-                key={`step-${idx}`}
-                ref={steps[1] === idx ? containerRef : null}
+                key={`step-${idx + 1}`}
+                ref={currentStep === idx + 1 ? containerRef : null}
                 css={stepComponentCSS({
-                  step: steps[1],
-                  validIdx: valid,
+                  step: currentStep,
+                  targetStep: idx + 1,
                   duration,
-                  totalStep: validChildren.length,
-                  currentStep: idx + 1,
                 })}
               >
                 {el.props.children}
@@ -184,7 +148,7 @@ const Container = ({
     <div css={containerWrapperCSS}>
       <Indicator
         totalStep={validChildren ? validChildren.length : 0}
-        currentStep={steps[1]}
+        currentStep={currentStep}
         duration={duration}
       />
       {render}
@@ -198,10 +162,8 @@ const Indicator = ({
   duration,
 }: IndicatorPropsType) => {
   return (
-    <div css={indicatorWrapperCSS({ totalStep: totalStep - 1 })}>
-      <div
-        css={indicatorCSS({ totalStep: totalStep - 1, currentStep, duration })}
-      />
+    <div css={indicatorWrapperCSS({ totalStep })}>
+      <div css={indicatorCSS({ totalStep, currentStep, duration })} />
     </div>
   );
 };
@@ -219,16 +181,12 @@ const containerWrapperCSS = css`
 
 const stepComponentCSS = ({
   step,
-  validIdx,
+  targetStep,
   duration,
-  totalStep,
-  currentStep,
 }: {
   step: number;
-  validIdx: number;
+  targetStep: number;
   duration: number;
-  totalStep: number;
-  currentStep: number;
 }) => {
   return css`
     position: absolute;
@@ -239,8 +197,11 @@ const stepComponentCSS = ({
     transition-duration: ${duration}ms;
     transition-property: all;
     overflow-y: scroll;
-    transform: translateY(calc(100% * ${validIdx - 1}));
-    z-index: ${totalStep - currentStep};
+    /* transform: translateY(calc(-100% * ${step - targetStep})); */
+    transform: ${step - 1 === targetStep
+      ? `translateY(-100%)`
+      : `translateY(0%)`};
+    z-index: ${step - targetStep};
     transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
     -ms-overflow-style: none; /* 인터넷 익스플로러 */
     scrollbar-width: none; /* 파이어폭스 */

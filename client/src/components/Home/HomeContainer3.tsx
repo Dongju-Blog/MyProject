@@ -17,7 +17,7 @@ function HomeContainer3({ setCondition, currentStep }: HomeContainer1Type) {
       css={Animator.Translate({
         id: "parellel3",
         trigger: condition.immediate,
-        duration: 1000, 
+        duration: 1000,
         delay: 200,
         offset: ["70vw", "0px"],
         option: { hasReverse: true },
@@ -28,7 +28,7 @@ function HomeContainer3({ setCondition, currentStep }: HomeContainer1Type) {
           Animator.Rotate({
             id: "parellel-inner3",
             trigger: condition.immediate,
-            duration: 1000, 
+            duration: 1000,
             delay: 600,
             offset: "20deg",
             option: { hasReverse: true },
@@ -53,7 +53,7 @@ function HomeContainer3({ setCondition, currentStep }: HomeContainer1Type) {
     <ContainerContent customCss={containerWrapperCSS}>
       {parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
-      <div>
+        <div>
           <div
             css={[
               Animator.Translate({
@@ -112,6 +112,7 @@ function HomeContainer3({ setCondition, currentStep }: HomeContainer1Type) {
 const containerWrapperCSS = css`
   background-color: #e1ff00;
   overflow: hidden;
+  /* opacity: 70%; */
 `;
 
 const innerContentWrapperCSS = css`

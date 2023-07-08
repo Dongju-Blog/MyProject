@@ -1,9 +1,9 @@
 import { SerializedStyles, css } from "@emotion/react";
 
 type TranslatePropsType = {
-  id: string
+  id: string;
   trigger?: boolean;
-  duration: number
+  duration: number;
   delay: number;
   offset: [string, string];
   option?: {
@@ -14,9 +14,9 @@ type TranslatePropsType = {
 };
 
 type RotatePropsType = {
-  id: string
+  id: string;
   trigger?: boolean;
-  duration: number
+  duration: number;
   delay: number;
   offset: string;
   option?: {
@@ -25,7 +25,7 @@ type RotatePropsType = {
 };
 
 const Translate = ({
-  id = 'translate',
+  id = "translate",
   trigger = true,
   duration,
   delay,
@@ -33,17 +33,16 @@ const Translate = ({
   option = {
     opacityFrom: "0%",
     opacityTo: "100%",
-    hasReverse: false
+    hasReverse: false,
   },
 }: TranslatePropsType): SerializedStyles => {
-
   if (trigger) {
     return css`
       animation: ${id}-translate ${duration}ms ease forwards;
       -webkit-animation-delay: ${delay}ms;
       opacity: ${option.opacityFrom};
       visibility: hidden;
-      
+
       @keyframes ${id}-translate {
         from {
           opacity: ${option.opacityFrom};
@@ -60,24 +59,23 @@ const Translate = ({
     `;
   } else if (option.hasReverse) {
     return css`
-    animation: ${id}-reverse-translate ${duration}ms ease forwards;
-    /* -webkit-animation-delay: ${delay}ms; */
-    opacity: ${option.opacityTo};
+      animation: ${id}-reverse-translate ${duration}ms ease forwards;
+      /* -webkit-animation-delay: ${delay}ms; */
+      opacity: ${option.opacityTo};
 
-    @keyframes ${id}-reverse-translate {
-      from {
-        opacity: ${option.opacityTo};
-        transform: translate(0px, 0px);
-        visibility: visible;
+      @keyframes ${id}-reverse-translate {
+        from {
+          opacity: ${option.opacityTo};
+          transform: translate(0px, 0px);
+          visibility: visible;
+        }
+
+        to {
+          opacity: ${option.opacityFrom};
+          transform: translate(${offset[0]}, ${offset[1]});
+        }
       }
-
-      to {
-        opacity: ${option.opacityFrom};
-        transform: translate(${offset[0]}, ${offset[1]});
-
-      }
-    }
-  `;
+    `;
   } else {
     return css`
       opacity: ${option.opacityFrom};
@@ -85,62 +83,52 @@ const Translate = ({
   }
 };
 
-
-
 const Rotate = ({
-  id = 'rotate',
+  id = "rotate",
   trigger = true,
   duration,
   delay,
   offset,
   option = {
-    hasReverse: false
+    hasReverse: false,
   },
 }: RotatePropsType): SerializedStyles => {
-
   if (trigger) {
     return css`
       animation: ${id}-rotate ${duration}ms ease forwards;
       -webkit-animation-delay: ${delay}ms;
-      
+
       @keyframes ${id}-rotate {
         from {
-
         }
 
         to {
           transform: rotate(${offset});
-
         }
       }
     `;
   } else if (option.hasReverse) {
     return css`
-    animation: ${id}-reverse-rotate ${duration}ms ease forwards;
-    /* -webkit-animation-delay: ${delay}ms; */
+      animation: ${id}-reverse-rotate ${duration}ms ease forwards;
+      /* -webkit-animation-delay: ${delay}ms; */
 
-    @keyframes ${id}-reverse-rotate {
-      from {
-        transform: rotate(${offset});
+      @keyframes ${id}-reverse-rotate {
+        from {
+          transform: rotate(${offset});
+        }
+
+        to {
+        }
       }
-
-      to {
-
-
-      }
-    }
-  `;
-  } else {
-    return css`
     `;
+  } else {
+    return css``;
   }
 };
 
-
-
 const Animator = {
   Translate,
-  Rotate
-}
+  Rotate,
+};
 
-export default Animator
+export default Animator;
