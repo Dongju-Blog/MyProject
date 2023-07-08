@@ -27,7 +27,7 @@ type IndicatorPropsType = {
   totalStep: number;
   currentStep: number;
   duration: number;
-}
+};
 
 export type setConditionType = (currentStep: number) => conditionType;
 
@@ -146,20 +146,27 @@ const Container = ({
 
   return (
     <div css={containerWrapperCSS}>
-      <Indicator totalStep={validChildren ? validChildren.length : 0} currentStep={currentStep} duration={duration}/>
+      <Indicator
+        totalStep={validChildren ? validChildren.length : 0}
+        currentStep={currentStep}
+        duration={duration}
+      />
       {render}
     </div>
   );
 };
 
-const Indicator = ({currentStep, totalStep, duration}: IndicatorPropsType) => {
-
+const Indicator = ({
+  currentStep,
+  totalStep,
+  duration,
+}: IndicatorPropsType) => {
   return (
-    <div css={indicatorWrapperCSS({totalStep})}>
-      <div css={indicatorCSS({totalStep, currentStep, duration})}/>
+    <div css={indicatorWrapperCSS({ totalStep })}>
+      <div css={indicatorCSS({ totalStep, currentStep, duration })} />
     </div>
-  )
-}
+  );
+};
 
 export const Step = ({ children }: StepPropsType) => {
   return <>{children}</>;
@@ -205,20 +212,28 @@ const stepComponentCSS = ({
   `;
 };
 
-const indicatorWrapperCSS = ({totalStep}: {totalStep: number}) => {
+const indicatorWrapperCSS = ({ totalStep }: { totalStep: number }) => {
   return css`
     position: fixed;
     z-index: ${totalStep + 1};
     width: 4px;
     height: ${48 * totalStep}px;
     background-color: rgba(255, 255, 255, 0.4);
-    mix-blend-mode: exclusion;;
+    mix-blend-mode: exclusion;
     left: 5vw;
     top: calc(50vh - (${48 * totalStep}px / 2));
-  `
-}
+  `;
+};
 
-const indicatorCSS = ({totalStep, currentStep, duration}: {totalStep: number, currentStep: number, duration: number}) => {
+const indicatorCSS = ({
+  totalStep,
+  currentStep,
+  duration,
+}: {
+  totalStep: number;
+  currentStep: number;
+  duration: number;
+}) => {
   return css`
     width: 100%;
     height: 48px;
@@ -229,9 +244,8 @@ const indicatorCSS = ({totalStep, currentStep, duration}: {totalStep: number, cu
     transition-duration: ${duration}ms;
     mix-blend-mode: color;
     transform: translateY(calc(48px * ${currentStep - 1}));
-  `
-}
-  
+  `;
+};
 
 Container.Step = Step;
 export { useContainer, Container };
