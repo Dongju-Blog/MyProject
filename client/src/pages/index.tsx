@@ -8,7 +8,7 @@ import HomeContainer3 from "@/components/Home/HomeContainer3";
 // import Container from "@/components/Container/useContainer";
 
 export default function Home() {
-  const [step, completeStep, setStep, setCondition] = useContainer({
+  const [steps, setStep, setCondition] = useContainer({
     init: 1,
     duration: 1000,
   });
@@ -20,9 +20,12 @@ export default function Home() {
         height: 100vh;
       `}
     >
-      <Container currentStep={step} setStep={setStep} duration={1000}>
+      <Container steps={steps} setStep={setStep} duration={1000}>
+        {/* <Container.Step>
+          ds
+        </Container.Step> */}
         <Container.Step>
-          <HomeContainer1 setCondition={setCondition} currentStep={1} />
+          <HomeContainer1 setCondition={setCondition} currentStep={1} setStep={setStep} />
         </Container.Step>
         <Container.Step>
           <HomeContainer2 setCondition={setCondition} currentStep={2} />

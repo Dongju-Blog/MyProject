@@ -112,6 +112,7 @@ function HomeContainer3({ setCondition, currentStep }: HomeContainer1Type) {
 const containerWrapperCSS = css`
   background-color: #e1ff00;
   overflow: hidden;
+  /* opacity: 70%; */
 `;
 
 const innerContentWrapperCSS = css`

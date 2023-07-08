@@ -9,9 +9,10 @@ import { setConditionType } from "../Container/useContainer";
 type HomeContainer1Type = {
   setCondition: setConditionType
   currentStep: number
+  setStep: Function
 }
 
-function HomeContainer1({setCondition, currentStep}: HomeContainer1Type) {
+function HomeContainer1({setCondition, currentStep, setStep}: HomeContainer1Type) {
   const condition = setCondition(currentStep)
   const testRef = useRef<HTMLDivElement>(null)
 
@@ -36,6 +37,7 @@ function HomeContainer1({setCondition, currentStep}: HomeContainer1Type) {
       {parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
         <div>
+          <img src={'/test.bmp'} onLoad={()=>{console.log('Rerendered')}} css={css`width: 10px; height: 10px;`}/>
           <div
             css={[Animator.Translate({id: 'label', trigger: condition.maintain, duration: 1000, delay: 200, offset: ['0px', '100px']}), css`
               font-size: 5vw;
@@ -57,6 +59,7 @@ function HomeContainer1({setCondition, currentStep}: HomeContainer1Type) {
           >
             But I know how to handle the backend, CI/CD as well!
           </div>
+          <button onClick={() => setStep(() => 3)}>setStep</button>
         </div>
         <div></div>
       </ContainerContent.Inner>
