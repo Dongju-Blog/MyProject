@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { css } from "@emotion/react";
-import ContainerContent from "../Container/ContainerContent";
-import Animator from "../Animator/Animator";
-import { setConditionType } from "../Container/useContainer";
+import ContainerContent from "../Interface/Container/ContainerContent";
+import Animator from "../Interface/Animator/Animator";
+import { setConditionType } from "../Interface/Container/useContainer";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -49,16 +49,6 @@ function HomeContainer1({
       {parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
         <div>
-          <img
-            src={"/test.bmp"}
-            onLoad={() => {
-              console.log("Rerendered");
-            }}
-            css={css`
-              width: 10px;
-              height: 10px;
-            `}
-          />
           <div
             css={[
               Animator.Translate({
@@ -107,7 +97,6 @@ function HomeContainer1({
           >
             But I know how to handle the backend, CI/CD as well!
           </div>
-          <button onClick={() => setStep(() => 3)}>setStep</button>
         </div>
         <div></div>
       </ContainerContent.Inner>

@@ -239,7 +239,8 @@ const stepComponentCSS = ({
     transition-duration: ${duration}ms;
     transition-property: all;
     overflow-y: scroll;
-    transform: translateY(calc(100% * ${validIdx - 1}));
+    transform : ${validIdx === 0 && `translateY(-100%)`};
+    /* transform: translateY(calc(100% * ${validIdx - 1})); */
     z-index: ${totalStep - currentStep};
     transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
     -ms-overflow-style: none; /* 인터넷 익스플로러 */
