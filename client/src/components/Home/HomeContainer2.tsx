@@ -1,8 +1,8 @@
 import React from "react";
 import { css } from "@emotion/react";
-import ContainerContent from "../Container/ContainerContent";
-import Animator from "../Animator/Animator";
-import { setConditionType } from "../Container/useContainer";
+import ContainerContent from "../Interface/Container/ContainerContent";
+import Animator from "../Interface/Animator/Animator";
+import { setConditionType } from "../Interface/Container/useContainer";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
