@@ -10,17 +10,31 @@ import React, {
   MutableRefObject,
 } from "react";
 import { css } from "@emotion/react";
+import { throttle, debounce } from "lodash";
 
-interface ContainerProps {
+type ContainerPropsType = {
   currentStep: number;
   duration: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   children?: ReactNode;
+};
+
+type StepPropsType = {
+  children: ReactNode;
+};
+
+type IndicatorPropsType = {
+  totalStep: number;
+  currentStep: number;
+  duration: number;
 }
 
-interface StepProps {
-  children: ReactNode;
-}
+export type setConditionType = (currentStep: number) => conditionType;
+
+type conditionType = {
+  maintain: boolean;
+  immediate: boolean;
+};
 
 const useContainer = ({
   init,
@@ -38,13 +52,22 @@ const useContainer = ({
     }, duration);
   }, [step]);
 
-  const setStepHandler = (param: any) => {
+  const setStepHandler = throttle((param: any) => {
     if (step === completeStep) {
       setStep(param);
     }
+  }, duration);
+
+  const setCondition = (currentStep: number): conditionType => {
+    const condition = {
+      maintain: currentStep === step || currentStep === completeStep,
+      immediate: currentStep === step,
+    };
+
+    return condition;
   };
 
-  return [step, completeStep, setStepHandler] as const;
+  return [step, completeStep, setStepHandler, setCondition] as const;
 };
 
 const Container = ({
@@ -52,7 +75,7 @@ const Container = ({
   setStep,
   duration,
   children,
-}: ContainerProps) => {
+}: ContainerPropsType) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [completeStep, setCompleteStep] = useState(currentStep);
 
@@ -62,7 +85,7 @@ const Container = ({
     }, duration);
   }, [currentStep]);
 
-  const onScrollHandler = (e: React.WheelEvent<HTMLDivElement>) => {
+  const onScrollHandler = throttle((e: React.WheelEvent<HTMLDivElement>) => {
     console.log(containerRef);
     const last = validChildren && validChildren.length;
     if (containerRef.current) {
@@ -85,10 +108,11 @@ const Container = ({
         }
       }
     }
-  };
+  }, duration);
 
   const validChildren =
-    children && (Children.toArray(children) as Array<ReactElement<StepProps>>);
+    children &&
+    (Children.toArray(children) as Array<ReactElement<StepPropsType>>);
 
   const render =
     validChildren &&
@@ -120,10 +144,24 @@ const Container = ({
       [validChildren]
     );
 
-  return <div css={containerWrapperCSS}>{render}</div>;
+  return (
+    <div css={containerWrapperCSS}>
+      <Indicator totalStep={validChildren ? validChildren.length : 0} currentStep={currentStep} duration={duration}/>
+      {render}
+    </div>
+  );
 };
 
-export const Step = ({ children }: StepProps) => {
+const Indicator = ({currentStep, totalStep, duration}: IndicatorPropsType) => {
+
+  return (
+    <div css={indicatorWrapperCSS({totalStep})}>
+      <div css={indicatorCSS({totalStep, currentStep, duration})}/>
+    </div>
+  )
+}
+
+export const Step = ({ children }: StepPropsType) => {
   return <>{children}</>;
 };
 
@@ -152,7 +190,11 @@ const stepComponentCSS = ({
     transition-duration: ${duration}ms;
     transition-property: all;
     overflow-y: scroll;
-    transform: translateY(calc(-100% * ${step - targetStep}));
+    /* transform: translateY(calc(-100% * ${step - targetStep})); */
+    transform: ${step - 1 === targetStep
+      ? `translateY(-100%)`
+      : `translateY(0%)`};
+    z-index: ${step - targetStep};
     transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
     -ms-overflow-style: none; /* 인터넷 익스플로러 */
     scrollbar-width: none; /* 파이어폭스 */
@@ -162,6 +204,34 @@ const stepComponentCSS = ({
     }
   `;
 };
+
+const indicatorWrapperCSS = ({totalStep}: {totalStep: number}) => {
+  return css`
+    position: fixed;
+    z-index: ${totalStep + 1};
+    width: 4px;
+    height: ${48 * totalStep}px;
+    background-color: rgba(255, 255, 255, 0.4);
+    mix-blend-mode: exclusion;;
+    left: 5vw;
+    top: calc(50vh - (${48 * totalStep}px / 2));
+  `
+}
+
+const indicatorCSS = ({totalStep, currentStep, duration}: {totalStep: number, currentStep: number, duration: number}) => {
+  return css`
+    width: 100%;
+    height: 48px;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 1);
+
+    transition-property: transform;
+    transition-duration: ${duration}ms;
+    mix-blend-mode: color;
+    transform: translateY(calc(48px * ${currentStep - 1}));
+  `
+}
+  
 
 Container.Step = Step;
 export { useContainer, Container };
