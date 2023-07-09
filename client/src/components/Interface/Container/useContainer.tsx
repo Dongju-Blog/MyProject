@@ -56,27 +56,29 @@ const useContainer = ({
       const init = Number(router.asPath.split("#")[1])
       setReserveStep(() => init)
     }
+
   }, []);
 
   useEffect(() => {
-    console.log(
-      "reverseStep: ",
-      reserveStep,
-      "steps: ",
-      steps,
-      "completeStep",
-      completeStep,
-      "isReady: ",
-      isReady
-    );
+    // console.log(
+    //   "reverseStep: ",
+    //   reserveStep,
+    //   "steps: ",
+    //   steps,
+    //   "completeStep",
+    //   completeStep,
+    //   "isReady: ",
+    //   isReady
+    // );
+    const hashPath = Number(router.asPath.split("#")[1])
     if (
       isReady === true &&
       steps[1] === completeStep &&
       reserveStep === 0 &&
-      steps[1] !== Number(router.asPath.split("#")[1])
+      steps[1] !== hashPath
     ) {
       
-      setReserveStep(Number(router.asPath.split("#")[1]));
+      setReserveStep(() => hashPath);
       setIsReady(() => false);
     }
   }, [router.asPath]);
@@ -101,6 +103,7 @@ const useContainer = ({
   //---------------------------------------------------------------
 
   useEffect(() => {
+    
     const position = steps[1] > reserveStep ? "left" : "right";
     const reservedContainerIdx = steps.indexOf(reserveStep);
     // console.log("reservedContainerIdx: ", reservedContainerIdx);
@@ -162,12 +165,14 @@ const useContainer = ({
     // }
 
     setIsReady(() => true);
-
+    const hashPath = Number(router.asPath.split("#")[1])
+    
     if (
-      Number(router.asPath.split("#")[1]) !== steps[1] &&
+      hashPath !== steps[1] &&
       steps[1] === completeStep
     ) {
-      setReserveStep(Number(router.asPath.split("#")[1]));
+      setReserveStep(() => hashPath);
+      
     }
   }, [completeStep]);
 
@@ -175,7 +180,7 @@ const useContainer = ({
   //---------------------------------------------------------
 
   const setStepHandler = throttle((value: number) => {
-    if (steps[1] === completeStep) {
+    if (steps[1] === completeStep && isReady === true && reserveStep === 0) {
       // if (kind === "immediate") {
       //   setSteps(value);
       // } else if (kind === "reserve") {
@@ -205,19 +210,20 @@ const Container = ({
   children,
 }: ContainerPropsType) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // const [completeStep, setCompleteStep] = useState(steps[1]);
+  const [completeStep, setCompleteStep] = useState(steps[1]);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setCompleteStep(() => steps[1]);
-  //   }, duration);
-  // }, [steps]);
+  useEffect(() => {
+    setTimeout(() => {
+      setCompleteStep(() => steps[1]);
+    }, duration);
+  }, [steps]);
 
   const onScrollHandler = throttle((e: React.WheelEvent<HTMLDivElement>) => {
     // console.log(e);
 
     const last = validChildren && validChildren.length;
-    if (containerRef.current && (e.deltaY > 20 || e.deltaY < -20)) {
+    if (containerRef.current && completeStep === steps[1]) {
+      
       if (e.deltaY > 0 && steps[1] < Number(last) - 1) {
         if (
           containerRef.current.clientHeight >=
