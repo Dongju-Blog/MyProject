@@ -96,6 +96,12 @@ const useContainer = ({
   }, [router.asPath])
 
   useEffect(() => {
+    if (router.asPath === '/') {
+      setSteps(() => [0, 1, 2]);
+    }
+  }, [])
+
+  useEffect(() => {
     if (steps[1] !== completeStep) {
       // setTimeout(() => {
       //   setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
