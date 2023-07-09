@@ -23,7 +23,7 @@ function Navbar() {
   const categoryList: categoryType[] = [
     {
       id: 0,
-      label: 'Home',
+      label: 'HOME',
       menu: [
         {
           id: 0,
@@ -39,6 +39,37 @@ function Navbar() {
           id: 2,
           label: 'Example 3',
           function: util.Example3
+        },
+        {
+          id: 3,
+          label: 'Example 4',
+          function: util.Example4
+        }
+      ]
+    },
+    {
+      id: 1,
+      label: 'BOARD',
+      menu: [
+        {
+          id: 0,
+          label: 'Example 1',
+          function: util.Example1
+        },
+        {
+          id: 1,
+          label: 'Example 2',
+          function: util.Example2
+        },
+        {
+          id: 2,
+          label: 'Example 3',
+          function: util.Example3
+        },
+        {
+          id: 3,
+          label: 'Example 4',
+          function: util.Example4
         }
       ]
     }

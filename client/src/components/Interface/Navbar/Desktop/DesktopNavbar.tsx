@@ -31,6 +31,7 @@ const navbarWrapperCSS = css`
   padding: 24px;
   display: flex;
   align-items: center;
+  gap: 16px;
   
 `
 

@@ -11,13 +11,13 @@ import React, {
 } from "react";
 import { css } from "@emotion/react";
 import { throttle, debounce } from "lodash";
+import { useRouter } from "next/router";
 
 type ContainerPropsType = {
   steps: number[];
   duration: number;
   setStep: (
-    value: React.SetStateAction<number>,
-    kind?: "immediate" | "reserve"
+    value: number,
   ) => void;
   children?: ReactNode;
 };
@@ -49,6 +49,8 @@ const useContainer = ({
   const [steps, setSteps] = useState([init - 1, init, init + 1]);
   const [reserveStep, setReserveStep] = useState(0);
   const [completeStep, setCompleteStep] = useState(init);
+  const [isReady, setIsReady] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     const position = steps[1] > reserveStep ? "left" : "right";
@@ -63,6 +65,7 @@ const useContainer = ({
 
     setTimeout(() => {
       setCompleteStep(() => steps[1]);
+      
     }, duration);
     console.log(steps, reserveStep);
   }, [steps]);
@@ -75,20 +78,49 @@ const useContainer = ({
       } else if (position === "right") {
         setSteps(() => [steps[0], steps[1], reserveStep]);
       }
-      setTimeout(() => {
-        setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
-      }, duration);
+ 
+        // setTimeout(() => {
+        //   setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
+        // }, duration);
+      
+      
     }
   }, [reserveStep]);
 
+  useEffect(() => {
+    if (isReady === true && steps[1] === completeStep && steps[1] !== Number(router.asPath.split('#')[1])) {
+      setReserveStep(Number(router.asPath.split('#')[1]))
+      setIsReady(() => false)
+    }
+    
+  }, [router.asPath])
+
+  useEffect(() => {
+    if (steps[1] !== completeStep) {
+      // setTimeout(() => {
+      //   setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
+      // }, duration);
+      debounce(() => {
+        setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
+        setIsReady(() => true)
+      }, duration, {trailing: true})
+    }
+    setIsReady(() => true)
+    if (Number(router.asPath.split('#')[1]) !== completeStep && steps[1] === completeStep) {
+      setReserveStep(Number(router.asPath.split('#')[1]))
+    }
+  }, [completeStep])
+
   const setStepHandler = throttle(
-    (value: any, kind: "immediate" | "reserve" = "reserve") => {
+    (value: number) => {
       if (steps[1] === completeStep) {
-        if (kind === "immediate") {
-          setSteps(value);
-        } else if (kind === "reserve") {
-          setReserveStep(value);
-        }
+        // if (kind === "immediate") {
+        //   setSteps(value);
+        // } else if (kind === "reserve") {
+        //   // setReserveStep(value);
+        //   router.push(`/#${value}`)
+        // }
+        router.push(`/#${value}`)
       }
     },
     duration
@@ -122,9 +154,10 @@ const Container = ({
   // }, [steps]);
 
   const onScrollHandler = throttle((e: React.WheelEvent<HTMLDivElement>) => {
-    console.log(containerRef);
+    console.log(e)
+
     const last = validChildren && validChildren.length;
-    if (containerRef.current) {
+    if (containerRef.current && (e.deltaY > 20 || e.deltaY < -20)) {
       if (e.deltaY > 0 && steps[1] < Number(last) - 1) {
         if (
           containerRef.current.clientHeight >=
@@ -132,7 +165,7 @@ const Container = ({
           containerRef.current.scrollHeight <=
             containerRef.current.clientHeight + containerRef.current.scrollTop
         ) {
-          setStep(() => steps[1] + 1);
+          setStep(steps[1] + 1);
         }
       } else if (e.deltaY < 0 && steps[1] > 1) {
         if (
@@ -140,11 +173,13 @@ const Container = ({
             containerRef.current.scrollHeight ||
           containerRef.current.scrollTop === 0
         ) {
-          setStep(() => steps[1] - 1);
+          setStep(steps[1] - 1);
         }
       }
     }
   }, duration);
+
+
 
   const validChildren = children && [
     <div />,
@@ -161,7 +196,9 @@ const Container = ({
             return (
               <div
                 id={`container-${idx}`}
-                onWheel={onScrollHandler}
+                
+                // onScroll={(e) => e.preventDefault()}
+                
                 key={`step-${idx}`}
                 ref={steps[1] === idx ? containerRef : null}
                 css={stepComponentCSS({
@@ -181,7 +218,7 @@ const Container = ({
     );
 
   return (
-    <div css={containerWrapperCSS}>
+    <div onWheel={onScrollHandler} css={containerWrapperCSS}>
       <Indicator
         totalStep={validChildren ? validChildren.length : 0}
         currentStep={steps[1]}
@@ -215,6 +252,7 @@ const containerWrapperCSS = css`
   overflow-y: hidden;
   max-height: 100vh;
   min-height: 100vh;
+  
 `;
 
 const stepComponentCSS = ({
@@ -245,7 +283,6 @@ const stepComponentCSS = ({
     transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
     -ms-overflow-style: none; /* 인터넷 익스플로러 */
     scrollbar-width: none; /* 파이어폭스 */
-
     & ::-webkit-scrollbar {
       display: none; /* 크롬, 사파리, 오페라, 엣지 */
     }
