@@ -16,9 +16,7 @@ import { useRouter } from "next/router";
 type ContainerPropsType = {
   steps: number[];
   duration: number;
-  setStep: (
-    value: number,
-  ) => void;
+  setStep: (value: number) => void;
   children?: ReactNode;
 };
 
@@ -49,8 +47,41 @@ const useContainer = ({
   const [steps, setSteps] = useState([init - 1, init, init + 1]);
   const [reserveStep, setReserveStep] = useState(0);
   const [completeStep, setCompleteStep] = useState(init);
-  const [isReady, setIsReady] = useState(true)
-  const router = useRouter()
+  const [isReady, setIsReady] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log(reserveStep, steps);
+    if (
+      isReady === true &&
+      steps[1] === completeStep &&
+      reserveStep === 0 &&
+      steps[1] !== Number(router.asPath.split("#")[1])
+    ) {
+      setReserveStep(Number(router.asPath.split("#")[1]));
+      setIsReady(() => false);
+    }
+  }, [router.asPath]);
+
+  useEffect(() => {
+    if (router.asPath === "/") {
+      setSteps(() => [0, 1, 2]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (reserveStep !== 0 && steps[1] === completeStep) {
+      const position = steps[1] > reserveStep ? "left" : "right";
+      if (position === "left") {
+        setSteps(() => [reserveStep, steps[1], steps[2]]);
+      } else if (position === "right") {
+        setSteps(() => [steps[0], steps[1], reserveStep]);
+      }
+    }
+  }, [reserveStep]);
+
+  //---------------------------------------------------------------
+  //---------------------------------------------------------------
 
   useEffect(() => {
     const position = steps[1] > reserveStep ? "left" : "right";
@@ -60,77 +91,88 @@ const useContainer = ({
       } else if (position === "right") {
         setSteps(() => [steps[1], steps[2], steps[2] + 1]);
       }
+
       setReserveStep(() => 0);
     }
 
+    // if (steps[1] === completeStep) {
+    //   throttle(
+    //     () => {
+    //       setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
+    //     },
+    //     duration,
+    //     { trailing: true, leading: false }
+    //   );
+    // }
+
     setTimeout(() => {
       setCompleteStep(() => steps[1]);
-      
     }, duration);
-    console.log(steps, reserveStep);
   }, [steps]);
 
-  useEffect(() => {
-    if (reserveStep !== 0) {
-      const position = steps[1] > reserveStep ? "left" : "right";
-      if (position === "left") {
-        setSteps(() => [reserveStep, steps[1], steps[2]]);
-      } else if (position === "right") {
-        setSteps(() => [steps[0], steps[1], reserveStep]);
-      }
- 
-        // setTimeout(() => {
-        //   setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
-        // }, duration);
-      
-      
-    }
-  }, [reserveStep]);
+  //-----------------------------------------------------------------
+
+  //---------------------------------------------------------------
 
   useEffect(() => {
-    if (isReady === true && steps[1] === completeStep && steps[1] !== Number(router.asPath.split('#')[1])) {
-      setReserveStep(Number(router.asPath.split('#')[1]))
-      setIsReady(() => false)
-    }
-    
-  }, [router.asPath])
+    // if (steps[1] !== completeStep) {
 
-  useEffect(() => {
-    if (router.asPath === '/') {
-      setSteps(() => [0, 1, 2]);
-    }
-  }, [])
+    //   debounce(() => {
+    //     setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
+    //     setIsReady(() => true)
+    //   }, duration, {trailing: true})
+    // } else {
+    //   setIsReady(() => true)
+    // }
 
-  useEffect(() => {
-    if (steps[1] !== completeStep) {
-      // setTimeout(() => {
-      //   setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
-      // }, duration);
-      debounce(() => {
-        setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
-        setIsReady(() => true)
-      }, duration, {trailing: true})
-    }
-    setIsReady(() => true)
-    if (Number(router.asPath.split('#')[1]) !== completeStep && steps[1] === completeStep) {
-      setReserveStep(Number(router.asPath.split('#')[1]))
-    }
-  }, [completeStep])
+    // if (steps[1] === completeStep) {
+    //   throttle(
+    //     () => {
+    //       // setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
+    //       setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
+    //       // setIsReady(() => true)
+    //       // setIsReady(() => true)
+    //     },
+    //     duration,
+    //     { trailing: true, leading: false }
+    //   );
+    // }
 
-  const setStepHandler = throttle(
-    (value: number) => {
-      if (steps[1] === completeStep) {
-        // if (kind === "immediate") {
-        //   setSteps(value);
-        // } else if (kind === "reserve") {
-        //   // setReserveStep(value);
-        //   router.push(`/#${value}`)
-        // }
-        router.push(`/#${value}`)
-      }
-    },
-    duration
-  );
+    if (steps[1] === completeStep) {
+      setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
+    }
+
+    if (
+      steps[1] === completeStep &&
+      reserveStep === 0 &&
+      steps[1] - steps[0] === 1 &&
+      steps[2] - steps[1] === 1
+    ) {
+      setIsReady(() => true);
+    }
+
+    if (
+      Number(router.asPath.split("#")[1]) !== steps[1] &&
+      steps[1] === completeStep
+    ) {
+      setReserveStep(Number(router.asPath.split("#")[1]));
+    }
+  }, [completeStep]);
+
+  //---------------------------------------------------------------
+  //---------------------------------------------------------
+
+  const setStepHandler = throttle((value: number) => {
+    if (steps[1] === completeStep) {
+      // if (kind === "immediate") {
+      //   setSteps(value);
+      // } else if (kind === "reserve") {
+      //   // setReserveStep(value);
+      //   router.push(`/#${value}`)
+      // }
+      router.push(`/#${value}`);
+    }
+  }, duration);
 
   const setCondition = (currentStep: number): conditionType => {
     const condition = {
@@ -160,7 +202,7 @@ const Container = ({
   // }, [steps]);
 
   const onScrollHandler = throttle((e: React.WheelEvent<HTMLDivElement>) => {
-    console.log(e)
+    console.log(e);
 
     const last = validChildren && validChildren.length;
     if (containerRef.current && (e.deltaY > 20 || e.deltaY < -20)) {
@@ -185,8 +227,6 @@ const Container = ({
     }
   }, duration);
 
-
-
   const validChildren = children && [
     <div />,
     ...(Children.toArray(children) as Array<ReactElement<StepPropsType>>),
@@ -202,9 +242,8 @@ const Container = ({
             return (
               <div
                 id={`container-${idx}`}
-                
                 // onScroll={(e) => e.preventDefault()}
-                
+
                 key={`step-${idx}`}
                 ref={steps[1] === idx ? containerRef : null}
                 css={stepComponentCSS({
@@ -258,7 +297,6 @@ const containerWrapperCSS = css`
   overflow-y: hidden;
   max-height: 100vh;
   min-height: 100vh;
-  
 `;
 
 const stepComponentCSS = ({
@@ -283,7 +321,8 @@ const stepComponentCSS = ({
     transition-duration: ${duration}ms;
     transition-property: all;
     overflow-y: scroll;
-    transform : ${validIdx === 0 && `translateY(-100%)`};
+    transform: ${validIdx === 0 && `translateY(-100%)`};
+    visibility: ${validIdx === 0 && "hidden"};
     /* transform: translateY(calc(100% * ${validIdx - 1})); */
     z-index: ${totalStep - currentStep};
     transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
