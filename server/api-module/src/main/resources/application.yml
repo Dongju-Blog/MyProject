@@ -3,9 +3,10 @@ logging:
     root: DEBUG
 spring:
   datasource:
-    password: pw192837
-    url: jdbc:mariadb://portfolio-maria-db.cbt4fdfoovm1.us-east-2.rds.amazonaws.com:3306/portfolio
-    username: root
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
