@@ -44,34 +44,38 @@ const useContainer = ({
   init: number;
   duration: number;
 }) => {
-  const [steps, setSteps] = useState([init - 1, init, init + 1]);
-  const [reserveStep, setReserveStep] = useState(0);
+  const [steps, setSteps] = useState([0, 0, 0]);
+  const [reserveStep, setReserveStep] = useState(init);
   const [completeStep, setCompleteStep] = useState(init);
   const [isReady, setIsReady] = useState(true);
   const router = useRouter();
   useEffect(() => {
     if (router.asPath === "/") {
-      setSteps(() => [0, 1, 2]);
+      setReserveStep(() => init)
+    } else {
+      const init = Number(router.asPath.split("#")[1])
+      setReserveStep(() => init)
     }
   }, []);
 
   useEffect(() => {
-    // console.log(
-    //   "reverseStep: ",
-    //   reserveStep,
-    //   "steps: ",
-    //   steps,
-    //   "completeStep",
-    //   completeStep,
-    //   "isReady: ",
-    //   isReady
-    // );
+    console.log(
+      "reverseStep: ",
+      reserveStep,
+      "steps: ",
+      steps,
+      "completeStep",
+      completeStep,
+      "isReady: ",
+      isReady
+    );
     if (
       isReady === true &&
       steps[1] === completeStep &&
       reserveStep === 0 &&
       steps[1] !== Number(router.asPath.split("#")[1])
     ) {
+      
       setReserveStep(Number(router.asPath.split("#")[1]));
       setIsReady(() => false);
     }
@@ -90,6 +94,7 @@ const useContainer = ({
         setSteps(() => [steps[0], steps[1], reserveStep]);
       }
     }
+    
   }, [reserveStep]);
 
   //---------------------------------------------------------------
