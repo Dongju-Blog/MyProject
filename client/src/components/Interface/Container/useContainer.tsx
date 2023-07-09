@@ -49,9 +49,23 @@ const useContainer = ({
   const [completeStep, setCompleteStep] = useState(init);
   const [isReady, setIsReady] = useState(true);
   const router = useRouter();
+  useEffect(() => {
+    if (router.asPath === "/") {
+      setSteps(() => [0, 1, 2]);
+    }
+  }, []);
 
   useEffect(() => {
-    console.log(reserveStep, steps);
+    // console.log(
+    //   "reverseStep: ",
+    //   reserveStep,
+    //   "steps: ",
+    //   steps,
+    //   "completeStep",
+    //   completeStep,
+    //   "isReady: ",
+    //   isReady
+    // );
     if (
       isReady === true &&
       steps[1] === completeStep &&
@@ -64,17 +78,15 @@ const useContainer = ({
   }, [router.asPath]);
 
   useEffect(() => {
-    if (router.asPath === "/") {
-      setSteps(() => [0, 1, 2]);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (reserveStep !== 0 && steps[1] === completeStep) {
+    if (reserveStep !== 0) {
+      // console.log("reserveStep useEffect");
+      // console.log('reverseStep: ', reserveStep, 'steps: ', steps, 'isReady: ', isReady);
       const position = steps[1] > reserveStep ? "left" : "right";
       if (position === "left") {
+        // setSteps(() => [reserveStep - 1, reserveStep, steps[1]]);
         setSteps(() => [reserveStep, steps[1], steps[2]]);
       } else if (position === "right") {
+        // setSteps(() => [steps[1], reserveStep, reserveStep + 1]);
         setSteps(() => [steps[0], steps[1], reserveStep]);
       }
     }
@@ -85,29 +97,42 @@ const useContainer = ({
 
   useEffect(() => {
     const position = steps[1] > reserveStep ? "left" : "right";
-    if (reserveStep !== 0) {
+    const reservedContainerIdx = steps.indexOf(reserveStep);
+    // console.log("reservedContainerIdx: ", reservedContainerIdx);
+    if (
+      reserveStep !== 0 &&
+      reservedContainerIdx !== 1 &&
+      reservedContainerIdx !== -1
+    ) {
+      //steps[1] === completeStep
       if (position === "left") {
-        setSteps(() => [steps[0] - 1, steps[0], steps[1]]);
+        // console.log("move");
+        setTimeout(
+          () => setSteps(() => [steps[0] - 1, steps[0], steps[1]]),
+          100
+        );
+        // setSteps(() => [steps[0] - 1, steps[0], steps[1]])
       } else if (position === "right") {
-        setSteps(() => [steps[1], steps[2], steps[2] + 1]);
+        // console.log("move");
+        setTimeout(
+          () => setSteps(() => [steps[1], steps[2], steps[2] + 1]),
+          100
+        );
+        // setSteps(() => [steps[1], steps[2], steps[2] + 1])
       }
-
-      setReserveStep(() => 0);
+      // setReserveStep(() => 0);
     }
 
-    // if (steps[1] === completeStep) {
-    //   throttle(
-    //     () => {
-    //       setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
-    //     },
-    //     duration,
-    //     { trailing: true, leading: false }
-    //   );
-    // }
+    if (steps[1] === reserveStep) {
+      setReserveStep(() => 0);
+      setTimeout(() => {
+        setCompleteStep(() => steps[1]);
+      }, duration);
+    }
 
-    setTimeout(() => {
-      setCompleteStep(() => steps[1]);
-    }, duration);
+    // setTimeout(() => {
+    //   setCompleteStep(() => steps[1]);
+    // }, duration);
   }, [steps]);
 
   //-----------------------------------------------------------------
@@ -115,41 +140,23 @@ const useContainer = ({
   //---------------------------------------------------------------
 
   useEffect(() => {
-    // if (steps[1] !== completeStep) {
-
-    //   debounce(() => {
-    //     setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
-    //     setIsReady(() => true)
-    //   }, duration, {trailing: true})
-    // } else {
-    //   setIsReady(() => true)
-    // }
-
-    // if (steps[1] === completeStep) {
-    //   throttle(
-    //     () => {
-    //       // setSteps(() => [reserveStep - 1, reserveStep, reserveStep + 1]);
-    //       setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
-    //       // setIsReady(() => true)
-    //       // setIsReady(() => true)
-    //     },
-    //     duration,
-    //     { trailing: true, leading: false }
-    //   );
-    // }
-
-    if (steps[1] === completeStep) {
-      setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
-    }
+    // console.log('reverseStep: ', reserveStep, 'steps: ', steps, 'isReady: ', isReady);
 
     if (
       steps[1] === completeStep &&
-      reserveStep === 0 &&
-      steps[1] - steps[0] === 1 &&
-      steps[2] - steps[1] === 1
+      (steps[1] - steps[0] !== 1 || steps[2] - steps[1] !== 1)
     ) {
-      setIsReady(() => true);
+      setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
     }
+
+    // if (
+    //   steps[1] === completeStep &&
+    //   reserveStep === 0
+    // ) {
+    //   setIsReady(() => true);
+    // }
+
+    setIsReady(() => true);
 
     if (
       Number(router.asPath.split("#")[1]) !== steps[1] &&
@@ -202,7 +209,7 @@ const Container = ({
   // }, [steps]);
 
   const onScrollHandler = throttle((e: React.WheelEvent<HTMLDivElement>) => {
-    console.log(e);
+    // console.log(e);
 
     const last = validChildren && validChildren.length;
     if (containerRef.current && (e.deltaY > 20 || e.deltaY < -20)) {
