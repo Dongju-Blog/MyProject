@@ -13,7 +13,7 @@ import HomeContainer4 from "@/components/Home/HomeContainer4";
 // import Container from "@/components/Container/useContainer";
 
 export default function Home() {
-  
+
   const [steps, setStep, setCondition] = useContainer({
     init: 1,
     duration: 1000,
