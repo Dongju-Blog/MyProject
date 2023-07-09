@@ -5,7 +5,7 @@ spring:
   datasource:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    url: ${DB_URL}
+    url: jdbc:log4jdbc:mariadb://${DB_IP}:${DB_PORT}/${DB_NAME}
 
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
