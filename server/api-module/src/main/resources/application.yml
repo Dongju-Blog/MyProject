@@ -3,9 +3,9 @@ logging:
     root: DEBUG
 spring:
   datasource:
+    url: jdbc:log4jdbc:mariadb://${DB_IP}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    url: jdbc:log4jdbc:mariadb://${DB_IP}:${DB_PORT}/${DB_NAME}
 
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
