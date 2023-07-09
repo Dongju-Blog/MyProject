@@ -6,6 +6,7 @@ function useNavbarUtil() {
 
   const Example1 = () => {
     router.push('/#1')
+
   }
 
   const Example2 = () => {
@@ -16,10 +17,15 @@ function useNavbarUtil() {
     router.push('/#3')
   }
 
+  const Example4 = () => {
+    router.push('/#4')
+  }
+
   const returnObject = {
     Example1,
     Example2,
-    Example3
+    Example3,
+    Example4
   }
 
   return returnObject

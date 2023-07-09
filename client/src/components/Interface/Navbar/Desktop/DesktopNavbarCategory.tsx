@@ -74,7 +74,7 @@ const arrowCSS = css`
 
   position: relative;
   z-index: 10;
-  left: calc(50% - 16px);
+  left: calc(50% - 20px);
   top: 8px;
 
 `

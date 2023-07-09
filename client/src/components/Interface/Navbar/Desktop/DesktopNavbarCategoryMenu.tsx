@@ -49,7 +49,7 @@ const menuItemCSS = css`
   color: rgba(0, 0, 0, 0.6);
   transition-property: transform color;
   transition-duration: 1s;
-
+  user-select: none;
   &:hover {
     transform: scale(110%);
     color: rgba(0, 0, 0, 1);
