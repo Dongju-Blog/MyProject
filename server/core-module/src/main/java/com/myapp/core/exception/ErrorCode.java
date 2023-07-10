@@ -33,13 +33,29 @@ public enum ErrorCode{
 
 
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "110", "비밀번호가 틀렸습니다."),
-
-
-
-
     ;
 
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
+
+    /**
+     * 문자열에 해당하는 ErrorCode를 반환합니다.
+     * @param errorName 에러 이름
+     * @return ErrorCode
+     * @throws IllegalArgumentException 지정된 에러 이름을 가진 ErrorCode가 없는 경우 발생합니다.
+     */
+    public static ErrorCode valueOfIgnoreCase(String errorName) {
+        for (ErrorCode errorCode : values()) {
+            if (errorCode.name().equalsIgnoreCase(errorName)) {
+                return errorCode;
+            }
+        }
+        throw new IllegalArgumentException("Invalid error name: " + errorName);
+    }
+
+
 }
+
+
+
