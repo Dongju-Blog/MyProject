@@ -6,7 +6,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      TZ: "Asia/Seoul"
+      - "SPRING_PROFILES_ACTIVE=prod"
+      - TZ=Asia/Seoul
     logging:
       driver: syslog
       options:

@@ -9,6 +9,8 @@ import com.myapp.core.constant.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +34,7 @@ public class UserController {
      */
     @PostMapping("/signup")
     @Authorize({Role.USER})
-    public ResponseEntity<HttpStatus> studentSignUp(@Valid @RequestBody SignUpDto requestDto) {
+    public ResponseEntity<HttpStatus> signUp(@Valid @RequestBody SignUpDto requestDto) {
         userService.signUp(requestDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }

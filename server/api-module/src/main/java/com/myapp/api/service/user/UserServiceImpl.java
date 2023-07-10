@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
 
         if (!requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
-            throw new CustomException(ErrorCode.NOT_MATCHED_CHECKED_PASSWORD);
+            throw new CustomException(ErrorCode.INVALID_CHECKED_PASSWORD);
         }
 
         user.encodePassword(passwordEncoder);
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
             // 받은 비밀번호를 인코딩하면 다르게 인코딩(암호화)돼서 비교가 안됌
             if (!passwordEncoder.matches(user.getPassword(), userInfo.get().getPassword())) {        // DB의 인코딩 비밀번호를 복호화해서 비교함
                 // 에러 Throw
-                throw new CustomException(ErrorCode.INVALID_PASSWORD);
+                throw new CustomException(ErrorCode.WRONG_PASSWORD);
             }
 
             String refreshToken = refreshTokenProvider.getRefreshToken(user);
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
             return response;
         } else {
             // 에러 Throw
-            throw new CustomException(ErrorCode.INVALID_USERNAME);
+            throw new CustomException(ErrorCode.NOT_FOUND_USERNAME);
         }
 
     }

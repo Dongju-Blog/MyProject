@@ -10,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 public class LoginDto {
-    @NotBlank(message = "4")
+    @NotBlank(message = "101")
     private String username;
-    @NotBlank(message = "4")
+    @NotBlank(message = "102")
     private String password;
 }
