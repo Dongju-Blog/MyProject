@@ -10,7 +10,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(Long id);
 
     /**
-         * User table 에서 이름으로 유저 정보 가져오기
+         * User table 에서 Name으로 유저 정보 가져오기
          *
          * @param name
          * @return User
@@ -24,6 +24,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
          * @return User
      */
     Optional<User> findByUsername(String username);
+
+
+    /**
+     * User table 에서 Email로 유저 정보 가져오기
+     *
+     * @param email
+     * @return User
+     */
+    Optional<User> findByEmail(String email);
 
 
 

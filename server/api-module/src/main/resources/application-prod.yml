@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://${DB_IP}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: true
+  security:
+    securityKey: ${random.value}
+  mail:
+    host: smtp.gmail.com # 1
+    port: 587 # 2
+    username: ${MAIL_USERNAME} # 3
+    password: ${MAIL_PASSWORD} # 4
+    properties:
+      mail:
+        smtp:
+          auth: true # 5
+          timeout: 5000 # 6
+          starttls:
+            enable: true # 7
