@@ -6,6 +6,7 @@ import com.myapp.api.dto.user.SignUpUsernameValidationDto;
 import com.myapp.core.exception.ErrorCode;
 import org.springframework.validation.Errors;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface UserService {
@@ -16,11 +17,11 @@ public interface UserService {
      * @param requestDto
      * @return student.getId()
      */
-    Long signUp(SignUpDto requestDto, Errors errors);
+    Map<String, String> signUp(SignUpDto requestDto, Errors errors);
 
-    Map<String, String> signUpUsernameValidation(Errors errors, SignUpUsernameValidationDto requestDto);
-
-    Map<String, String> validateHandling(Errors errors, SignUpDto requestDto);
 
     Map<String, String> login(LoginDto user);
+
+    Map<String, String> getUserInformation(HttpServletRequest request);
+
 }
