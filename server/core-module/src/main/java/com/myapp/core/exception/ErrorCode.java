@@ -30,9 +30,10 @@ public enum ErrorCode{
     INVALID_CHECKED_PASSWORD(HttpStatus.BAD_REQUEST, "108", "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
 
     INVALID_EMAIL(HttpStatus.BAD_REQUEST, "109", "이메일 형식이 옳바르지 않습니다."),
+    DUPLICATE_USERNAME(HttpStatus.BAD_REQUEST, "110", "이미 존재하는 아이디입니다."),
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "111", "이미 존재하는 이메일입니다."),
 
-
-    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "110", "비밀번호가 틀렸습니다."),
+    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "112", "비밀번호가 틀렸습니다."),
     ;
 
     private final HttpStatus httpStatus;

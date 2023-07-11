@@ -2,6 +2,7 @@ package com.myapp.api.service.user;
 
 import com.myapp.api.dto.user.LoginDto;
 import com.myapp.api.dto.user.SignUpDto;
+import com.myapp.api.dto.user.SignUpUsernameValidationDto;
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.constant.Role;
@@ -35,8 +36,10 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Long signUp(SignUpDto requestDto) {
+    public Long signUp(SignUpDto requestDto, Errors errors) {
 
+
+        Map<String, String> errorResult = validateHandling(errors, requestDto);
         User user = User.builder()
                 .username(requestDto.getUsername())
                 .password(requestDto.getPassword())
@@ -56,10 +59,54 @@ public class UserServiceImpl implements UserService {
         return user.getId();
     }
 
+    @Transactional(readOnly = true)
+    public Map<String, String> signUpUsernameValidation(Errors errors, SignUpUsernameValidationDto requestDto) {
+        Map<String, String> validatorResult = new HashMap<>();
+
+        Optional<User> userByUsername = userRepository.findByUsername(requestDto.getUsername());
+        if (userByUsername.isPresent()) {
+            errors.rejectValue("username", "DUPLICATE_USERNAME", "DUPLICATE_USERNAME");
+        }
+
+        if (!validatorResult.isEmpty()) {
+            return validatorResult;
+        }
+
+        for (FieldError error : errors.getFieldErrors()) {
+            String validKeyName = String.format(error.getField());
+            String errorName = ErrorCode.valueOfIgnoreCase(error.getDefaultMessage()).getMessage();
+            validatorResult.put(validKeyName, errorName);
+        }
+
+
+
+
+
+        return validatorResult;
+
+
+
+    }
+
+
     // 회원가입 시, 유효성 체크
     @Transactional(readOnly = true)
-    public Map<String, String> validateHandling(Errors errors) {
+    public Map<String, String> validateHandling(Errors errors, SignUpDto requestDto) {
     Map<String, String> validatorResult = new HashMap<>();
+
+    if (!requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
+        errors.rejectValue("checkedPassword", "INVALID_CHECKED_PASSWORD", "INVALID_CHECKED_PASSWORD");
+    }
+
+    Optional<User> userByUsername = userRepository.findByUsername(requestDto.getUsername());
+    if (userByUsername.isPresent()) {
+        errors.rejectValue("username", "DUPLICATE_USERNAME", "DUPLICATE_USERNAME");
+    }
+
+    Optional<User> userByEmail = userRepository.findByEmail(requestDto.getUsername());
+    if (userByEmail.isPresent()) {
+        errors.rejectValue("email", "DUPLICATE_EMAIL", "DUPLICATE_EMAIL");
+    }
 
     // 유효성 검사에 실패한 필드 목록을 받음
     for (FieldError error : errors.getFieldErrors()) {
