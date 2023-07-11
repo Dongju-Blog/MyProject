@@ -42,4 +42,9 @@ public class SignUpDto {
         this.name = user.getName();
         this.role = Role.USER;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
 }
