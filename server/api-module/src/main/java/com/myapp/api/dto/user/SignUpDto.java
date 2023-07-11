@@ -34,6 +34,7 @@ public class SignUpDto {
 
     private Role role;
 
+    private String status;
 
     public SignUpDto(User user) {
         this.username = user.getUsername();
@@ -41,6 +42,7 @@ public class SignUpDto {
         this.email = user.getEmail();
         this.name = user.getName();
         this.role = Role.USER;
+        this.status = "approved";
     }
 
     public String getUsername() {

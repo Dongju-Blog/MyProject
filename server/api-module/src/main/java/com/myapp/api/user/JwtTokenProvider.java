@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
@@ -86,6 +87,7 @@ public class JwtTokenProvider {
             claims.put("id", userInfo.getId());
             claims.put("username", userInfo.getUsername());
             claims.put("role", userInfo.getRole());
+            claims.put("status", userInfo.getStatus());
         } else {
             throw new CustomException(ErrorCode.NOT_FOUND_USERNAME);
         }
@@ -125,6 +127,16 @@ public class JwtTokenProvider {
     }
 
     /**
+     * Token 에서 status 값 추출
+     *
+     * @param token
+     * @return status
+     */
+    public String getStatus(String token) {
+        return (String) getClaims(token).get("status");
+    }
+
+    /**
      * Token 정보 추출
      * ex) String userId = (String) jwtTokenProvider.getClaims(token).get("id");
      *
@@ -134,5 +146,31 @@ public class JwtTokenProvider {
     public Claims getClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+
+//    public String parseJwt(HttpServletRequest request){
+//        String headerAuth=null;     // 1. 변수 초기화
+//
+//        // 2. 쿠키에서 JWT 추출
+//        Cookie[] cookies = request.getCookies();
+//        if(cookies!=null){
+//            for (Cookie cookie : cookies) {
+//                if (cookie.getName().equals("Authorization")) {
+//                    log.info("[parseJwt] 쿠키에서 Authorization 캐치");
+//                    log.info("[parseJwt] 쿠키에서 Authorization : {}", cookie.getValue());
+//                    headerAuth = cookie.getValue();
+//                    break;
+//                }
+//            }
+//
+//            // 3. 쿠키에서 JWT를 추출할 수 있었다면 해당 값 반환
+//            if(headerAuth!=null){
+//                return headerAuth;
+//            }
+//        }
+//
+//        // 4. 쿠키에서 JWT를 추출할 수 없으면 HTTP 헤더에서 추출
+//        headerAuth = request.getHeader("Authorization");
+//        return headerAuth;
+//    }
 
 }
