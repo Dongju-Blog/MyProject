@@ -1,5 +1,6 @@
 import { defaultInstance } from "@/api/instance"
-import { signupProcType } from "@/types/auth"
+import { signupProcType, signupType } from "@/types/auth"
+import { successReturnType } from "@/types/common"
 
 
 
@@ -10,7 +11,7 @@ type paramsType = {
 
 type responseType = {
     status: number
-    data: signupProcType
+    data: signupProcType | successReturnType
 }
 
 export const postSignupProcAPI = async ({body}: paramsType) => {

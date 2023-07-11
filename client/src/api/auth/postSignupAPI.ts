@@ -1,11 +1,11 @@
 import { defaultInstance } from "@/api/instance"
-import { signupProcType } from "@/types/auth"
+import { signupType } from "@/types/auth"
 import { successReturnType } from "@/types/common"
 
 
 
 type paramsType = {
-    body: signupProcType
+    body: signupType
 }
 
 type responseType = {

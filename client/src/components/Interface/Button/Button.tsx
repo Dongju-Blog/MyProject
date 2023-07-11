@@ -25,6 +25,10 @@ const initButtonCSS = css`
   border: none;
   background-color: rgba(0, 0, 0, 0);
   cursor: pointer;
+
+  display: flex;
+  align-items: center;;
+  justify-content: center;
 `;
 
 type ThemeProviderKeys = "default" | "outline" | "text";
