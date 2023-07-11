@@ -1,0 +1,1 @@
+export type successReturnType = "OK"
