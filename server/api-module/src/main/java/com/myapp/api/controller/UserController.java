@@ -57,7 +57,7 @@ public class UserController {
                 errors.rejectValue("checkedPassword", "INVALID_CHECKED_PASSWORD", "INVALID_CHECKED_PASSWORD");
             }
 
-            return new ResponseEntity<>(userService.validateHandling(errors), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(userService.validateHandling(errors), HttpStatus.OK);
         }
         return ResponseEntity.ok(HttpStatus.OK);
     }
