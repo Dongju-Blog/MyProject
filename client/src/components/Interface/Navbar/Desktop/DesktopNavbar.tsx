@@ -24,7 +24,7 @@ function DesktopNavbar({categoryList}: DesktopNavbarPropsType) {
         {renderCategory}
       </div>
       <div css={rightSectionCSS}>
-      <Button theme={"text"}>Login</Button>
+      <Button theme={"text"} onClick={() => {router.push('/login');}}>Login</Button>
       <Button theme={"default"} onClick={() => {router.push('/signup');}}>Sign Up</Button>
       </div>
     </div>

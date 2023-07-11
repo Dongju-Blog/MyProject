@@ -1,23 +1,23 @@
 import { defaultInstance } from "@/api/instance"
-import { signupProcType } from "@/types/auth"
+import { loginBodyType, loginResponseType } from "@/types/auth"
 import { successReturnType, errorReturnType } from "@/types/common"
 
 
 
 type paramsType = {
-    body: signupProcType
+    body: loginBodyType
 }
 
 type responseType = {
     status: number
-    data: signupProcType | successReturnType
+    data: loginResponseType
 }
 
 
 
-export const postSignupAPI = async ({body}: paramsType) => {
+export const postLoginAPI = async ({body}: paramsType) => {
     try {
-        const response: responseType = await defaultInstance.post(`/user/signup`, body)
+        const response: responseType = await defaultInstance.post(`/user/login`, body)
         return response.data
     } catch (error: any) {
         throw error

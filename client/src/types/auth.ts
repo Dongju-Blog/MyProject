@@ -1,6 +1,6 @@
 import { successReturnType } from "./common"
 
-export type signupType = {
+export type signupBodyType = {
   name: string
   username: string
   password: string
@@ -24,4 +24,13 @@ export type signupValidType = {
   email: boolean
 }
 
+export type loginBodyType = {
+  username: string
+  password: string
+}
+
+export type loginResponseType = {
+  accessToken: string
+  refreshToken: string
+}
 

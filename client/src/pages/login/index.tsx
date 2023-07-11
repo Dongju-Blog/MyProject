@@ -4,7 +4,7 @@ import Animator from "@/components/Interface/Animator/Animator";
 import Input from "@/components/Interface/Input/Input";
 import LabelInput from "@/components/Interface/Input/LabelInput";
 import Button from "@/components/Interface/Button/Button";
-import { signupProcType } from "@/types/auth";
+import { loginBodyType, signupProcType } from "@/types/auth";
 import { debounce, throttle } from "lodash";
 import mediaQuery from "@/util/responsive";
 import { postSignupAPI } from "@/api/auth/postSignupAPI";
@@ -13,81 +13,26 @@ import { signupBodyType } from "@/types/auth";
 import useValidation from "@/components/Page/Signup/useValidation";
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
-import { ID_ICON, MAIL_ICON, NAME_ICON, PASSWORD_ICON } from "@/components/Assets/AuthIcons";
-
-const inputReducer = (
-  state: signupBodyType,
-  action: { type: string; value: string }
-) => {
-  switch (action.type) {
-    case "CHANGE_NAME":
-      return { ...state, name: action.value };
-    case "CHANGE_USERNAME":
-      return { ...state, username: action.value };
-    case "CHANGE_PASSWORD":
-      return { ...state, password: action.value };
-    case "CHANGE_CHECKED_PASSWORD":
-      return { ...state, checkedPassword: action.value };
-    case "CHANGE_EMAIL":
-      return { ...state, email: action.value };
-    default:
-      return state;
-  }
-};
+import { ID_ICON, PASSWORD_ICON } from "@/components/Assets/AuthIcons";
+import { postLoginAPI } from "@/api/auth/postLoginAPI";
+import { setCookie } from "@/api/cookie";
 
 function index() {
   const router = useRouter();
-  const noti = useNotification();
 
-  const [inputState, dispatchInput] = useReducer(inputReducer, {
-    name: "",
+  const [inputState, setInputState] = useState<loginBodyType>({
     username: "",
     password: "",
-    checkedPassword: "",
-    email: "",
   });
 
-  const { isValid, validMessage, validInjector } = useValidation(inputState);
-
-  // useEffect(() => {
-  //   const debouncedHandler = debounce(() => {
-  //     postSignupProcAPI({ body: inputState }).then((res) => {
-  //       setSignupProc(() => res);
-  //     });
-  //     console.log(signupProc);
-  //   }, 1000);
-
-  //   debouncedHandler();
-
-  //   return () => {
-  //     debouncedHandler.cancel();
-  //   };
-  // }, [inputState]);
-
   const submitHandler = () => {
-    const inputStateKeys = Object.keys(inputState) as Array<keyof signupBodyType>;
-    const filteredInputState: signupProcType = {};
-    inputStateKeys.forEach((key) => {
-      if (inputState[key] !== "") {
-        filteredInputState[key] = inputState[key];
-      }
-    });
-
-    postSignupAPI({ body: filteredInputState }).then((res) => {
-      noti({
-        content: (
-          <NotiTemplate type={"ok"} content={"가입이 완료되었습니다!"} />
-        ),
-      });
-      router.push("/");
+    postLoginAPI({body: inputState})
+    .then((res) => {
+      setCookie("Authorization", res.accessToken, { path: "/", maxAge: 2 * 60 * 60 })
+      setCookie("RefreshToken", res.accessToken, { path: "/", maxAge: 14 * 24 * 60 * 60 })
+      router.push('/')
     })
-    .catch((err) => {
-      validInjector(err.response.data);
-    });
-
   };
-
-
 
   return (
     <div css={signupWrapperCSS}>
@@ -109,7 +54,7 @@ function index() {
                   font-weight: 300;
                 `}
               >
-                Welcome to{" "}
+                Welcome back to{" "}
               </span>
               dj.Blog
             </div>
@@ -125,77 +70,30 @@ function index() {
           <div css={inputSectionCSS}>
             <LabelInput
               theme={"auth"}
-              label={validMessage.name ? validMessage.name : "Name"}
-              isValid={isValid.name}
-              onChange={(e) => {
-                dispatchInput({ type: "CHANGE_NAME", value: e.target.value });
-              }}
-            >
-              <LabelInput.Left>
-                <div css={iconWrapperCSS}>{NAME_ICON}</div>
-              </LabelInput.Left>
-            </LabelInput>
-            <LabelInput
-              theme={"auth"}
-              label={validMessage.username ? validMessage.username : "Username"}
-              isValid={isValid.username}
-              onChange={(e) => {
-                dispatchInput({
-                  type: "CHANGE_USERNAME",
-                  value: e.target.value,
-                });
-              }}
+              label={"Username"}
+              onChange={(e) =>
+                setInputState((prev) => {
+                  return { ...prev, username: e.target.value };
+                })
+              }
             >
               <LabelInput.Left>
                 <div css={iconWrapperCSS}>{ID_ICON}</div>
               </LabelInput.Left>
             </LabelInput>
+
             <LabelInput
               theme={"auth"}
-              label={validMessage.password ? validMessage.password : "Password"}
+              label={"Password"}
               type={"password"}
-              isValid={isValid.password}
-              onChange={(e) => {
-                dispatchInput({
-                  type: "CHANGE_PASSWORD",
-                  value: e.target.value,
-                });
-              }}
-            >
-              <LabelInput.Left>
-                <div css={iconWrapperCSS}>{PASSWORD_ICON}</div>
-              </LabelInput.Left>
-            </LabelInput>
-            <LabelInput
-              theme={"auth"}
-              label={
-                validMessage.checkedPassword
-                  ? validMessage.checkedPassword
-                  : "Repeat Password"
+              onChange={(e) =>
+                setInputState((prev) => {
+                  return { ...prev, password: e.target.value };
+                })
               }
-              type={"password"}
-              isValid={isValid.checkedPassword}
-              onChange={(e) => {
-                dispatchInput({
-                  type: "CHANGE_CHECKED_PASSWORD",
-                  value: e.target.value,
-                });
-              }}
             >
               <LabelInput.Left>
                 <div css={iconWrapperCSS}>{PASSWORD_ICON}</div>
-              </LabelInput.Left>
-            </LabelInput>
-            <LabelInput
-              theme={"auth"}
-              label={validMessage.email ? validMessage.email : "Email Address"}
-              isValid={isValid.email}
-              onChange={(e) => {
-                dispatchInput({ type: "CHANGE_EMAIL", value: e.target.value });
-              }}
-            >
-              <LabelInput.Left>
-                <div css={iconWrapperCSS}>{MAIL_ICON}</div>
               </LabelInput.Left>
             </LabelInput>
           </div>
@@ -206,7 +104,7 @@ function index() {
               customCss={buttonCSS}
               onClick={submitHandler}
             >
-              Sign Up
+              Login
             </Button>
             <Button
               theme={"outline"}
