@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 public class JwtTokenProvider {
 
     private final UserRepository userRepository;
-    static final long EXPIRATIONTIME = 2 * 60 * 1000; //3600000;
+    static final long EXPIRATIONTIME = 60 * 60 * 1000; //3600000;
     public static final String PREFIX = "Bearer";
 
     private final Key key;
