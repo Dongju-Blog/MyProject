@@ -1,4 +1,5 @@
 import { SerializedStyles, css } from "@emotion/react";
+import React, {useState, useEffect} from 'react'
 
 type TranslatePropsType = {
   id: string;
@@ -38,11 +39,12 @@ const Translate = ({
 }: TranslatePropsType): SerializedStyles => {
   if (trigger) {
     return css`
+
       animation: ${id}-translate ${duration}ms ease forwards;
+      animation-delay: ${delay}ms;
       -webkit-animation-delay: ${delay}ms;
       opacity: ${option.opacityFrom};
-      visibility: hidden;
-
+      transform: translate(${offset[0]}, ${offset[1]});
       @keyframes ${id}-translate {
         from {
           opacity: ${option.opacityFrom};
@@ -59,6 +61,7 @@ const Translate = ({
     `;
   } else if (option.hasReverse) {
     return css`
+    
       animation: ${id}-reverse-translate ${duration}ms ease forwards;
       /* -webkit-animation-delay: ${delay}ms; */
       opacity: ${option.opacityTo};
@@ -96,6 +99,7 @@ const Rotate = ({
   if (trigger) {
     return css`
       animation: ${id}-rotate ${duration}ms ease forwards;
+      animation-delay: ${delay}ms;
       -webkit-animation-delay: ${delay}ms;
 
       @keyframes ${id}-rotate {
@@ -126,9 +130,24 @@ const Rotate = ({
   }
 };
 
-const Animator = {
-  Translate,
-  Rotate,
-};
 
-export default Animator;
+
+
+
+function useAnimator(condition: boolean) {
+  const [render, setRender] = useState(false);
+  useEffect(() => {
+    if (condition === true) {
+      setRender(() => true);
+    }
+  }, [condition]);
+
+  const Animator = {
+    Translate,
+    Rotate,
+  };
+  return {Animator, render}
+}
+
+export default useAnimator
+// export default Animator;

@@ -4,6 +4,9 @@ import { categoryType } from '../Navbar';
 import DesktopNavbarCategory from './DesktopNavbarCategory';
 import Button from '../../Button/Button';
 import { useRouter } from 'next/router';
+import useAuthority from '@/hooks/useAuthority';
+
+
 
 type DesktopNavbarPropsType = {
   categoryList: categoryType[]
@@ -11,6 +14,8 @@ type DesktopNavbarPropsType = {
 
 function DesktopNavbar({categoryList}: DesktopNavbarPropsType) {
   const router = useRouter()
+  const auth = useAuthority()
+
 
   const renderCategory = categoryList.map((category) => {
     return (
@@ -18,14 +23,30 @@ function DesktopNavbar({categoryList}: DesktopNavbarPropsType) {
     )
   })
 
+  const forUser = (
+    <React.Fragment>
+      <div css={css`
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.6);
+      `}>Welcome, {auth.currentUser.username}</div>
+      <Button theme={"text"} onClick={() => {auth.logoutHandler()}}>Logout</Button>
+    </React.Fragment>
+  )
+
+  const forGuest = (
+    <React.Fragment>
+      <Button theme={"text"} onClick={() => {router.push('/login');}}>Login</Button>
+      <Button theme={"default"} onClick={() => {router.push('/signup');}}>Sign Up</Button>
+    </React.Fragment>
+  )
+
   return (
     <div css={navbarWrapperCSS}>
       <div css={categoryWrapperCSS}>
         {renderCategory}
       </div>
       <div css={rightSectionCSS}>
-      <Button theme={"text"} onClick={() => {router.push('/login');}}>Login</Button>
-      <Button theme={"default"} onClick={() => {router.push('/signup');}}>Sign Up</Button>
+        {auth.currentUser.username ? forUser : forGuest}
       </div>
     </div>
   )

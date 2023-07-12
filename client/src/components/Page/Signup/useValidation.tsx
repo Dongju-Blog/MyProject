@@ -1,11 +1,11 @@
-import { signupType, signupProcType, signupValidType } from '@/types/auth'
+import { signupBodyType, signupProcType, signupValidType } from '@/types/auth'
 import { debounce } from 'lodash'
 import React, {useState, useEffect} from 'react'
 
 
 
 
-function useValidation(inputState: signupType) {
+function useValidation(inputState: signupBodyType) {
   const [isValid, setIsValid] = useState<signupValidType>({
     name: true,
     username: true,

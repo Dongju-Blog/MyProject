@@ -1,8 +1,9 @@
 import React from "react";
 import { css } from "@emotion/react";
 import ContainerContent from "../../Interface/Container/ContainerContent";
-import Animator from "../../Interface/Animator/Animator";
+import Animator from "../../Interface/Animator/useAnimator";
 import { setConditionType } from "../../Interface/Container/useContainer";
+import useAnimator from "../../Interface/Animator/useAnimator";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -11,6 +12,7 @@ type HomeContainer1Type = {
 
 function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
   const condition = setCondition(currentStep);
+  const {Animator, render} = useAnimator(condition.immediate)
 
   const parellelogram = (
     <div
@@ -51,7 +53,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
 
   return (
     <ContainerContent customCss={containerWrapperCSS}>
-      {parellelogram}
+      {render && parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
         <div>
           <div

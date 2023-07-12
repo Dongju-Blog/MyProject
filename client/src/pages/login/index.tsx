@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect, useMemo } from "react";
 import { css } from "@emotion/react";
-import Animator from "@/components/Interface/Animator/Animator";
+import Animator from "@/components/Interface/Animator/useAnimator";
 import Input from "@/components/Interface/Input/Input";
 import LabelInput from "@/components/Interface/Input/LabelInput";
 import Button from "@/components/Interface/Button/Button";
@@ -16,9 +16,11 @@ import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate"
 import { ID_ICON, PASSWORD_ICON } from "@/components/Assets/AuthIcons";
 import { postLoginAPI } from "@/api/auth/postLoginAPI";
 import { setCookie } from "@/api/cookie";
+import useAuthority from "@/hooks/useAuthority";
 
 function index() {
   const router = useRouter();
+  const auth = useAuthority();
 
   const [inputState, setInputState] = useState<loginBodyType>({
     username: "",
@@ -26,13 +28,20 @@ function index() {
   });
 
   const submitHandler = () => {
-    postLoginAPI({body: inputState})
-    .then((res) => {
-      setCookie("Authorization", res.accessToken, { path: "/", maxAge: 2 * 60 * 60 })
-      setCookie("RefreshToken", res.accessToken, { path: "/", maxAge: 14 * 24 * 60 * 60 })
-      router.push('/')
-    })
+    auth.loginHandler(inputState);
+    // postLoginAPI({body: inputState})
+    // .then((res) => {
+    //   setCookie("Authorization", res.accessToken, { path: "/", maxAge: 2 * 60 * 60 })
+    //   setCookie("RefreshToken", res.accessToken, { path: "/", maxAge: 14 * 24 * 60 * 60 })
+    //   router.push('/')
+    // })
   };
+
+  const handleKeyDown = (event: any) => {
+		if (event.key === "Enter") {
+			submitHandler()
+		}
+	}
 
   return (
     <div css={signupWrapperCSS}>
@@ -86,6 +95,7 @@ function index() {
               theme={"auth"}
               label={"Password"}
               type={"password"}
+              onKeyDown={handleKeyDown}
               onChange={(e) =>
                 setInputState((prev) => {
                   return { ...prev, password: e.target.value };

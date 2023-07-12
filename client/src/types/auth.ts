@@ -29,8 +29,25 @@ export type loginBodyType = {
   password: string
 }
 
+export type userInfoResponseType = {
+  username: string | null
+  status: tokenStatusItem | null
+  role: tokenRoleItem | null
+}
+
 export type loginResponseType = {
   accessToken: string
   refreshToken: string
+} & userInfoResponseType
+
+
+
+export type storeUserType = userInfoResponseType
+
+export type layoutTokenStatusType = {
+	status: tokenStatusItem[]
+	role: tokenRoleItem[]
 }
 
+export type tokenRoleItem = 'USER' | 'GUEST' | 'ADMIN'
+export type tokenStatusItem = 'REQUIRE_LOGIN' | 'APPROVED'

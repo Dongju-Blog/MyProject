@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect, useMemo } from "react";
 import { css } from "@emotion/react";
-import Animator from "@/components/Interface/Animator/Animator";
+import Animator from "@/components/Interface/Animator/useAnimator";
 import Input from "@/components/Interface/Input/Input";
 import LabelInput from "@/components/Interface/Input/LabelInput";
 import Button from "@/components/Interface/Button/Button";
@@ -13,7 +13,12 @@ import { signupBodyType } from "@/types/auth";
 import useValidation from "@/components/Page/Signup/useValidation";
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
-import { ID_ICON, MAIL_ICON, NAME_ICON, PASSWORD_ICON } from "@/components/Assets/AuthIcons";
+import {
+  ID_ICON,
+  MAIL_ICON,
+  NAME_ICON,
+  PASSWORD_ICON,
+} from "@/components/Assets/AuthIcons";
 
 const inputReducer = (
   state: signupBodyType,
@@ -65,7 +70,9 @@ function index() {
   // }, [inputState]);
 
   const submitHandler = () => {
-    const inputStateKeys = Object.keys(inputState) as Array<keyof signupBodyType>;
+    const inputStateKeys = Object.keys(inputState) as Array<
+      keyof signupBodyType
+    >;
     const filteredInputState: signupProcType = {};
     inputStateKeys.forEach((key) => {
       if (inputState[key] !== "") {
@@ -73,21 +80,19 @@ function index() {
       }
     });
 
-    postSignupAPI({ body: filteredInputState }).then((res) => {
-      noti({
-        content: (
-          <NotiTemplate type={"ok"} content={"가입이 완료되었습니다!"} />
-        ),
+    postSignupAPI({ body: filteredInputState })
+      .then((res) => {
+        noti({
+          content: (
+            <NotiTemplate type={"ok"} content={"가입이 완료되었습니다!"} />
+          ),
+        });
+        router.push("/");
+      })
+      .catch((err) => {
+        validInjector(err.response.data);
       });
-      router.push("/");
-    })
-    .catch((err) => {
-      validInjector(err.response.data);
-    });
-
   };
-
-
 
   return (
     <div css={signupWrapperCSS}>

@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { css } from "@emotion/react";
 import ContainerContent from "../../Interface/Container/ContainerContent";
-import Animator from "../../Interface/Animator/Animator";
+import Animator from "../../Interface/Animator/useAnimator";
 import { setConditionType } from "../../Interface/Container/useContainer";
+import { getUserInfoAPI } from "@/api/auth/getUserInfoAPI.ts";
+import useAnimator from "../../Interface/Animator/useAnimator";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -17,10 +19,21 @@ function HomeContainer1({
 }: HomeContainer1Type) {
   const condition = setCondition(currentStep);
   const testRef = useRef<HTMLDivElement>(null);
+  const {Animator, render} = useAnimator(condition.immediate)
 
   const parellelogram = (
     <div
       css={[
+        css`
+          position: absolute;
+          right: -30vw;
+          top: -7vw;
+          width: 100vw;
+          height: 100vw;
+          border-radius: 100%;
+          /* background: linear-gradient( to right, white, rgba(0, 0, 0, 0.3) ); */
+          background-color: rgba(0, 0, 0, 0.1);
+        `,
         Animator.Translate({
           id: "parellel",
           trigger: condition.immediate,
@@ -29,24 +42,13 @@ function HomeContainer1({
           offset: ["70vw", "0px"],
           option: { hasReverse: true },
         }),
-        css`
-          width: 100vw;
-          height: 100vw;
-          border-radius: 100%;
-          /* background: linear-gradient( to right, white, rgba(0, 0, 0, 0.3) ); */
-          background-color: rgba(0, 0, 0, 0.1);
-          position: absolute;
-          right: -30vw;
-          top: -7vw;
-          /* visibility: hidden; */
-        `,
       ]}
     />
   );
 
   return (
     <ContainerContent customCss={containerWrapperCSS}>
-      {parellelogram}
+      {render && parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
         <div>
           <div

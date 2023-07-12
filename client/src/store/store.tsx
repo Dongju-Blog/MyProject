@@ -1,3 +1,4 @@
+import { storeUserType } from "@/types/auth";
 import { createStore, atom } from "jotai"
 
 
@@ -7,6 +8,13 @@ const stackNotification = atom<{ [prop: number]: { width: string; height: string
 	{},
 )
 
+const storeUser = atom<storeUserType>({
+	username: null,
+	status: null,
+	role: null,
+})
+
 export {
 	stackNotification,
+	storeUser
 }
