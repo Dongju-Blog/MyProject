@@ -5,21 +5,18 @@ import {
   Container,
   useContainer,
 } from "@/components/Interface/Container/useContainer";
-import HomeContainer1 from "@/components/Home/HomeContainer1";
-import HomeContainer2 from "@/components/Home/HomeContainer2";
-import HomeContainer3 from "@/components/Home/HomeContainer3";
+import HomeContainer1 from "@/components/Page/Home/HomeContainer1";
+import HomeContainer2 from "@/components/Page/Home/HomeContainer2";
+import HomeContainer3 from "@/components/Page/Home/HomeContainer3";
 import { useRouter } from "next/router";
-import HomeContainer4 from "@/components/Home/HomeContainer4";
+import HomeContainer4 from "@/components/Page/Home/HomeContainer4";
 // import Container from "@/components/Container/useContainer";
 
 export default function Home() {
-
   const [steps, setStep, setCondition] = useContainer({
     init: 1,
     duration: 1000,
   });
-
-
 
   return (
     <div
@@ -49,5 +46,3 @@ export default function Home() {
     </div>
   );
 }
-
-

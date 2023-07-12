@@ -2,12 +2,20 @@ import React, { ReactNode } from 'react'
 import { css } from "@emotion/react";
 import { categoryType } from '../Navbar';
 import DesktopNavbarCategory from './DesktopNavbarCategory';
+import Button from '../../Button/Button';
+import { useRouter } from 'next/router';
+import useAuthority from '@/hooks/useAuthority';
+
+
 
 type DesktopNavbarPropsType = {
   categoryList: categoryType[]
 }
 
 function DesktopNavbar({categoryList}: DesktopNavbarPropsType) {
+  const router = useRouter()
+  const auth = useAuthority()
+
 
   const renderCategory = categoryList.map((category) => {
     return (
@@ -15,9 +23,31 @@ function DesktopNavbar({categoryList}: DesktopNavbarPropsType) {
     )
   })
 
+  const forUser = (
+    <React.Fragment>
+      <div css={css`
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.6);
+      `}>Welcome, {auth.currentUser.username}</div>
+      <Button theme={"text"} onClick={() => {auth.logoutHandler()}}>Logout</Button>
+    </React.Fragment>
+  )
+
+  const forGuest = (
+    <React.Fragment>
+      <Button theme={"text"} onClick={() => {router.push('/login');}}>Login</Button>
+      <Button theme={"default"} onClick={() => {router.push('/signup');}}>Sign Up</Button>
+    </React.Fragment>
+  )
+
   return (
     <div css={navbarWrapperCSS}>
-      {renderCategory}
+      <div css={categoryWrapperCSS}>
+        {renderCategory}
+      </div>
+      <div css={rightSectionCSS}>
+        {auth.currentUser.username ? forUser : forGuest}
+      </div>
     </div>
   )
 }
@@ -26,13 +56,23 @@ const navbarWrapperCSS = css`
   position: fixed;
   width: 100vw;
   height: 64px;
-  /* background-color: rgba(0, 0, 0, 0.1); */
+  /* background-color: rgba(255, 255, 255, 0.3); */
   z-index: 20;
   padding: 24px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
   
+`
+
+const categoryWrapperCSS = css`
+  display: flex;
+  gap: 16px;
+`
+
+const rightSectionCSS = css`
+  display: flex;
+  gap: 16px;
 `
 
 

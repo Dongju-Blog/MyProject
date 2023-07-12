@@ -245,6 +245,49 @@ const Container = ({
     }
   }, duration);
 
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  const minSwipeDistance = 50 
+  
+
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchEnd(null) // otherwise the swipe is fired even with usual touch events
+    setTouchStart(e.targetTouches[0].clientY)
+  }
+
+  const onTouchMove = throttle((e: React.TouchEvent<HTMLDivElement>) => setTouchEnd(e.targetTouches[0].clientY), duration)
+
+
+
+  const onTouchHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStart || !touchEnd) return
+    const deltaY = touchStart - touchEnd
+    
+    const last = validChildren && validChildren.length;
+    if (containerRef.current && completeStep === steps[1]) {
+      
+      if (deltaY > 0 && deltaY > minSwipeDistance && steps[1] < Number(last) - 1) {
+        if (
+          containerRef.current.clientHeight >=
+            containerRef.current.scrollHeight ||
+          containerRef.current.scrollHeight <=
+            containerRef.current.clientHeight + containerRef.current.scrollTop
+        ) {
+          setStep(steps[1] + 1);
+        }
+      } else if (deltaY < 0 && deltaY < -minSwipeDistance &&  steps[1] > 1) {
+        if (
+          containerRef.current.clientHeight >=
+            containerRef.current.scrollHeight ||
+          containerRef.current.scrollTop === 0
+        ) {
+          setStep(steps[1] - 1);
+        }
+      }
+    }
+  };
+
+
   const validChildren = children && [
     <div />,
     ...(Children.toArray(children) as Array<ReactElement<StepPropsType>>),
@@ -281,7 +324,7 @@ const Container = ({
     );
 
   return (
-    <div onWheel={onScrollHandler} css={containerWrapperCSS}>
+    <div onWheel={onScrollHandler} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchHandler} css={containerWrapperCSS}>
       <Indicator
         totalStep={validChildren ? validChildren.length : 0}
         currentStep={steps[1]}

@@ -2,6 +2,7 @@ import React, { MutableRefObject, RefObject, useRef } from 'react'
 import { css } from "@emotion/react";
 import { categoryType } from '../Navbar'
 import DesktopNavbarCategoryMenu from './DesktopNavbarCategoryMenu';
+import Button from '../../Button/Button';
 
 type DesktopNavbarCategoryPropsType = {
   category: categoryType
@@ -24,9 +25,10 @@ function DesktopNavbarCategory({category}: DesktopNavbarCategoryPropsType) {
 }
 
 const categoryItemCSS = css`
+  position: relative;
+
   font-size: 24px;
   font-weight: 700;
-  position: relative;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.6);
   transition-property: transform color;
