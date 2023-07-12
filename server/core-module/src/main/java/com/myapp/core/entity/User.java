@@ -2,6 +2,7 @@ package com.myapp.core.entity;
 
 
 import com.myapp.core.constant.Role;
+import com.myapp.core.constant.Status;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,7 +46,8 @@ public class User {
     private Role role;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column
     private String refreshToken;

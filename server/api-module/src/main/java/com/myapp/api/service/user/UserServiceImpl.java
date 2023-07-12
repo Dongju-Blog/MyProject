@@ -6,6 +6,7 @@ import com.myapp.api.dto.user.SignUpUsernameValidationDto;
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.constant.Role;
+import com.myapp.core.constant.Status;
 import com.myapp.core.entity.User;
 import com.myapp.core.exception.CustomException;
 import com.myapp.core.exception.ErrorCode;
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
                     .email(requestDto.getEmail())
                     .name(requestDto.getName())
                     .role(Role.USER)
-                    .status("approved")
+                    .status(Status.APPROVED)
                     .build();
 
 
@@ -104,6 +105,14 @@ public class UserServiceImpl implements UserService {
             String refreshToken = refreshTokenProvider.getRefreshToken(user);
             String accessToken = jwtTokenProvider.getToken(user);
 
+            Role role = userInfo.get().getRole();
+            Status status = userInfo.get().getStatus();
+            String username = userInfo.get().getUsername();
+
+            response.put("role", String.valueOf(role));
+            response.put("status", String.valueOf(status));
+            response.put("username", username);
+
             response.put("accessToken", accessToken);
             response.put("refreshToken", refreshToken);
             User existingUser = userInfo.get();
@@ -127,11 +136,11 @@ public class UserServiceImpl implements UserService {
         String token = jwtTokenProvider.getExistedAccessToken(request);
 
         Role role = jwtTokenProvider.getRole(token);
-        String status = jwtTokenProvider.getStatus(token);
+        Status status = jwtTokenProvider.getStatus(token);
         String username = jwtTokenProvider.getUsername(token);
 
         response.put("role", String.valueOf(role));
-        response.put("status", status);
+        response.put("status", String.valueOf(status));
         response.put("username", username);
 
 //        response.put("token", token);
