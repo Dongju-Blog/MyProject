@@ -5,6 +5,7 @@ import com.myapp.api.interceptor.AuthorizationInterceptor;
 import com.myapp.api.interceptor.JwtTokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,4 +31,17 @@ public class WebConfig implements WebMvcConfigurer {
 
 
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000", "http://localhost:8081", "https://server.dj-blog.com", "https://www.dj-blog.com", "https://dj-blog.com")
+                .exposedHeaders("Authorization")	//make client read header("jwt-token")
+                .allowCredentials(true);
+        ;
+    }
+
+
+
+
 }

@@ -6,6 +6,7 @@ import com.myapp.api.dto.user.SignUpUsernameValidationDto;
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.constant.Role;
+import com.myapp.core.constant.Status;
 import com.myapp.core.entity.User;
 import com.myapp.core.exception.CustomException;
 import com.myapp.core.exception.ErrorCode;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,42 +38,26 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Long signUp(SignUpDto requestDto, Errors errors) {
+    public Map<String, String> signUp(SignUpDto requestDto, Errors errors) {
 
 
-        Map<String, String> errorResult = validateHandling(errors, requestDto);
-        User user = User.builder()
-                .username(requestDto.getUsername())
-                .password(requestDto.getPassword())
-                .email(requestDto.getEmail())
-                .name(requestDto.getName())
-                .role(Role.USER)
-                .build();
-
-
-        if (!requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
-            throw new CustomException(ErrorCode.INVALID_CHECKED_PASSWORD);
-        }
-
-        user.encodePassword(passwordEncoder);
-        userRepository.save(user);
-
-        return user.getId();
-    }
-
-    @Transactional(readOnly = true)
-    public Map<String, String> signUpUsernameValidation(Errors errors, SignUpUsernameValidationDto requestDto) {
         Map<String, String> validatorResult = new HashMap<>();
+
+        if (requestDto.getPassword() != null && requestDto.getCheckedPassword() != null && !requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
+            errors.rejectValue("checkedPassword", "INVALID_CHECKED_PASSWORD", "INVALID_CHECKED_PASSWORD");
+        }
 
         Optional<User> userByUsername = userRepository.findByUsername(requestDto.getUsername());
         if (userByUsername.isPresent()) {
             errors.rejectValue("username", "DUPLICATE_USERNAME", "DUPLICATE_USERNAME");
         }
 
-        if (!validatorResult.isEmpty()) {
-            return validatorResult;
+        Optional<User> userByEmail = userRepository.findByEmail(requestDto.getUsername());
+        if (userByEmail.isPresent()) {
+            errors.rejectValue("email", "DUPLICATE_EMAIL", "DUPLICATE_EMAIL");
         }
 
+        // 유효성 검사에 실패한 필드 목록을 받음
         for (FieldError error : errors.getFieldErrors()) {
             String validKeyName = String.format(error.getField());
             String errorName = ErrorCode.valueOfIgnoreCase(error.getDefaultMessage()).getMessage();
@@ -79,43 +65,29 @@ public class UserServiceImpl implements UserService {
         }
 
 
+        if (!validatorResult.isEmpty()) {
+            return validatorResult;
+        } else {
+            User user = User.builder()
+                    .username(requestDto.getUsername())
+                    .password(requestDto.getPassword())
+                    .email(requestDto.getEmail())
+                    .name(requestDto.getName())
+                    .role(Role.USER)
+                    .status(Status.APPROVED)
+                    .build();
 
 
 
-        return validatorResult;
+            user.encodePassword(passwordEncoder);
+            userRepository.save(user);
 
+            return validatorResult;
+        }
 
 
     }
 
-
-    // 회원가입 시, 유효성 체크
-    @Transactional(readOnly = true)
-    public Map<String, String> validateHandling(Errors errors, SignUpDto requestDto) {
-    Map<String, String> validatorResult = new HashMap<>();
-
-    if (!requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
-        errors.rejectValue("checkedPassword", "INVALID_CHECKED_PASSWORD", "INVALID_CHECKED_PASSWORD");
-    }
-
-    Optional<User> userByUsername = userRepository.findByUsername(requestDto.getUsername());
-    if (userByUsername.isPresent()) {
-        errors.rejectValue("username", "DUPLICATE_USERNAME", "DUPLICATE_USERNAME");
-    }
-
-    Optional<User> userByEmail = userRepository.findByEmail(requestDto.getUsername());
-    if (userByEmail.isPresent()) {
-        errors.rejectValue("email", "DUPLICATE_EMAIL", "DUPLICATE_EMAIL");
-    }
-
-    // 유효성 검사에 실패한 필드 목록을 받음
-    for (FieldError error : errors.getFieldErrors()) {
-        String validKeyName = String.format(error.getField());
-        String errorName = ErrorCode.valueOfIgnoreCase(error.getDefaultMessage()).getMessage();
-        validatorResult.put(validKeyName, errorName);
-    }
-        return validatorResult;
-    }
 
 
     @Override
@@ -133,6 +105,14 @@ public class UserServiceImpl implements UserService {
             String refreshToken = refreshTokenProvider.getRefreshToken(user);
             String accessToken = jwtTokenProvider.getToken(user);
 
+            Role role = userInfo.get().getRole();
+            Status status = userInfo.get().getStatus();
+            String username = userInfo.get().getUsername();
+
+            response.put("role", String.valueOf(role));
+            response.put("status", String.valueOf(status));
+            response.put("username", username);
+
             response.put("accessToken", accessToken);
             response.put("refreshToken", refreshToken);
             User existingUser = userInfo.get();
@@ -146,4 +126,30 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+
+
+    @Override
+    @Transactional()
+    public Map<String, String> getUserInformation(HttpServletRequest request) {
+        Map<String, String> response = new HashMap<>();
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+
+        Role role = jwtTokenProvider.getRole(token);
+        Status status = jwtTokenProvider.getStatus(token);
+        String username = jwtTokenProvider.getUsername(token);
+
+        response.put("role", String.valueOf(role));
+        response.put("status", String.valueOf(status));
+        response.put("username", username);
+
+//        response.put("token", token);
+
+        return response;
+    }
+
+
+
+
+
 }

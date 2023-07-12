@@ -16,11 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
@@ -40,45 +38,20 @@ public class UserController {
      */
     @PostMapping("/signup")
     @Authorize({Role.GUEST})
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDto requestDto, Errors errors) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDto requestDto, Errors errors, Model model) {
 
-        userService.signUp(requestDto, errors);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @PostMapping("/signup/username_validation")
-    @Authorize({Role.GUEST})
-    public ResponseEntity<?> signUpUsernameValidation(@Valid @RequestBody SignUpUsernameValidationDto requestDto, Errors errors, Model model) {
-        Map<String, String> validatorResult = userService.signUpUsernameValidation(errors, requestDto);
+        Map<String, String> validatorResult = userService.signUp(requestDto, errors);
 
         if (!validatorResult.isEmpty()) {
             model.addAttribute("userDto", requestDto);
             for (String key : validatorResult.keySet()) {
                 model.addAttribute(key, validatorResult.get(key));
             }
-            return new ResponseEntity<>(validatorResult, HttpStatus.OK);
-        }
-
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @PostMapping("/signup_proc")
-    @Authorize({Role.GUEST})
-    public ResponseEntity<?> signUpProc(@Valid @RequestBody SignUpDto requestDto, Errors errors, Model model) {
-        Map<String, String> validatorResult = userService.validateHandling(errors, requestDto);
-
-        if (!validatorResult.isEmpty()) {
-            model.addAttribute("userDto", requestDto);
-
-
-            for (String key : validatorResult.keySet()) {
-                model.addAttribute(key, validatorResult.get(key));
-            }
-
-            return new ResponseEntity<>(validatorResult, HttpStatus.OK);
+            return new ResponseEntity<>(validatorResult, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
 
     /**
      * Login
@@ -87,9 +60,22 @@ public class UserController {
      * @return token
      */
     @PostMapping("/login")
-    @Authorize({Role.USER})
+    @Authorize({Role.GUEST})
     public ResponseEntity<?> getToken(@RequestBody LoginDto user) {
         return new ResponseEntity<>(userService.login(user), HttpStatus.OK);
+    }
+
+
+    /**
+     * GetUserInformation
+     *
+     * @param request
+     * @return userInformation
+     */
+    @GetMapping
+    @Authorize({Role.USER})
+    public ResponseEntity<?> getUserInformation(HttpServletRequest request) {
+        return new ResponseEntity<>(userService.getUserInformation(request), HttpStatus.OK);
     }
 
 

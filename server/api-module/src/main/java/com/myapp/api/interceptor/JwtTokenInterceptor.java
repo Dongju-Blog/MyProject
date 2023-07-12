@@ -52,7 +52,12 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 
                 // 새로운 액세스 토큰을 응답 헤더에 설정
                 response.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
-                return true;
+                response.setStatus(HttpServletResponse.SC_OK);
+
+
+                // 인터셉터를 지나가지 않고 바로 응답을 주기 위해 true를 반환하지 않음
+                return false;
+
             }
         }
 
