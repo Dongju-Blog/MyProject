@@ -72,7 +72,7 @@ public class UserController {
      * @param request
      * @return userInformation
      */
-    @GetMapping("/get_user")
+    @GetMapping
     @Authorize({Role.USER})
     public ResponseEntity<?> getUserInformation(HttpServletRequest request) {
         return new ResponseEntity<>(userService.getUserInformation(request), HttpStatus.OK);

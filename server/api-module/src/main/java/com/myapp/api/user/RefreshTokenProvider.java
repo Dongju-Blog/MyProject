@@ -104,6 +104,7 @@ public class RefreshTokenProvider {
             claims.put("id", userInfo.getId());
             claims.put("username", userInfo.getUsername());
             claims.put("role", userInfo.getRole());
+            claims.put("status", userInfo.getStatus());
         } else {
             // 에러 throw
             throw new CustomException(ErrorCode.NOT_FOUND_USERNAME);

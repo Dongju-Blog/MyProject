@@ -1,6 +1,7 @@
 package com.myapp.api.dto.user;
 
 import com.myapp.core.constant.Role;
+import com.myapp.core.constant.Status;
 import com.myapp.core.entity.User;
 import com.myapp.core.exception.ErrorCode;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class SignUpDto {
 
     private Role role;
 
-    private String status;
+    private Status status;
 
     public SignUpDto(User user) {
         this.username = user.getUsername();
@@ -42,7 +43,7 @@ public class SignUpDto {
         this.email = user.getEmail();
         this.name = user.getName();
         this.role = Role.USER;
-        this.status = "approved";
+        this.status = Status.APPROVED;
     }
 
     public String getUsername() {

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.myapp.api.dto.user.LoginDto;
 import com.myapp.core.constant.Role;
+import com.myapp.core.constant.Status;
 import com.myapp.core.entity.User;
 import com.myapp.core.exception.CustomException;
 import com.myapp.core.exception.ErrorCode;
@@ -25,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 public class JwtTokenProvider {
 
     private final UserRepository userRepository;
-    static final long EXPIRATIONTIME = 3600000;
+    static final long EXPIRATIONTIME = 2 * 60 * 1000; //3600000;
     public static final String PREFIX = "Bearer";
 
     private final Key key;
@@ -132,8 +133,9 @@ public class JwtTokenProvider {
      * @param token
      * @return status
      */
-    public String getStatus(String token) {
-        return (String) getClaims(token).get("status");
+    public Status getStatus(String token) {
+        String status = (String) getClaims(token).get("status");
+        return Status.valueOf(status);
     }
 
     /**
