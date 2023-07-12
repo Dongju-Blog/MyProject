@@ -34,6 +34,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     Optional<User> findByEmail(String email);
 
+    /**
+     * User table 에서 Name과 Email로 유저 정보 가져오기
+     *
+     * @param email
+     * @return User
+     */
+    Optional<User> findByNameAndEmail(String name, String email);
+
 
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
