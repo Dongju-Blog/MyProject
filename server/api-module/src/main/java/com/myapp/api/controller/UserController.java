@@ -2,11 +2,13 @@ package com.myapp.api.controller;
 
 
 import com.myapp.api.annotation.user.Authorize;
+import com.myapp.api.dto.user.EmailPostDto;
 import com.myapp.api.dto.user.LoginDto;
 import com.myapp.api.dto.user.SignUpDto;
 import com.myapp.api.dto.user.SignUpUsernameValidationDto;
 import com.myapp.api.service.user.UserService;
 import com.myapp.core.constant.Role;
+import com.myapp.core.entity.EmailMessage;
 import com.myapp.core.entity.User;
 import com.myapp.core.exception.CustomException;
 import com.myapp.core.exception.ErrorCode;
@@ -76,6 +78,54 @@ public class UserController {
     @Authorize({Role.USER})
     public ResponseEntity<?> getUserInformation(HttpServletRequest request) {
         return new ResponseEntity<>(userService.getUserInformation(request), HttpStatus.OK);
+    }
+
+
+    /**
+     * 비밀번호 찾기
+     *
+     * @param emailPostDto
+     * @return ok
+     */
+    @PostMapping("/find_password")
+    @Authorize({Role.GUEST})
+    public ResponseEntity<?> sendPasswordMail(@RequestBody EmailPostDto emailPostDto) {
+//        EmailMessage emailMessage = EmailMessage.builder()
+//                .to(emailPostDto.getEmail())
+//                .subject("[dj.Blog] 계정 관리 메일입니다.")
+//                .build();
+
+        Boolean result = userService.sendMail(emailPostDto, "password");
+
+        if (result) {
+            return ResponseEntity.ok(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    /**
+     * 아이디 찾기
+     *
+     * @param emailPostDto
+     * @return ok
+     */
+    @PostMapping("/find_username")
+    @Authorize({Role.GUEST})
+    public ResponseEntity<?> sendUsernameMail(@RequestBody EmailPostDto emailPostDto) {
+//        EmailMessage emailMessage = EmailMessage.builder()
+//                .to(emailPostDto.getEmail())
+//                .subject("[dj.Blog] 계정 관리 메일입니다.")
+//                .build();
+
+        Boolean result = userService.sendMail(emailPostDto, "username");
+
+        if (result) {
+            return ResponseEntity.ok(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 
