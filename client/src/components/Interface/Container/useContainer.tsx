@@ -356,8 +356,9 @@ export const Step = ({ children }: StepPropsType) => {
 const containerWrapperCSS = css`
   position: relative;
   overflow-y: hidden;
-  max-height: 100vh;
-  min-height: 100vh;
+  max-height: 100%;
+  height: 100%;
+  min-height: 100%;
 `;
 
 const stepComponentCSS = ({
@@ -375,9 +376,11 @@ const stepComponentCSS = ({
 }) => {
   return css`
     position: absolute;
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 100%;
+    height: 100%;
+    max-height: 100%;
     min-width: 100%;
+    width: 100%;
     max-width: 100%;
     transition-duration: ${duration}ms;
     transition-property: all;

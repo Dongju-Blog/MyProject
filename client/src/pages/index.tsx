@@ -22,7 +22,7 @@ export default function Home() {
     <div
       css={css`
         width: 100vw;
-        height: 100vh;
+        height: 100%;
       `}
     >
       <Container steps={steps} setStep={setStep} duration={1000}>

@@ -40,7 +40,10 @@ export type loginResponseType = {
   refreshToken: string
 } & userInfoResponseType
 
-
+export type accountRecoveryBodyType = {
+  name: string
+  email: string
+}
 
 export type storeUserType = userInfoResponseType
 

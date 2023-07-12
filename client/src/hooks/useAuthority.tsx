@@ -7,11 +7,23 @@ import React, {useEffect, useState} from 'react'
 import { storeUser } from '@/store/store';
 import { getUserInfoAPI } from '@/api/auth/getUserInfoAPI.ts';
 import axios from 'axios';
+import useNotification from '@/components/Interface/StackNotification/useNotification';
+import NotiTemplate from '@/components/Interface/StackNotification/NotiTemplate';
 
 function useAuthority() {
   const [storeUserAtom, setStoreUserAtom] = useAtom(storeUser)
+  const noti = useNotification()
 
   const loginHandler = (body: loginBodyType) => {
+    if (body.username === "" || body.password === "") {
+      noti({
+        content: (
+          <NotiTemplate type={"alert"} content={"회원 정보를 양식에 맞게 입력해 주세요."} />
+        ),
+      });
+      return
+    }
+    
     return postLoginAPI({body})
     .then((res) => {
       // setCookie("Authorization", res.accessToken, { path: "/", maxAge: 2 * 60 * 60 })
@@ -26,6 +38,13 @@ function useAuthority() {
       setCookie("RefreshToken", res.refreshToken, { path: "/", maxAge: 14 * 24 * 60 * 60 })
       axios.defaults.headers.authorization = res.accessToken
       // router.push('/')
+    })
+    .catch((err) => {
+      noti({
+        content: (
+          <NotiTemplate type={"alert"} content={`${err.response.data.message}`} />
+        ),
+      });
     })
   };
 

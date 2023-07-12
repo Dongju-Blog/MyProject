@@ -256,6 +256,7 @@ const contentCSS = css`
   justify-content: center;
   align-items: center;
   pointer-events: all;
+  word-break: keep-all;
 `
 
 const indicatorCSS = ({duration}: {duration: number}) => {
