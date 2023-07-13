@@ -1,9 +1,7 @@
 package com.myapp.api.service.user;
 
-import com.myapp.api.dto.user.EmailPostDto;
-import com.myapp.api.dto.user.LoginDto;
-import com.myapp.api.dto.user.SignUpDto;
-import com.myapp.api.dto.user.SignUpUsernameValidationDto;
+import com.myapp.api.dto.board.ChangeBoardsOrdersDto;
+import com.myapp.api.dto.user.*;
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.constant.Role;
@@ -63,7 +61,7 @@ public class UserServiceImpl implements UserService {
             errors.rejectValue("username", "DUPLICATE_USERNAME", "DUPLICATE_USERNAME");
         }
 
-        Optional<User> userByEmail = userRepository.findByEmail(requestDto.getUsername());
+        Optional<User> userByEmail = userRepository.findByEmail(requestDto.getEmail());
         if (userByEmail.isPresent()) {
             errors.rejectValue("email", "DUPLICATE_EMAIL", "DUPLICATE_EMAIL");
         }
@@ -98,6 +96,10 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
+
+
+
 
 
 
@@ -140,6 +142,54 @@ public class UserServiceImpl implements UserService {
 
 
 
+
+    @Override
+    public Map<String, String> changeUserInfo(HttpServletRequest request, ChangeUserInfoDto requestDto, Errors errors) {
+        Map<String, String> validatorResult = new HashMap<>();
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+        String username = jwtTokenProvider.getUsername(token);
+        Optional<User> userInfo = userRepository.findByUsername(username);
+
+        if (userInfo.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ACCOUNT);
+        }
+
+        User user = userInfo.get();
+
+
+        if (requestDto.getPassword() != null && requestDto.getCheckedPassword() != null && !requestDto.getPassword().equals(requestDto.getCheckedPassword())) {
+            errors.rejectValue("checkedPassword", "INVALID_CHECKED_PASSWORD", "INVALID_CHECKED_PASSWORD");
+        }
+
+
+        if (!user.getEmail().equals(requestDto.getEmail())) {
+            Optional<User> userByEmail = userRepository.findByEmail(requestDto.getEmail());
+            if (userByEmail.isPresent()) {
+                errors.rejectValue("email", "DUPLICATE_EMAIL", "DUPLICATE_EMAIL");
+            }
+        }
+
+
+        // 유효성 검사에 실패한 필드 목록을 받음
+        for (FieldError error : errors.getFieldErrors()) {
+            String validKeyName = String.format(error.getField());
+            String errorName = ErrorCode.valueOfIgnoreCase(error.getDefaultMessage()).getMessage();
+            validatorResult.put(validKeyName, errorName);
+        }
+
+        if (!validatorResult.isEmpty()) {
+            return validatorResult;
+        } else {
+            user.setPassword(requestDto.getPassword());
+            user.encodePassword(passwordEncoder);
+            user.setEmail(requestDto.getEmail());
+            userRepository.save(user);
+            return validatorResult;
+        }
+    }
+
+
+
     @Override
     @Transactional()
     public Map<String, String> getUserInformation(HttpServletRequest request) {
@@ -155,6 +205,29 @@ public class UserServiceImpl implements UserService {
         response.put("username", username);
 
 //        response.put("token", token);
+
+        return response;
+    }
+
+    @Override
+    @Transactional()
+    public Map<String, String> getVisibleUserInformation(HttpServletRequest request) {
+        Map<String, String> response = new HashMap<>();
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+        String username = jwtTokenProvider.getUsername(token);
+
+        Optional<User> userInfo = userRepository.findByUsername(username);
+
+        if (userInfo.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ACCOUNT);
+        }
+
+        User user = userInfo.get();
+
+
+        response.put("name", user.getName());
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
 
         return response;
     }
