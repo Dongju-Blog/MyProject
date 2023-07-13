@@ -20,6 +20,7 @@ public enum ErrorCode{
     NOT_FOUND_EMAIL(HttpStatus.BAD_REQUEST, "6", "가입되지 않은 이메일입니다."),
     NOT_FOUND_ACCOUNT(HttpStatus.BAD_REQUEST, "7", "계정 정보가 존재하지 않습니다."),
     REQUEST_FAIL(HttpStatus.BAD_REQUEST, "8", "요청에 실패하였습니다."),
+    EMPTY_FIELD(HttpStatus.BAD_REQUEST, "8", "해당 항목은 필수 입력 값입니다."),
 
     EMPTY_NAME(HttpStatus.BAD_REQUEST, "100", "이름은 필수 입력 값입니다."),
     EMPTY_USERNAME(HttpStatus.BAD_REQUEST, "101", "아이디는 필수 입력 값입니다."),
@@ -37,6 +38,10 @@ public enum ErrorCode{
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "111", "이미 존재하는 이메일입니다."),
 
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "112", "비밀번호가 일치하지 않습니다."),
+
+    DUPLICATE_BOARD(HttpStatus.BAD_REQUEST, "200", "이미 존재하는 카테고리 이름입니다."),
+    DUPLICATE_ORDER(HttpStatus.BAD_REQUEST, "201", "이미 배정된 순서입니다."),
+    NOT_FOUND_BOARD(HttpStatus.BAD_REQUEST, "202", "카테고리를 찾을 수 없습니다."),
 
     ;
 

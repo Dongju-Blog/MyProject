@@ -2,10 +2,7 @@ package com.myapp.api.controller;
 
 
 import com.myapp.api.annotation.user.Authorize;
-import com.myapp.api.dto.user.EmailPostDto;
-import com.myapp.api.dto.user.LoginDto;
-import com.myapp.api.dto.user.SignUpDto;
-import com.myapp.api.dto.user.SignUpUsernameValidationDto;
+import com.myapp.api.dto.user.*;
 import com.myapp.api.service.user.UserService;
 import com.myapp.core.constant.Role;
 import com.myapp.core.entity.EmailMessage;
@@ -68,6 +65,30 @@ public class UserController {
     }
 
 
+
+    /**
+     * 유저 회원가입
+     *
+     * @param requestDto
+     * @return id
+     */
+    @PostMapping("/change")
+    @Authorize({Role.USER, Role.ADMIN})
+    public ResponseEntity<?> changeUserInfo(HttpServletRequest request, @Valid @RequestBody ChangeUserInfoDto requestDto, Errors errors, Model model) {
+
+        Map<String, String> validatorResult = userService.changeUserInfo(request, requestDto, errors);
+
+        if (!validatorResult.isEmpty()) {
+            model.addAttribute("userDto", requestDto);
+            for (String key : validatorResult.keySet()) {
+                model.addAttribute(key, validatorResult.get(key));
+            }
+            return new ResponseEntity<>(validatorResult, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
     /**
      * GetUserInformation
      *
@@ -75,10 +96,24 @@ public class UserController {
      * @return userInformation
      */
     @GetMapping
-    @Authorize({Role.USER})
+    @Authorize({Role.USER, Role.ADMIN})
     public ResponseEntity<?> getUserInformation(HttpServletRequest request) {
         return new ResponseEntity<>(userService.getUserInformation(request), HttpStatus.OK);
     }
+
+    /**
+     * GetVisibleUserInformation
+     *
+     * @param request
+     * @return userInformation
+     */
+    @GetMapping("/change")
+    @Authorize({Role.USER, Role.ADMIN})
+    public ResponseEntity<?> getVisibleUserInformation(HttpServletRequest request) {
+        return new ResponseEntity<>(userService.getVisibleUserInformation(request), HttpStatus.OK);
+    }
+
+
 
 
     /**
