@@ -10,7 +10,7 @@ type LayoutPropsType = {
 
 function Layout({ children }: LayoutPropsType) {
   const router = useRouter();
-  const navBarExclude = ["/signup"];
+  const navBarExclude = ["/signup", "/login"];
   const auth = useAuthority.Init();
 
   useEffect(() => {

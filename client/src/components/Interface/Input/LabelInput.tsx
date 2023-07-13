@@ -56,6 +56,13 @@ function LabelInput({
     }
   }, [id, label]);
 
+  useEffect(() => {
+    if (props.value && String(props.value).trim() !== "") {
+      setInputState(() => String(props.value))
+    }
+    
+  }, [props.value])
+
   return (
     <label
       htmlFor={props.id}
@@ -67,12 +74,12 @@ function LabelInput({
         css={
           Array.isArray(customCss)
             ? [
-                initInputWrapperCSS,
+                initInputWrapperCSS({disabled: props.disabled}),
                 ...themeProvider({ isFocusing, isValid })[theme],
                 ...customCss,
               ]
             : [
-                initInputWrapperCSS,
+                initInputWrapperCSS({disabled: props.disabled}),
                 ...themeProvider({ isFocusing, isValid })[theme],
                 customCss,
               ]
@@ -93,7 +100,7 @@ function LabelInput({
             css={initInputCSS}
             onChange={(e) => {
               props.onChange && props.onChange(e);
-              setInputState(() => e.target.value);
+              !props.value && setInputState(() => e.target.value);
             }}
             onFocus={(e) => {
               props.onFocus && props.onFocus(e);
@@ -119,11 +126,14 @@ function RightContent({ children }: contentPropsType) {
   return <React.Fragment>{children}</React.Fragment>;
 }
 
-const initInputWrapperCSS = css`
-  display: flex;
-  min-height: 44px;
-  height: 44px;
-`;
+const initInputWrapperCSS = ({disabled}: {disabled: boolean | undefined}) => {
+ return css`
+    display: flex;
+    min-height: 44px;
+    height: 44px;
+    ${disabled && 'opacity: 50%'};
+  `;
+}
 
 const initInputInnerWrapperCSS = css`
   flex: 1;

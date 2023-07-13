@@ -25,10 +25,11 @@ function DesktopNavbar({categoryList}: DesktopNavbarPropsType) {
 
   const forUser = (
     <React.Fragment>
+      {auth.currentUser.role === "ADMIN" && <Button theme={"default"} onClick={() => {router.push('/admin/category');}}>Settings</Button>}
       <div css={css`
         font-weight: 500;
         color: rgba(0, 0, 0, 0.6);
-      `}>Welcome, {auth.currentUser.username}</div>
+      `}>Welcome, <span css={usernameWrapperCSS} onClick={() => {router.push('/user/change')}}>{auth.currentUser.username}</span></div>
       <Button theme={"text"} onClick={() => {auth.logoutHandler()}}>Logout</Button>
     </React.Fragment>
   )
@@ -73,6 +74,16 @@ const categoryWrapperCSS = css`
 const rightSectionCSS = css`
   display: flex;
   gap: 16px;
+  align-items: center;
+`
+
+const usernameWrapperCSS = css`
+  cursor: pointer;
+  user-select: none;
+  transition: color 1s;
+  &:hover {
+    color: rgba(0, 0, 0, 1);
+  }
 `
 
 

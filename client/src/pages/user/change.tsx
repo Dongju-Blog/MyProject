@@ -20,6 +20,9 @@ import {
   PASSWORD_ICON,
 } from "@/components/Assets/AuthIcons";
 import AuthTemplate from "@/components/Interface/Auth/AuthTemplate";
+import { getVisibleUserInfoAPI } from "@/api/auth/getVisibleUserInfoAPI";
+import RefreshingToken from "@/components/Layout/RefreshingToken";
+import { postChangeUserInfoAPI } from "@/api/auth/postChangeUserInfoAPI";
 
 const inputReducer = (
   state: signupBodyType,
@@ -45,6 +48,23 @@ function index() {
   const router = useRouter();
   const noti = useNotification();
 
+  useEffect(() => {
+    getVisibleUserInfoAPI()
+    .then((res) => {
+      console.log(res)
+      dispatchInput({ type: "CHANGE_NAME", value: res.name});
+      dispatchInput({ type: "CHANGE_USERNAME", value: res.username});
+      dispatchInput({ type: "CHANGE_EMAIL", value: res.email});
+    })
+    .catch((err) => {
+      noti({
+        content: (
+          <NotiTemplate type={"alert"} content={"계정 정보 조회중 오류가 발생하였습니다."} />
+        ),
+      });
+    })
+  }, [])
+
   const [inputState, dispatchInput] = useReducer(inputReducer, {
     name: "",
     username: "",
@@ -66,22 +86,31 @@ function index() {
       }
     });
 
-    postSignupAPI({ body: filteredInputState })
+    postChangeUserInfoAPI({ body: filteredInputState })
       .then((res) => {
         noti({
           content: (
-            <NotiTemplate type={"ok"} content={"가입이 완료되었습니다!"} />
+            <NotiTemplate type={"ok"} content={"회원 정보를 수정하였습니다."} />
           ),
         });
         router.push("/");
       })
       .catch((err) => {
+        console.log(err)
         validInjector(err.response.data);
       });
   };
 
+  if (inputState.username === "") {
+    return (
+      <React.Fragment>
+        <RefreshingToken/>
+      </React.Fragment>
+    )
+  }
+
   return (
-    <AuthTemplate imageSrc={"/assets/Wallpaper3.jpg"} mobileImageTop={"-20%"}>
+    <AuthTemplate imageSrc={"/assets/Wallpaper3.jpg"} mobileImageTop={"-15%"}>
       <AuthTemplate.TitleWrapper
         title={
           <React.Fragment>
@@ -90,12 +119,12 @@ function index() {
                 font-weight: 300;
               `}
             >
-              Welcome to{" "}
+              Account{" "}
             </span>
-            dj.Blog
+            management
           </React.Fragment>
         }
-        subTitle={"I appreciate that you are going to join my workspace."}
+        subTitle={"For security reasons, please change your account information regularly."}
       />
 
       <AuthTemplate.InputWrapper
@@ -107,6 +136,8 @@ function index() {
           theme={"auth"}
           label={validMessage.name ? validMessage.name : "Name"}
           isValid={isValid.name}
+          disabled={true}
+          value={inputState.name}
           onChange={(e) => {
             dispatchInput({ type: "CHANGE_NAME", value: e.target.value });
           }}
@@ -119,6 +150,8 @@ function index() {
           theme={"auth"}
           label={validMessage.username ? validMessage.username : "Username"}
           isValid={isValid.username}
+          disabled={true}
+          value={inputState.username}
           onChange={(e) => {
             dispatchInput({
               type: "CHANGE_USERNAME",
@@ -135,6 +168,7 @@ function index() {
           label={validMessage.password ? validMessage.password : "Password"}
           type={"password"}
           isValid={isValid.password}
+          value={inputState.password}
           onChange={(e) => {
             dispatchInput({
               type: "CHANGE_PASSWORD",
@@ -155,6 +189,7 @@ function index() {
           }
           type={"password"}
           isValid={isValid.checkedPassword}
+          value={inputState.checkedPassword}
           onChange={(e) => {
             dispatchInput({
               type: "CHANGE_CHECKED_PASSWORD",
@@ -170,6 +205,7 @@ function index() {
           theme={"auth"}
           label={validMessage.email ? validMessage.email : "Email Address"}
           isValid={isValid.email}
+          value={inputState.email}
           onChange={(e) => {
             dispatchInput({ type: "CHANGE_EMAIL", value: e.target.value });
           }}
@@ -182,7 +218,7 @@ function index() {
 
       <AuthTemplate.ButtonWrapper>
         <Button theme={"default"} customCss={buttonCSS} onClick={submitHandler}>
-          Sign Up
+          Change
         </Button>
         <Button
           theme={"outline"}

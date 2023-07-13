@@ -35,6 +35,19 @@ export type userInfoResponseType = {
   role: tokenRoleItem | null
 }
 
+export type visibleUserInfoResponseType = {
+  name: string
+  username: string
+  email: string
+}
+
+export type changeUserInfoBodyType = {
+  email?: string
+  password?: string
+  checkedPassword?: string
+}
+
+
 export type loginResponseType = {
   accessToken: string
   refreshToken: string

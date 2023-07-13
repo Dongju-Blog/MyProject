@@ -3,8 +3,9 @@ import { css } from "@emotion/react";
 import ContainerContent from "../../Interface/Container/ContainerContent";
 import Animator from "../../Interface/Animator/useAnimator";
 import { setConditionType } from "../../Interface/Container/useContainer";
-import { getUserInfoAPI } from "@/api/auth/getUserInfoAPI.ts";
+
 import useAnimator from "../../Interface/Animator/useAnimator";
+import useModal from "@/components/Interface/Modal/useModal";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -20,6 +21,8 @@ function HomeContainer1({
   const condition = setCondition(currentStep);
   const testRef = useRef<HTMLDivElement>(null);
   const {Animator, render} = useAnimator(condition.immediate)
+
+  
 
   const parellelogram = (
     <div

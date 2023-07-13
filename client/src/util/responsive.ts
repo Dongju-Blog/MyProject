@@ -5,9 +5,9 @@ const deviceSizes = {
 };
 
 const mediaQuery = {
-  mobile: `screen and (max-width: ${deviceSizes.mobile}px)`,
-  tablet: `screen and (min-width: ${deviceSizes.mobile + 1}px) and (max-width: ${deviceSizes.tablet}px)`,
-  desktop: `screen and (min-width: ${deviceSizes.mobile + 1}px) and (max-width: ${deviceSizes.desktop}px)`,
+  mobile: `(max-width: ${deviceSizes.mobile}px)`,
+  tablet: `(min-width: ${deviceSizes.mobile + 1}px) and (max-width: ${deviceSizes.tablet}px)`,
+  desktop: `(min-width: ${deviceSizes.mobile + 1}px) and (max-width: ${deviceSizes.desktop}px)`,
 };
 
 

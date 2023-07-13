@@ -8,6 +8,8 @@ const stackNotification = atom<{ [prop: number]: { width: string; height: string
 	{},
 )
 
+
+
 const storeUser = atom<storeUserType>({
 	username: null,
 	status: null,
@@ -16,5 +18,5 @@ const storeUser = atom<storeUserType>({
 
 export {
 	stackNotification,
-	storeUser
+	storeUser,
 }

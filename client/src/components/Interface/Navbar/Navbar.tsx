@@ -1,6 +1,9 @@
 import React from 'react'
 import DesktopNavbar from './Desktop/DesktopNavbar'
 import useNavbarUtil from './useNavbarUtil'
+import useResponsive from '@/hooks/useResponsive';
+import mediaQuery from '@/util/responsive';
+import MobileNavbar from './Mobile/MobileNavbar';
 
 export type categoryType = {
   id: number;
@@ -19,6 +22,7 @@ export type categoryMenuType = {
 
 function Navbar() {
   const util = useNavbarUtil()
+  const isMobile = useResponsive(mediaQuery.mobile)
 
   const categoryList: categoryType[] = [
     {
@@ -79,7 +83,7 @@ function Navbar() {
 
   return (
     <React.Fragment>
-      <DesktopNavbar categoryList={categoryList} />
+      {isMobile ? <MobileNavbar categoryList={categoryList} /> : <DesktopNavbar categoryList={categoryList} />}
     </React.Fragment>
   )
 }
