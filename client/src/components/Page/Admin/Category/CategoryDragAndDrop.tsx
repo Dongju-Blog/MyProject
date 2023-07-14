@@ -16,15 +16,16 @@ type elementPropertyType = {
   height: number;
 };
 
-function category() {
+type CategoryDragAndDropPropsType = {
+  categories: getAllBoardResponseType
+}
+
+function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
   const elementProperty: elementPropertyType = {
     height: 46,
   };
 
-  const categories = useQuery<getAllBoardResponseType>(
-    ["boards"],
-    getAllBoardAPI
-  );
+
 
 
 
@@ -36,28 +37,28 @@ function category() {
   const [orders, setOrders] = useState<number[]>([]);
 
   useEffect(() => {
-    if (categories.data) {
+    if (categories) {
       const temp: number[] = [];
       let idx = 0;
       let initSeparate = false;
-      for (let category of categories.data) {
+      for (let category of categories) {
         if (category.viewOrder === null) {
           if (!initSeparate) {
             temp.push(-1);
             initSeparate = true;
           }
-          temp.push(categories.data[idx].id);
+          temp.push(categories[idx].id);
         } else {
-          temp.push(categories.data[idx].id);
+          temp.push(categories[idx].id);
         }
         idx += 1;
       }
-      console.log(categories.data, temp)
+      console.log(categories, temp)
       setOrders(() => temp);
     }
-  }, [categories.data]);
+  }, [categories]);
 
-  const renderCategories = categories.data?.map((el, idx) => {
+  const renderCategories = categories?.map((el, idx) => {
 
 
     return (
@@ -318,4 +319,4 @@ const moveHandlerCSS = ({
   `;
 };
 
-export default category;
+export default CategoryDragAndDrop;
