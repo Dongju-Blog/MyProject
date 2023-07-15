@@ -12,11 +12,13 @@ import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.constant.Role;
 import com.myapp.core.constant.Status;
+import com.myapp.core.entity.ActiveBoards;
 import com.myapp.core.entity.Board;
 import com.myapp.core.entity.EmailMessage;
 import com.myapp.core.entity.User;
 import com.myapp.core.exception.CustomException;
 import com.myapp.core.exception.ErrorCode;
+import com.myapp.core.repository.ActiveBoardsRepository;
 import com.myapp.core.repository.BoardRepository;
 import com.myapp.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
+    private final ActiveBoardsRepository activeBoardsRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -70,14 +73,19 @@ public class BoardServiceImpl implements BoardService {
         if (!validatorResult.isEmpty()) {
             return validatorResult;
         } else {
-            Integer count = boardRepository.countNotNullViewOrder();
+            int count = (int) boardRepository.count();
             Board board = Board.builder()
                     .name(requestDto.getName())
-                    .viewOrder(count + 1)
                     .isSecret(false)
                     .build();
 
+            ActiveBoards activeBoard = ActiveBoards.builder()
+                    .viewOrder(count + 1)
+                    .board(board) // Board와 연결
+                    .build();
+
             boardRepository.save(board);
+            activeBoardsRepository.save(activeBoard);
             return validatorResult;
         }
 
@@ -87,16 +95,19 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
-    public Map<String, String> getReadOnlyBoards(HttpServletRequest request) {
+    public List<Object> getReadOnlyBoards(HttpServletRequest request) {
         String token = jwtTokenProvider.getExistedAccessToken(request);
-        Map<String, String> boards = new HashMap<>();
+        List<Object> boards = new ArrayList<>();
 
         if (!token.isEmpty()) {
             Role role = jwtTokenProvider.getRole(token);
             if (role.equals(Role.ADMIN)) {
-                List<Board> boardsList = boardRepository.findByViewOrderIsNotNull();
-                for (Board board : boardsList) {
-                    boards.put(board.getViewOrder().toString(), board.getName());
+                List<ActiveBoards> boardsList = activeBoardsRepository.findAllByOrderByViewOrderAsc();
+                for (ActiveBoards board : boardsList) {
+                    Map<String, Object> boardItem = new HashMap<>();
+                    boardItem.put("id", board.getBoard().getId());
+                    boardItem.put("name", board.getBoard().getName());
+                    boards.add(boardItem);
                 }
 
                 return boards;
@@ -104,10 +115,13 @@ public class BoardServiceImpl implements BoardService {
         }
 
 
-        List<Board> boardsList = boardRepository.findByViewOrderIsNotNullAndIsSecretFalse();
+        List<ActiveBoards> boardsList = activeBoardsRepository.findByBoardIsSecretFalseOrderByViewOrder();
+        for (ActiveBoards board : boardsList) {
+            Map<String, Object> boardItem = new HashMap<>();
+            boardItem.put("id", board.getBoard().getId());
+            boardItem.put("name", board.getBoard().getName());
+            boards.add(boardItem);
 
-        for (Board board : boardsList) {
-            boards.put(board.getViewOrder().toString(), board.getName());
         }
 
         return boards;
@@ -117,14 +131,12 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<Object> getAllBoards() {
-//        Map<String, Object> boards = new HashMap<>();
-//        List<Object> unordered = new ArrayList<>();
         List<Object> ordered = new ArrayList<>();
         List<Board> boardsList = boardRepository.findAllOrderByViewOrder();
 
         for (Board board : boardsList) {
             Map<String, Object> boardItem = new HashMap<>();
-            boardItem.put("viewOrder", board.getViewOrder());
+            boardItem.put("viewOrder", board.getActiveBoard().getViewOrder());
             boardItem.put("id", board.getId());
             boardItem.put("name", board.getName());
             boardItem.put("isSecret", board.getIsSecret());
@@ -132,8 +144,6 @@ public class BoardServiceImpl implements BoardService {
 
         }
 
-//        boards.put("ordered", ordered);
-//        boards.put("unordered", unordered);
 
         return ordered;
     }
@@ -169,36 +179,29 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public void changeBoardsOrders(ChangeBoardsOrdersDto requestDto) {
         List<Long> ids = requestDto.getIds();
 
-        List<Board> entities = boardRepository.findByIds(ids);
+        List<ActiveBoards> entities = new ArrayList<>();
 
-        Set<Long> existingIds = entities.stream()
-                .map(Board::getId)
-                .collect(Collectors.toSet());
 
-        List<Long> nonExistentIds = ids.stream()
-                .filter(id -> !existingIds.contains(id))
-                .collect(Collectors.toList());
-
-        if (!nonExistentIds.isEmpty()) {
-            throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
+        for (int i = 0; i < ids.size(); i++) {
+            Optional<Board> board = boardRepository.findById(ids.get(i));
+            if (board.isPresent()) {
+                ActiveBoards activeBoard = ActiveBoards.builder()
+                        .viewOrder(i + 1)
+                        .board(board.get()) // Board와 연결
+                        .build();
+                entities.add(activeBoard);
+            } else {
+                throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
+            }
         }
 
-        for (int i = 0; i < entities.size(); i++) {
-            Board board = entities.get(i);
-            board.setViewOrder(null);
-        }
+        activeBoardsRepository.deleteAllInBatch();
+        activeBoardsRepository.saveAll(entities);
 
-        boardRepository.saveAll(entities);
-
-        for (int i = 0; i < entities.size(); i++) {
-            Board board = entities.get(i);
-            board.setViewOrder(i + 1);
-        }
-
-        boardRepository.saveAll(entities);
     }
 
 }
