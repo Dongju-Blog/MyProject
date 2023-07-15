@@ -136,7 +136,11 @@ public class BoardServiceImpl implements BoardService {
 
         for (Board board : boardsList) {
             Map<String, Object> boardItem = new HashMap<>();
-            boardItem.put("viewOrder", board.getActiveBoard().getViewOrder());
+            if (board.getActiveBoard() != null) {
+                boardItem.put("viewOrder", board.getActiveBoard().getViewOrder());
+            } else {
+                boardItem.put("viewOrder", null);
+            }
             boardItem.put("id", board.getId());
             boardItem.put("name", board.getName());
             boardItem.put("isSecret", board.getIsSecret());
