@@ -130,7 +130,7 @@ function useAuthorityInit() {
       role: ["GUEST", "USER", "ADMIN"],
       status: ["APPROVED", "REQUIRE_LOGIN"],
     },
-    "/user/change": { role: ["USER"], status: ["APPROVED"] },
+    "/user/change": { role: ["USER", "ADMIN"], status: ["APPROVED"] },
     "/login": { role: ["GUEST"], status: ["REQUIRE_LOGIN"] },
     "/signup": { role: ["GUEST"], status: ["REQUIRE_LOGIN"] },
     "/test": { role: ["USER"], status: ["APPROVED"] },

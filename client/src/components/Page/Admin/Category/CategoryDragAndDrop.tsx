@@ -7,10 +7,20 @@ import React, {
   Children,
 } from "react";
 import { getAllBoardAPI } from "@/api/board/getAllBoardAPI";
-import { getAllBoardResponseType } from "@/types/board";
-import { useQuery } from "@tanstack/react-query";
+import { getAllBoardResponseType, postBoardBodyType } from "@/types/board";
 import { css } from "@emotion/react";
 import Swipe, { SwipeEvent, SwipePosition } from "react-easy-swipe";
+import { putBoardsOrdersAPI } from "@/api/board/putBoardsOrdersAPI";
+import { boardsOrdersBodyType } from "@/types/board";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import useNotification from "@/components/Interface/StackNotification/useNotification";
+import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
+import { debounce } from "lodash";
+import Button from "@/components/Interface/Button/Button";
+import { postBoardAPI } from "@/api/board/postBoardAPI";
+import { errorReturnType } from "@/types/common";
+import Input from "@/components/Interface/Input/Input";
+import CategoryDragAndDropItem from "./CategoryDragAndDropItem";
 
 type elementPropertyType = {
   height: number;
@@ -25,6 +35,16 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
     height: 46,
   };
 
+  const noti = useNotification()
+  const queryClient = useQueryClient()
+  
+	const putBoardsOrdersMutation = useMutation(({body}: {body: boardsOrdersBodyType}) =>
+  putBoardsOrdersAPI({ body }),
+	)
+
+  const postBoardMutation = useMutation(({body}: {body: postBoardBodyType}) =>
+  postBoardAPI({ body }),
+	)
 
 
 
@@ -33,8 +53,11 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
   const [movingElement, setMovingElement] = useState(-1);
   const [deltaY, setDeltaY] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(-1)
+  const [initialized, setInitialized] = useState(false)
 
   const [orders, setOrders] = useState<number[]>([]);
+
+  const [nameInputState, setNameInputState] = useState("")
 
   useEffect(() => {
     if (categories) {
@@ -53,10 +76,84 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
         }
         idx += 1;
       }
+
+      if (temp.indexOf(-1) === -1) {
+        temp.push(-1)
+      }
       console.log(categories, temp)
       setOrders(() => temp);
+      
     }
-  }, [categories]);
+  }, [categories.length]);
+
+  useEffect(() => {
+    const debouncedHandler = debounce(() => {
+      changeBoardsOrdersHandler()
+    }, 5000);
+
+    if (initialized) {
+      debouncedHandler();
+    }
+
+    if (orders) {
+      setInitialized(true)
+    }
+
+    return () => {
+      debouncedHandler.cancel();
+    };
+
+  }, [orders])
+
+  const changeBoardsOrdersHandler = async () => {
+    const extractOrders = await {ids: orders.slice(0, orders.indexOf(-1))}
+    const put = await putBoardsOrdersMutation.mutate(
+			{ body: extractOrders },
+			{
+				onSuccess: () => {
+					queryClient.invalidateQueries(["admin", "boards"])
+          return
+				},
+				onError: (err:any) => {
+          if (err?.response?.data?.message) {
+            noti({content: <NotiTemplate type={'alert'} content={err.response.data.message}/>, duration: 3000})
+          } else {
+            noti({content: <NotiTemplate type={'alert'} content="알 수 없는 오류가 발생하였습니다."/>, duration: 3000})
+          }
+          throw err
+        },
+			},
+		)
+    return await put
+  }
+
+  const addNewBoardHandler = () => {
+    changeBoardsOrdersHandler()
+    .then((res) => {
+      const body = {name: nameInputState}
+      postBoardMutation.mutate(
+        { body },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries(["admin", "boards"])
+            noti({content: <NotiTemplate type={'alert'} content="카테고리를 추가하였습니다."/>, duration: 3000})
+            setNameInputState(() => "")
+          },
+          onError: (err: any) => {
+            if (err?.response?.data?.name) {
+              noti({content: <NotiTemplate type={'alert'} content={err.response.data.name}/>, duration: 3000})
+            } else if (err?.response?.data?.message) {
+              noti({content: <NotiTemplate type={'alert'} content={err.response.data.message}/>, duration: 3000})
+            } else {
+              noti({content: <NotiTemplate type={'alert'} content="알 수 없는 오류가 발생하였습니다."/>, duration: 3000})
+            }
+            
+          },
+        },
+      )
+    })
+    
+  }
 
   const renderCategories = categories?.map((el, idx) => {
 
@@ -82,7 +179,8 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
           }),
         ]}
       >
-        <div css={itemInnerWrapperCSS}>{el.name}</div>
+        {/* <div css={itemInnerWrapperCSS}>{el.name}</div> */}
+        <CategoryDragAndDropItem id={el.id} name={el.name} isSecret={el.isSecret}/>
       </Swipe>
     );
   });
@@ -164,13 +262,24 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
 
   return (
     <div css={variableCSS({elementProperty})}>
-      <div css={categoryPageWrapperCSS}>
-        <div css={categoriesWrapperCSS}>
-          {renderCategories}
-          {renderSeparator}
-          {renderDummy}
-
+      <div css={WrapperCSS}>
+        <div css={buttonWrapperCSS}>
+          <Input theme={"default"} customCss={inputCSS} placeholder="Input your name, please." value={nameInputState} onChange={(e) => {setNameInputState(() => e.target.value)}}/>
+          <Button theme={"default"} onClick={addNewBoardHandler}>New +</Button>
         </div>
+        <div css={bodyWrapperCSS}>
+          <div css={categoriesWrapperCSS}>
+            {renderCategories}
+            {renderSeparator}
+            {renderDummy}
+          </div>
+        </div>
+        
+
+
+        
+  
+        
       </div>
     </div>
   )
@@ -186,21 +295,33 @@ const variableCSS = ({
   return css`
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     --itemHeight: ${elementProperty.height}px;
   `;
 };
 
-const categoryPageWrapperCSS = css`
-  width: 100%;
-  height: 100%;
+const WrapperCSS = css`
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
+  width: 500px;
 `;
 
 
+const bodyWrapperCSS = css`
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  box-shadow: 0px 0px 30px 1px rgba(0, 0, 0, 0.05);
+  /* padding: 2px 0px 2px 0px; */
+  padding: 16px;
+`
+
 const categoriesWrapperCSS = css`
-  width: 300px;
+  width: 100%;
   /* padding: 16px; */
   
   position: relative;
@@ -208,10 +329,7 @@ const categoriesWrapperCSS = css`
   flex-direction: column;
   align-items: center;
   user-select: none;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
-  box-shadow: 0px 0px 30px 1px rgba(0, 0, 0, 0.05);
-  padding: 2px 0px 2px 0px;
+  
 
 `;
 
@@ -318,5 +436,23 @@ const moveHandlerCSS = ({
     cursor: pointer;
   `;
 };
+
+const buttonWrapperCSS = css`
+  width: 100%;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  box-shadow: 0px 0px 30px 1px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+
+`
+
+const inputCSS = css`
+  /* height: 100%; */
+  flex: 1;
+`
 
 export default CategoryDragAndDrop;
