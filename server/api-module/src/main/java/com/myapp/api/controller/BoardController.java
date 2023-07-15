@@ -64,6 +64,7 @@ public class BoardController {
     @GetMapping
     @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
     public ResponseEntity<?> getReadOnlyBoards(HttpServletRequest request) {
+
         return new ResponseEntity<>(boardService.getReadOnlyBoards(request), HttpStatus.OK);
     }
 

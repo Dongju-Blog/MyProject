@@ -27,8 +27,11 @@ public class Board {
     @Column(nullable = false, unique=true)
     private String name;
 
-    @Column(nullable = true, unique=true)
-    private Integer viewOrder;
+//    @Column(nullable = true, unique=true)
+//    private Integer viewOrder;
+
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ActiveBoards activeBoard;
 
     @Column(nullable = false)
     private Boolean isSecret;

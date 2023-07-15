@@ -20,7 +20,7 @@ public interface BoardService {
 
     Map<String, String> createBoard(CreateBoardDto requestDto, Errors errors);
 
-    Map<String, String> getReadOnlyBoards(HttpServletRequest request);
+    List<Object> getReadOnlyBoards(HttpServletRequest request);
 
 
 
