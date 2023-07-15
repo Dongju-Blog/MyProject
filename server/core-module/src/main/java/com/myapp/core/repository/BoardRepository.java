@@ -35,8 +35,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
      *
      * @return List<Board>
      */
-    @Query("SELECT b FROM Board b JOIN b.activeBoard ab ORDER BY ab.viewOrder ASC NULLS LAST")
+    @Query("SELECT b FROM Board b LEFT JOIN b.activeBoard ab ORDER BY ab.viewOrder ASC NULLS LAST")
     List<Board> findAllOrderByViewOrder();
+//    @Query("SELECT b FROM Board b JOIN b.activeBoard ab ORDER BY ab.viewOrder ASC NULLS LAST")
+//    List<Board> findAllOrderByViewOrder();
 
 
     /**
