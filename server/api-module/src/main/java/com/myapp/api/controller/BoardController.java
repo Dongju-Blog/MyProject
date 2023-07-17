@@ -104,6 +104,22 @@ public class BoardController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+
+    /**
+     * deleteBoard
+     *
+     * @param
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    @Authorize({Role.ADMIN})
+    public ResponseEntity<?> deleteBoard(@PathVariable("id") long id) {
+        boardService.deleteBoard(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+
     /**
      * changeBoardsOrders
      *

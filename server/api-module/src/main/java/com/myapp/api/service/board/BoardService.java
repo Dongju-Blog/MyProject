@@ -30,4 +30,6 @@ public interface BoardService {
 
     void changeBoardsOrders(ChangeBoardsOrdersDto requestDto);
 
+    void deleteBoard(long id);
+
 }
