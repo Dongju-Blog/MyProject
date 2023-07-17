@@ -208,4 +208,14 @@ public class BoardServiceImpl implements BoardService {
 
     }
 
+    @Override
+    public void deleteBoard(long id) {
+        Optional<Board> existingBoard = boardRepository.findById(id);
+
+        if (existingBoard.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
+        }
+        boardRepository.delete(existingBoard.get());
+    }
+
 }

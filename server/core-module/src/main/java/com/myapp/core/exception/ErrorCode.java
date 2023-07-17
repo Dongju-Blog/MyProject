@@ -42,7 +42,8 @@ public enum ErrorCode{
     DUPLICATE_BOARD(HttpStatus.BAD_REQUEST, "200", "이미 존재하는 카테고리 이름입니다."),
     DUPLICATE_ORDER(HttpStatus.BAD_REQUEST, "201", "이미 배정된 순서입니다."),
     NOT_FOUND_BOARD(HttpStatus.BAD_REQUEST, "202", "카테고리를 찾을 수 없습니다."),
-
+    FAIL_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "203", "파일 업로드에 실패하였습니다."),
+    EMPTY_FILE(HttpStatus.BAD_REQUEST, "204", "첨부 파일이 비어있습니다."),
     ;
 
     private final HttpStatus httpStatus;

@@ -55,15 +55,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-                .formLogin().disable()
-                .httpBasic().disable()
-                .cors().disable()
-                .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                .anyRequest().permitAll();
+            .formLogin().disable()
+            .httpBasic().disable()
+            .cors().disable()
+            .csrf().disable()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
+            .anyRequest().permitAll();
 
 
         return http.build();
