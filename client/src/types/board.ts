@@ -7,6 +7,13 @@ export type boardItemType = {
   id: number
 }
 
+export type getActiveBoardResponseType = activeBoardItemType[]
+
+export type activeBoardItemType = {
+  name: string
+  id: number
+}
+
 export type boardsOrdersBodyType = {
   ids: number[]
 }

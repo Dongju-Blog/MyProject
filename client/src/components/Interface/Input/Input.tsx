@@ -117,7 +117,7 @@ const initInputCSS = css`
   }
 `;
 
-type ThemeProviderKeys = "default" | "auth";
+type ThemeProviderKeys = "default" | "restraint";
 type themeProviderType = { [prop: string]: SerializedStyles[] };
 
 const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
@@ -130,13 +130,14 @@ const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
       ? "0px 0px 1px 4px #789cff85"
       : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
 
-    
-
-
     `],
-    auth: [
+    restraint: [
       css`
-
+        border-radius: 2px;
+        transition: box-shadow 1s;
+        box-shadow: ${isFocusing
+          ? "inset 0px 0px 0px 2px rgba(0, 0, 0, 0.3)"
+          : "inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
       `,
     ],
   };

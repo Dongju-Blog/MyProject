@@ -1,12 +1,19 @@
-/** @type {import('next').NextConfig} */
+/** @type {import('next').nextConfig} */
+
+
+
+// module.exports = nextConfig
+
+
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-	compiler: {
-		emotion: true,
-	},
-
-	async rewrites() {
+  compiler: {
+    emotion: true,
+  },
+  async rewrites() {
+    
     return [
       {
         source: "/api/:path*",
@@ -15,7 +22,19 @@ const nextConfig = {
       },
     ];
   },
+	
 
 }
 
-module.exports = nextConfig
+const removeImports = require('next-remove-imports')({
+
+})
+
+module.exports = () => {
+  const plugins = [removeImports];
+  const config = plugins.reduce((acc, next) => next(acc), {
+    ...nextConfig,
+  });
+  return config;
+};
+

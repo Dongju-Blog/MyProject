@@ -180,7 +180,7 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
         ]}
       >
         {/* <div css={itemInnerWrapperCSS}>{el.name}</div> */}
-        <CategoryDragAndDropItem id={el.id} name={el.name} isSecret={el.isSecret}/>
+        <CategoryDragAndDropItem id={el.id} name={el.name} isSecret={el.isSecret} ordersState={{orders, setOrders}} />
       </Swipe>
     );
   });

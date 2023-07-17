@@ -135,6 +135,7 @@ function useAuthorityInit() {
     "/signup": { role: ["GUEST"], status: ["REQUIRE_LOGIN"] },
     "/test": { role: ["USER"], status: ["APPROVED"] },
     "/admin/category": { role: ["ADMIN"], status: ["APPROVED"] },
+    "/create": { role: ["ADMIN"], status: ["APPROVED"] },
   };
 
   useEffect(() => {
