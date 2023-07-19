@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,12 +28,12 @@ public class FileController {
 
     @PostMapping
     @Authorize({Role.ADMIN})
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
+    public ResponseEntity<?> uploadFile(@RequestParam("files") List<MultipartFile> multipartFiles) {
+        if (multipartFiles.isEmpty()) {
             throw new CustomException(ErrorCode.EMPTY_FILE);
         }
 
-        Map<String, String> result = fileService.uploadFile(file);
+        List<String> result = fileService.uploadFile(multipartFiles);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
