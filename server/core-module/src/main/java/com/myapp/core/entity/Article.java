@@ -25,10 +25,10 @@ public class Article {
     @Column(nullable=false, updatable = false)
     private Long id;
 
-    @Column(nullable = false, unique=true)
+    @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(length = 100000)
     private String content;
 
     @Column(nullable = false)
@@ -36,6 +36,9 @@ public class Article {
 
     @Column(nullable = false)
     private Boolean isRepresentative;
+
+    @Column(length = 100000)
+    private String preview;
 
     @ManyToOne
     @JoinColumn(name = "board_id")

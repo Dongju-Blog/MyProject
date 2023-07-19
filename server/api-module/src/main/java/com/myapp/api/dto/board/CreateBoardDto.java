@@ -21,6 +21,7 @@ import javax.validation.constraints.Pattern;
 public class CreateBoardDto {
 
     @NotBlank(message = "EMPTY_FIELD")
+    @Pattern(regexp = "^(?=.*[가-힣a-zA-Z])[ 가-힣a-zA-Z0-9$@!&]{2,20}$", message = "INVALID_BOARD_NAME")
     private String name;
 
     private Integer viewOrder;

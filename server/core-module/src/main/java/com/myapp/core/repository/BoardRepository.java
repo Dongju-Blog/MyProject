@@ -50,6 +50,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("SELECT e FROM Board e WHERE e.id IN :ids ORDER BY FIELD(e.id, :ids)")
     List<Board> findByIds(@Param("ids") List<Long> ids);
 
+
+
+
 //    /**
 //     * Board table 에서 order로 게시판 카테고리 정보 가져오기
 //     *
