@@ -12,20 +12,25 @@
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mdxeditor/editor": "^0.7.1",
     "@tanstack/react-query": "^4.29.19",
     "@tanstack/react-query-devtools": "^4.29.19",
+    "@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
+    "@toast-ui/editor-plugin-color-syntax": "^3.1.0",
+    "@toast-ui/react-editor": "^3.2.3",
     "@types/lodash": "^4.14.195",
     "@types/node": "20.4.0",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
-    "@uiw/react-md-editor": "^3.23.3",
     "axios": "^1.4.0",
     "browser-image-compression": "^2.0.2",
     "cookie": "^0.5.0",
     "jotai": "^2.2.2",
     "lodash": "^4.17.21",
+    "markdown-to-txt": "^2.0.1",
     "next": "13.4.8",
     "next-remove-imports": "^1.0.11",
+    "prismjs": "^1.29.0",
     "react": "18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
@@ -33,5 +38,8 @@
     "react-responsive": "^9.0.2",
     "react-useanimations": "^2.10.0",
     "typescript": "5.1.6"
+  },
+  "devDependencies": {
+    "@types/prismjs": "^1.26.0"
   }
 }

@@ -106,9 +106,9 @@ const pageWrapperCSS = css`
   }
 
   min-width: 100vw;
-  height: 100%;
+  /* height: var(--screen-height); */
   min-height: 100%;
-  /* height: 100%; */
+  height: 100%;
   overflow: hidden;
 `;
 

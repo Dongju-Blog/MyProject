@@ -1,3 +1,5 @@
+import { pageableType } from "./common"
+
 export type getAllBoardResponseType = boardItemType[]
 
 export type boardItemType = {
@@ -26,3 +28,40 @@ export type putBoardBodyType = {
   name: string
   isSecret: boolean
 }
+
+export type filesType = {
+  [prop: string]: File;
+};
+
+export type postArticleBodyType = FormData
+
+// export type postArticleBodyType = {
+//   title: string;
+//   content: string;
+//   isSecret: boolean;
+//   isRepresentative: boolean;
+//   boardId: string;
+//   files: filesType;
+// }
+
+export type getArticleResponseType = {
+  title: string;
+  content: string;
+  isSecret: boolean;
+  isRepresentative: boolean;
+  id: number;
+  boardId: number;
+}
+
+export type getArticlesItemType = {
+  title: string
+  id: number
+  preview: string
+  thumbnail: string
+}
+
+export type postArticleResponseType = {
+  url: string
+}
+
+export type pageableArticlesResponseType = pageableType & {content: getArticlesItemType[]}

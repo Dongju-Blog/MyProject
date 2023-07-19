@@ -23,6 +23,7 @@ import AuthTemplate from "@/components/Interface/Auth/AuthTemplate";
 import { getVisibleUserInfoAPI } from "@/api/auth/getVisibleUserInfoAPI";
 import RefreshingToken from "@/components/Layout/RefreshingToken";
 import { postChangeUserInfoAPI } from "@/api/auth/postChangeUserInfoAPI";
+import Loading from "@/components/Interface/Loading/Loading";
 
 const inputReducer = (
   state: signupBodyType,
@@ -101,16 +102,11 @@ function index() {
       });
   };
 
-  if (inputState.username === "") {
-    return (
-      <React.Fragment>
-        <RefreshingToken/>
-      </React.Fragment>
-    )
-  }
+
 
   return (
     <AuthTemplate imageSrc={"/assets/Wallpaper3.jpg"} mobileImageTop={"-15%"}>
+      {inputState.username === "" && <div css={loadingWrapperCSS}><Loading label={"개인 정보를 가져오는 중입니다."}/></div>}
       <AuthTemplate.TitleWrapper
         title={
           <React.Fragment>
@@ -251,5 +247,15 @@ const buttonCSS = css`
     width: 50%;
   }
 `;
+
+const loadingWrapperCSS = css`
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+`
 
 export default index;

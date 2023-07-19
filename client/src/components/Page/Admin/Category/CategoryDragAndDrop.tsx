@@ -6,18 +6,19 @@ import React, {
   ReactNode,
   Children,
 } from "react";
-import { getAllBoardAPI } from "@/api/board/getAllBoardAPI";
+import { getAdminAllBoardAPI } from "@/api/admin/getAdminAllBoardAPI";
 import { getAllBoardResponseType, postBoardBodyType } from "@/types/board";
 import { css } from "@emotion/react";
 import Swipe, { SwipeEvent, SwipePosition } from "react-easy-swipe";
-import { putBoardsOrdersAPI } from "@/api/board/putBoardsOrdersAPI";
+
+import { putAdminBoardsOrdersAPI } from "@/api/admin/putAdminBoardsOrdersAPI";
 import { boardsOrdersBodyType } from "@/types/board";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
 import { debounce } from "lodash";
 import Button from "@/components/Interface/Button/Button";
-import { postBoardAPI } from "@/api/board/postBoardAPI";
+import { postAdminBoardAPI } from "@/api/admin/postAdminBoardAPI";
 import { errorReturnType } from "@/types/common";
 import Input from "@/components/Interface/Input/Input";
 import CategoryDragAndDropItem from "./CategoryDragAndDropItem";
@@ -39,11 +40,11 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
   const queryClient = useQueryClient()
   
 	const putBoardsOrdersMutation = useMutation(({body}: {body: boardsOrdersBodyType}) =>
-  putBoardsOrdersAPI({ body }),
+  putAdminBoardsOrdersAPI({ body }),
 	)
 
   const postBoardMutation = useMutation(({body}: {body: postBoardBodyType}) =>
-  postBoardAPI({ body }),
+  postAdminBoardAPI({ body }),
 	)
 
 

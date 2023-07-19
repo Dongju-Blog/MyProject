@@ -3,6 +3,7 @@ import { activeBoardItemType } from "@/types/board";
 import React, { useState, useEffect } from "react";
 import Dropdown from "@/components/Interface/Dropdown/Dropdown";
 import { css } from "@emotion/react";
+import mediaQuery from "@/util/responsive";
 
 type CreateCategoryDropdownPropsType = {
   category: number;
@@ -43,7 +44,17 @@ function CreateCategoryDropdown({
 }
 
 const dropdownCSS = css`
-  min-width: 120px;
+  min-width: 160px;
+
+  & .selected {
+    height: 36px;
+  }
+
+  @media ${mediaQuery.mobile} {
+    width: 100%;
+    
+  }
+  
 `;
 
 export default CreateCategoryDropdown;

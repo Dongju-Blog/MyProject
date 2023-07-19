@@ -117,7 +117,7 @@ const initInputCSS = css`
   }
 `;
 
-type ThemeProviderKeys = "default" | "restraint";
+type ThemeProviderKeys = "default" | "restraint" | "none";
 type themeProviderType = { [prop: string]: SerializedStyles[] };
 
 const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
@@ -140,6 +140,11 @@ const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
           : "inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
       `,
     ],
+    none: [
+      css`
+        
+      `
+    ]
   };
 
   return themes;

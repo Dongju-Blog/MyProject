@@ -81,7 +81,14 @@ function useAuthorityInit() {
 
   useEffect(() => {
     if (storeUserAtom.role === null || storeUserAtom.role === null) {
-      getUserInfoHandler();
+      const user = localStorage.getItem("user")
+      const parseUser = user && JSON.parse(user)
+
+      if (parseUser) {
+        setStoreUserAtom(() => parseUser)
+      } else {
+        getUserInfoHandler();
+      }
     }
   }, []);
 
@@ -89,9 +96,9 @@ function useAuthorityInit() {
     getUserInfoAPI()
       .then((res) => {
         console.log(res);
-        setStoreUserAtom((prev) => {
+        localStorage.setItem("user", JSON.stringify(res))
+        setStoreUserAtom(() => {
           return {
-            ...prev,
             username: res.username,
             status: res.status,
             role: res.role,

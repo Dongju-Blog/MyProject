@@ -1,5 +1,6 @@
 :root {
-  --full-height: calc(100%);
+  --mobile-navbar-height: 64px;
+  --desktop-navbar-height: 64px;
 }
 
 * {
@@ -79,6 +80,7 @@ body {
   overflow-x: hidden;
   font-family: 'Pretendard';
   height: 100%;
+  /* --screen-height: calc(100% + 1px); */
 }
 
 #__next {

@@ -6,12 +6,13 @@ import React, {
   ReactNode,
   Children,
 } from "react";
-import { getAllBoardAPI } from "@/api/board/getAllBoardAPI";
+import { getAdminAllBoardAPI } from "@/api/admin/getAdminAllBoardAPI";
 import { getAllBoardResponseType } from "@/types/board";
 import { useQuery } from "@tanstack/react-query";
 import { css } from "@emotion/react";
 import Swipe, { SwipeEvent, SwipePosition } from "react-easy-swipe";
 import CategoryDragAndDrop from "@/components/Page/Admin/Category/CategoryDragAndDrop";
+import Loading from "@/components/Interface/Loading/Loading";
 
 type elementPropertyType = {
   height: number;
@@ -21,7 +22,7 @@ function category() {
 
   const categories = useQuery<getAllBoardResponseType>(
     ["admin", "boards"],
-    getAllBoardAPI
+    getAdminAllBoardAPI
   );
 
 
@@ -29,7 +30,7 @@ function category() {
   return (
 
     <div css={categoryPageWrapperCSS}>
-      {categories?.data && <CategoryDragAndDrop categories={categories.data}/>}
+      {categories?.data ? <CategoryDragAndDrop categories={categories.data}/> : <Loading label={"카테고리 정보를 가져오는 중입니다."}/>}
     </div>
 
   )

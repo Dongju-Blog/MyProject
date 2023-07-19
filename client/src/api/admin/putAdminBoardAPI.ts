@@ -5,6 +5,7 @@ import { successReturnType, errorReturnType } from "@/types/common"
 
 
 type paramsType = {
+    body: putBoardBodyType
     id: number
 }
 
@@ -15,9 +16,9 @@ type responseType = {
 
 
 
-export const deleteBoardAPI = async ({id}: paramsType) => {
+export const putAdminBoardAPI = async ({body, id}: paramsType) => {
     try {
-        const response: responseType = await tokenInstance.delete(`/board/${id}`)
+        const response: responseType = await tokenInstance.put(`/admin/board/${id}`, body)
         return response.data
     } catch (error: any) {
         throw error

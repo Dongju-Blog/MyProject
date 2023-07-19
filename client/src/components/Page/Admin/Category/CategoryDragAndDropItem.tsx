@@ -7,12 +7,12 @@ import trash2 from "react-useanimations/lib/trash2";
 import settings from "react-useanimations/lib/settings";
 import Button from "@/components/Interface/Button/Button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { putBoardAPI } from "@/api/board/putBoardAPI";
+import { putAdminBoardAPI } from "@/api/admin/putAdminBoardAPI";
 import { putBoardBodyType } from "@/types/board";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import { DELETE_ICON, INVISIBLE_ICON, SETTINGS_ICON, VISIBLE_ICON } from "@/components/Assets/AdminIcons";
-import { deleteBoardAPI } from "@/api/board/deleteBoardAPI";
+import { deleteAdminBoardAPI } from "@/api/admin/deleteAdminBoardAPI";
 
 type CategoryDragAndDropItemPropsType = {
   id: number;
@@ -36,12 +36,12 @@ function CategoryDragAndDropItem({
 
   const putBoardMutation = useMutation(
     ({ id, body }: { id: number; body: putBoardBodyType }) =>
-      putBoardAPI({ id, body })
+    putAdminBoardAPI({ id, body })
   );
 
   const deleteBoardMutation = useMutation(
     ({ id }: { id: number }) =>
-      deleteBoardAPI({ id })
+    deleteAdminBoardAPI({ id })
   );
 
   const deleteBoardHandler = async () => {
@@ -70,6 +70,16 @@ function CategoryDragAndDropItem({
                   <NotiTemplate
                     type={"alert"}
                     content={err.response.data.message}
+                  />
+                ),
+                duration: 3000,
+              });
+            } else if (err?.response?.data) {
+              noti({
+                content: (
+                  <NotiTemplate
+                    type={"alert"}
+                    content={err.response.data[Object.keys(err.response.data)[0]]}
                   />
                 ),
                 duration: 3000,
@@ -124,10 +134,13 @@ function CategoryDragAndDropItem({
               ),
               duration: 3000,
             });
-          } else if (err?.response?.data?.name) {
+          } else if (err?.response?.data) {
             noti({
               content: (
-                <NotiTemplate type={"alert"} content={err.response.data.name} />
+                <NotiTemplate
+                  type={"alert"}
+                  content={err.response.data[Object.keys(err.response.data)[0]]}
+                />
               ),
               duration: 3000,
             });

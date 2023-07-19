@@ -15,9 +15,9 @@ type responseType = {
 
 
 
-export const putBoardsOrdersAPI = async ({body}: paramsType) => {
+export const putAdminBoardsOrdersAPI = async ({body}: paramsType) => {
     try {
-        const response: responseType = await tokenInstance.put(`/board/orders`, body)
+        const response: responseType = await tokenInstance.put(`/admin/board`, body)
         return response.data
     } catch (error: any) {
         throw error

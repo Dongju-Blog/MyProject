@@ -10,7 +10,7 @@ type LayoutPropsType = {
 
 function Layout({ children }: LayoutPropsType) {
   const router = useRouter();
-  const navBarExclude = ["/signup", "/login"];
+
   const auth = useAuthority.Init();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ function Layout({ children }: LayoutPropsType) {
   if (auth.isValidPage) {
     return (
       <React.Fragment>
-        {!navBarExclude.includes(router.pathname) && <Navbar />}
+        <Navbar />
         {children}
       </React.Fragment>
     );

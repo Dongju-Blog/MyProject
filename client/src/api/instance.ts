@@ -41,7 +41,7 @@ export const formDataTokenInstance = axios.create({
 // 액세스 토큰이 만료된 경우 새로운 액세스 토큰을 받아 다시 요청을 보내는 함수 (공통)
 const getNewAccessToken = async (error: any) => {
   // 가로챈 에러의 코드가 '1'이 아닌 경우, 액세스 토큰 만료로 인한 에러가 아닌 것으로 판단하고 즉시 에러 Throw
-  if (error?.response?.data?.code !== "1") {
+  if (error?.response?.data?.code !== "1" && error?.response?.request?.status !== 500 ) {
     throw error;
   }
 

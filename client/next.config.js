@@ -26,15 +26,16 @@ const nextConfig = {
 
 }
 
-const removeImports = require('next-remove-imports')({
+// const removeImports = require('next-remove-imports')({
 
-})
+// })
 
-module.exports = () => {
-  const plugins = [removeImports];
-  const config = plugins.reduce((acc, next) => next(acc), {
-    ...nextConfig,
-  });
-  return config;
-};
+// module.exports = () => {
+//   const plugins = [removeImports];
+//   const config = plugins.reduce((acc, next) => next(acc), {
+//     ...nextConfig,
+//   });
+//   return config;
+// };
 
+module.exports = nextConfig

@@ -134,7 +134,7 @@ const initDropdownCSS = ({ triggerState }: { triggerState: boolean }) => {
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: transform 1s;
+      transition: transform 0.5s;
       transform: ${triggerState ? `rotate(180deg)` : `rotate(0deg)`};
     }
 
@@ -186,24 +186,27 @@ const themeProvider = ({ triggerState }: { triggerState: boolean }) => {
       css`
         
         & .selected {
-          border-radius: 2px;
-          transition: box-shadow 1s;
-          box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
-          padding-left: 4px;
+          /* border-radius: 2px; */
+          transition: box-shadow 0.5s;
+          /* box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1); */
+          /* border-right: 1px solid rgba(0, 0, 0, 0.1); */
+          padding-left: 8px;
+          padding-right: 8px;
         }
 
         & .items-wrapper {
           top: 110%;
           border-radius: 2px;
-          transition: box-shadow 1s;
+          transition: box-shadow 0.5s;
           background-color: white;
           box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
           
         }
 
         & .item {
-          padding-left: 4px;
-          transition: background-color 1s;
+          padding-left: 8px;
+          transition: background-color 0.5s;
+          min-height: 24px;
 
           &:hover {
             background-color: rgba(0, 0, 0, 0.1);

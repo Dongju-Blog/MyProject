@@ -31,7 +31,7 @@ const initButtonCSS = css`
   justify-content: center;
 `;
 
-type ThemeProviderKeys = "default" | "outline" | "text" | "dark";
+type ThemeProviderKeys = "default" | "grey" | "outline" | "text" | "dark";
 
 type themeProviderType = { [prop: string]: SerializedStyles[] };
 const themeProvider = () => {
@@ -50,6 +50,24 @@ const themeProvider = () => {
         &:hover {
           /* outline: 4px solid #c382ffa6; */
           box-shadow: 0px 0px 1px 5px #789cff85;
+          transform: scale(110%);
+        }
+      `,
+    ],
+    grey: [
+      css`
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 20px;
+        padding: 10px 15px 10px 15px;
+        color: rgba(0, 0, 0, 0.8);
+        transition-property: box-shadow transform;
+        transition-duration: 1s;
+        transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
+        /* mix-blend-mode: difference; */
+        /* outline: 0px solid rgba(255, 255, 255, 0.01); */
+        &:hover {
+          /* outline: 4px solid #c382ffa6; */
+          box-shadow: 0px 0px 1px 5px rgba(0, 0, 0, 0.2);
           transform: scale(110%);
         }
       `,

@@ -1,112 +1,103 @@
-import React, { useRef, useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import React, { useRef, useState, useEffect, useMemo, useReducer } from "react";
 import { css } from "@emotion/react";
-import MDEditor, {
-  commands,
-  ICommand,
-  TextState,
-  TextAreaTextApi,
-} from "@uiw/react-md-editor";
-import { debounce } from "lodash";
 import imageCompression from "browser-image-compression";
+import { filesType } from "@/types/board";
+import { Editor } from "@toast-ui/react-editor";
+import codeSyntaxHighlightPlugin from "@toast-ui/editor-plugin-code-syntax-highlight";
+import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css";
+// import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js";
+
+import "@toast-ui/editor/dist/i18n/ko-kr";
+import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
+import "tui-color-picker/dist/tui-color-picker.css";
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+
+import prism from "prismjs";
+import "prismjs/themes/prism.css";
+// @ts-ignore
+import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js";
+
+// https://mdxeditor.dev/editor/docs/getting-started
 
 type CreateMarkdownPropsType = {
   files: filesType;
   setFiles: React.Dispatch<React.SetStateAction<filesType>>;
-  value: string | undefined;
-  setValue: React.Dispatch<React.SetStateAction<string | undefined>>;
-};
-
-export type filesType = {
-  [prop: string]: File;
+  content: string;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
 };
 
 function CreateMarkdown({
-  value,
-  setValue,
+  content,
+  setContent,
   files,
   setFiles,
 }: CreateMarkdownPropsType) {
-  const [fileNameCache, setFileNameCache] = useState<string | null>(null);
-  const inputFileRef = useRef<HTMLInputElement>(null);
+  const editorRef = useRef<Editor>(null);
 
-  const inputFileChangeHandler = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (e.target.files && e.target.files.length > 0 && fileNameCache) {
-      const file = e.target.files[0];
-      const options = {
-        maxSizeMB: 1, // 이미지 최대 용량
-        maxWidthOrHeight: 1920, // 최대 넓이(혹은 높이)
-        useWebWorker: true,
-      };
-      try {
-        const compressedFile = await imageCompression(file, options);
-        const url = URL.createObjectURL(compressedFile);
-        setFiles((prev) => {
-          return { ...prev, [`${url}`]: compressedFile };
-        });
-        setValue((prev) => {
-          let renew;
-          if (prev) {
-            renew = prev.replace(`image-${fileNameCache}`, url);
-          }
-          return renew;
-        });
-
-        setFileNameCache(() => null);
-      } catch (error) {
-        console.log(error);
-      }
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.getInstance().insertText(content)
     }
-  };
-
-  const imageUpload: ICommand = {
-    name: "Upload Image",
-    keyCommand: "imageUpload",
-    buttonProps: { "aria-label": "Insert title3" },
-    icon: (
-      <svg width="12" height="12" viewBox="0 0 20 20">
-        <path
-          fill="currentColor"
-          d="M15 9c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4-7H1c-.55 0-1 .45-1 1v14c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 13l-6-5-2 2-4-5-4 8V4h16v11z"
-        ></path>
-      </svg>
-    ),
-    execute: (state: TextState, api: TextAreaTextApi) => {
-      if (inputFileRef.current) {
-        inputFileRef.current.click();
-        const randomString = Math.random().toString(36).substring(2, 12);
-        setFileNameCache(() => randomString);
-        let modifyText = `![](image-${randomString})\n`;
-        api.replaceSelection(modifyText);
-      }
-    },
-  };
+  }, [editorRef.current])
 
   return (
     <div
       css={css`
-        height: 80%;
+        flex: 1;
         width: 100%;
       `}
     >
-      <input
-        onChange={inputFileChangeHandler}
-        type={"file"}
-        ref={inputFileRef}
-        css={css`
-          display: none;
-        `}
-      />
+      <Editor
+        ref={editorRef}
+        language="ko-KR"
+        initialValue={content} // content는 글 수정시 사용
+        // props.editInitialContent
+        onChange={() => {
+          const value = editorRef.current
+            ? editorRef.current.getInstance().getMarkdown()
+            : "";
+          setContent(() => value);
+        }}
+        placeholder="내용을 입력해주세요."
+        previewStyle={"vertical"} // 미리보기 스타일 지정
+        height="100%" // 에디터 창 높이
+        initialEditType="markdown" // 초기 입력모드 설정(디폴트 markdown)
+        plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: prism }]]}
+        toolbarItems={[
+          // 툴바 옵션 설정
+          ["heading", "bold", "italic", "strike"],
+          ["hr", "quote"],
+          ["ul", "ol", "task", "indent", "outdent"],
+          ["table", "image", "link"],
+          ["code", "codeblock"],
+        ]}
+        hooks={{
+          addImageBlobHook: async (blob, callback) => {
+            const file = blob as File;
+            const options = {
+              maxSizeMB: 1, // 이미지 최대 용량
+              maxWidthOrHeight: 1920, // 최대 넓이(혹은 높이)
+              useWebWorker: true,
+              // fileType: 'image/png',
+            };
+            try {
+              const compressedFile = await imageCompression(file, options);
+              const modifiedFile = new File([compressedFile], file.name, {
+                type: file.type,
+              });
+              const url = URL.createObjectURL(modifiedFile);
 
-      <MDEditor
-        value={value}
-        onChange={setValue}
-        extraCommands={[imageUpload]}
-      />
-      <MDEditor.Markdown source={value} style={{ whiteSpace: "pre-wrap" }} />
-      {JSON.stringify(files)}
+              setFiles((prev) => {
+                return { ...prev, [`${url}`]: modifiedFile };
+              });
+
+              callback(url, "image");
+            } catch (error) {
+              console.log(error);
+            }
+          },
+        }}
+      ></Editor>
     </div>
   );
 }
