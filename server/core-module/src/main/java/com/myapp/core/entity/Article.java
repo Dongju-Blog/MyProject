@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name="`article`")
@@ -53,5 +54,8 @@ public class Article {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
     private List<File> files;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();;
 
 }
