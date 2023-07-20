@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -38,13 +39,18 @@ public class CreateArticleDto {
 
     private List<String> fileUrls;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
     public CreateArticleDto(Article article) {
         this.title = article.getTitle();
         this.content = article.getContent();
         this.preview = article.getPreview();
         this.isSecret = article.getIsSecret();
         this.isRepresentative = article.getIsRepresentative();
-
+        this.createdAt = article.getCreatedAt();
+        this.updatedAt = article.getCreatedAt();
     }
 
 //    private Map<String, MultipartFile> files;
