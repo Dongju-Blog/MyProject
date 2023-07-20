@@ -1,4 +1,4 @@
-import { pageableType } from "./common"
+import { pageablePageType, pageableSliceType } from "./common"
 
 export type getAllBoardResponseType = boardItemType[]
 
@@ -51,6 +51,8 @@ export type getArticleResponseType = {
   isRepresentative: boolean;
   id: number;
   boardId: number;
+  createdAt: string
+  updatedAt: string
 }
 
 export type getArticlesItemType = {
@@ -58,10 +60,18 @@ export type getArticlesItemType = {
   id: number
   preview: string
   thumbnail: string
+  createdAt: string
+  updatedAt: string
 }
 
 export type postArticleResponseType = {
   url: string
 }
 
-export type pageableArticlesResponseType = pageableType & {content: getArticlesItemType[]}
+export type pageablePageArticlesResponseType = pageablePageType & {content: getArticlesItemType[]}
+
+export type mobileArticlesResponseType = {
+  content: getArticlesItemType[]
+  last: boolean;
+  nextLastId: number;
+}

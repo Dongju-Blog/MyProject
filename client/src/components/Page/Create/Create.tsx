@@ -13,6 +13,7 @@ import { postArticleAPI } from "@/api/board/postArticleAPI";
 import mediaQuery from "@/util/responsive";
 import markdownToTxt from 'markdown-to-txt';
 import Wrapper from "@/components/Interface/Wrapper/Wrapper";
+import Skeleton from "@/components/Interface/Loading/Skeleton";
 
 const MDEditor = dynamic(
   () => import("@/components/Page/Create/CreateMarkdown"),
@@ -42,7 +43,7 @@ type CreatePropsType = {
 
 function Create({title, setTitle, content, setContent, category, setCategory, files, setFiles, isSecret, setIsSecret, isRepresentative, setIsRepresentative, submitHandler}: CreatePropsType) {
   
-
+  const [isLoading, setIsLoading] = useState(true)
 
 
   const viewerRef = useRef<HTMLDivElement>(null)
@@ -74,7 +75,9 @@ function Create({title, setTitle, content, setContent, category, setCategory, fi
         </div>
         
       </div>
-      <MDEditor {...{ content, setContent, files, setFiles }} />
+      
+      <MDEditor {...{ content, setContent, files, setFiles, setIsLoading }} />
+      {isLoading && <Skeleton css={css`flex: 1; width: 100%; height: 100%;`} />}
       </div>
     </Wrapper>
   );

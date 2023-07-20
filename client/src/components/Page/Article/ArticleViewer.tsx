@@ -13,9 +13,9 @@ type ArticleViewerPropsType = {
 
 function ArticleViewer({content}: ArticleViewerPropsType) {
   return (
-    <div>
+    <React.Fragment>
       <Viewer initialValue={content} plugins={[[codeSyntaxHighlight, { highlighter: prism }]]} />
-    </div>
+    </React.Fragment>
   )
 }
 

@@ -3,21 +3,23 @@ import { loginBodyType, loginResponseType } from "@/types/auth"
 import { successReturnType, errorReturnType } from "@/types/common"
 import { userInfoResponseType } from "@/types/auth"
 import axios from "axios"
-import { getArticleResponseType, pageablePageArticlesResponseType } from "@/types/board"
+import { getArticleResponseType, mobileArticlesResponseType } from "@/types/board"
 
 type paramsType = {
   category: string
-  page: number
+  size: number
+  lastId: number
+
 }
 
 type responseType = {
     status: number
-    data: pageablePageArticlesResponseType
+    data: mobileArticlesResponseType
 }
 
-export const getArticlesAPI = ({category, page}: paramsType) => {
+export const getArticlesMobileAPI = ({category, size, lastId}: paramsType) => {
 
-    return tokenInstance.get(`/board/${category}?page=${page}`)
+    return tokenInstance.get(`/board/mobile/${category}?lastId=${lastId}&size=${size}`)
       .then((response: responseType) => {
         console.log(response)
         return response.data;

@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react'
 
 import { useRouter } from "next/router";
-import Board from '@/components/Page/Board/Board';
+import BoardDesktop from '@/components/Page/Board/BoardDesktop';
 import { css } from "@emotion/react";
 import Wrapper from '@/components/Interface/Wrapper/Wrapper';
+import mediaQuery from '@/util/responsive';
+import useResponsive from '@/hooks/useResponsive';
+import BoardMobile from '@/components/Page/Board/BoardMobile';
 
 function index() {
   const router = useRouter()
   const {boardName, page} = router.query
+  const isMobile = useResponsive(mediaQuery.mobile)
 
   useEffect(() => {
     console.log(boardName, page)
@@ -16,9 +20,13 @@ function index() {
   if (boardName) {
     return (
       <Wrapper css={wrapperCSS}>
-        <div css={boardWrapperCSS}>
-          <Board boardName={String(boardName)} currentPage={page ? Number(page) : 1} />
-        </div>
+
+          <div css={boardWrapperCSS}>
+            {isMobile ? <BoardMobile boardName={String(boardName)} /> : <BoardDesktop boardName={String(boardName)} currentPage={page ? Number(page) : 1} />}
+            
+          </div>
+
+        
         
       </Wrapper>
     )
@@ -31,14 +39,28 @@ const wrapperCSS = css`
   height: 100%;
   display: flex;;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
+  
 `
 
+
+
 const boardWrapperCSS = css`
-  width: 60%;
-  height: 100%;
-  padding: 36px 0px;
+  flex: 1;
+  /* height: 100%; */
+  padding-top: 36px;
+  padding-bottom: 36px;
+  
+  @media ${mediaQuery.mobile} {
+    width: 95%;
+    
+    
+  }
+  @media ${mediaQuery.desktop} {
+    margin-top: 96px;
+    width: 60%;
+  }
 `
 
 export default index

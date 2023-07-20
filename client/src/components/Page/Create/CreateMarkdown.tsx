@@ -16,6 +16,7 @@ import prism from "prismjs";
 import "prismjs/themes/prism.css";
 // @ts-ignore
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js";
+import Skeleton from "@/components/Interface/Loading/Skeleton";
 
 // https://mdxeditor.dev/editor/docs/getting-started
 
@@ -24,6 +25,7 @@ type CreateMarkdownPropsType = {
   setFiles: React.Dispatch<React.SetStateAction<filesType>>;
   content: string;
   setContent: React.Dispatch<React.SetStateAction<string>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function CreateMarkdown({
@@ -31,12 +33,15 @@ function CreateMarkdown({
   setContent,
   files,
   setFiles,
+  setIsLoading
 }: CreateMarkdownPropsType) {
   const editorRef = useRef<Editor>(null);
+  
 
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.getInstance().insertText(content)
+      setIsLoading(() => false)
     }
   }, [editorRef.current])
 
@@ -47,6 +52,7 @@ function CreateMarkdown({
         width: 100%;
       `}
     >
+      
       <Editor
         ref={editorRef}
         language="ko-KR"

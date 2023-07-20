@@ -2,24 +2,29 @@ import React from 'react'
 import { useRouter } from "next/router";
 import { getArticlesItemType } from '@/types/board';
 import { css } from "@emotion/react";
+import { dateFormatter } from '@/util/dateFormatter';
 
 type BoardItemPropsType = {
   article: getArticlesItemType
   boardName: string
 }
-function BoardItem({article, boardName}: BoardItemPropsType) {
+function BoardDesktopItem({article, boardName}: BoardItemPropsType) {
   const router = useRouter()
 
   return (
     <div onClick={() => router.push(`/board/${boardName}/${article.id}`)} css={articleItemWrapperCSS}>
       <div css={textWrapperCSS}>
         <div css={titleWrapperCSS}>{article.title}</div>
-        <div>
+        <div css={previewWrapperCSS}>
           {article.preview}
+        </div>
+        <div>
+          {dateFormatter(article.createdAt)}
         </div>
       </div>
       <div css={imageWrapperCSS}>
-        <img src={article.thumbnail}/>
+        {article.thumbnail ? <img src={article.thumbnail} css={css`height: 100%; width: auto;`}/> : <img src={"/assets/Thumbnail.png"} css={css`filter: invert(80%); width: 70%; height: auto;`}/>}
+        
       </div>
       
     </div>
@@ -28,17 +33,25 @@ function BoardItem({article, boardName}: BoardItemPropsType) {
 
 const articleItemWrapperCSS = css`
   width: 100%;
+  height: 200px;
+  min-height: 200px;
   max-height: 200px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   display: flex;
   cursor: pointer;
-
+  overflow: hidden;
 `
 
 const textWrapperCSS = css`
   padding: 24px;
   flex: 5;
+  display: flex;
+  flex-direction: column;
+`
+
+const previewWrapperCSS = css`
+  flex: 1;
 `
 
 const imageWrapperCSS = css`
@@ -48,11 +61,9 @@ const imageWrapperCSS = css`
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
 
-  & img {
-    width: 100%;
-    height: auto;
-  }
+
 `
 
 const titleWrapperCSS = css`
@@ -61,4 +72,4 @@ const titleWrapperCSS = css`
   margin-bottom: 12px;
 `
 
-export default BoardItem
+export default BoardDesktopItem

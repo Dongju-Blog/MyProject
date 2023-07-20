@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import Wrapper from '@/components/Interface/Wrapper/Wrapper';
 import { css } from "@emotion/react";
+import mediaQuery from '@/util/responsive';
 
 
 const Article = dynamic(
@@ -26,11 +27,11 @@ function index() {
 
   if (articleId !== undefined && boardName !== undefined) {
     return (
-      <Wrapper data-color-mode="light" css={wrapperCSS}>
+      <div data-color-mode="light" css={wrapperCSS}>
         <div css={articleWrapperCSS}>
           <Article boardName={String(boardName)} articleId={Number(articleId)} />
         </div>
-      </Wrapper>
+      </div>
     )
   }
   
@@ -41,7 +42,15 @@ const wrapperCSS = css`
 `
 
 const articleWrapperCSS = css`
-  width: 90%;
+  @media ${mediaQuery.mobile} {
+    width: 100%;
+    
+    
+  }
+  @media ${mediaQuery.desktop} {
+    margin-top: 96px;
+    width: 60%;
+  }
 `
 
 export default index
