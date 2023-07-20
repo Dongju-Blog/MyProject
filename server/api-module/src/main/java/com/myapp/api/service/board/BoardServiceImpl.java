@@ -426,19 +426,10 @@ public class BoardServiceImpl implements BoardService {
 
         return returnObject;
 
-        //
-//        return { postList, nextLastPostId: postList[postList.length - 1]?.postId, isLast: postList.length < size }
 
-//        for (Article article : getArticles) {
-//            Map<String, Object> articlesItem = new HashMap<>();
-//            articlesItem.put("title", article.getTitle());
-//            articlesItem.put("id", article.getId());
-//            articlesItem.put("thumbnail", domain + article.getFiles().get(0).getUrl());
-//            returnArticles.add(articlesItem);
-//        }
-
-//        return new SliceImpl<>(returnArticles, pageRequest, getArticles.hasNext());
     }
+
+
 
 
 

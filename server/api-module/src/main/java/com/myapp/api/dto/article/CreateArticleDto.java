@@ -49,8 +49,8 @@ public class CreateArticleDto {
         this.preview = article.getPreview();
         this.isSecret = article.getIsSecret();
         this.isRepresentative = article.getIsRepresentative();
-        this.createdAt = article.getCreatedAt();
-        this.updatedAt = article.getCreatedAt();
+//        this.createdAt = article.getCreatedAt();
+//        this.updatedAt = article.getCreatedAt();
     }
 
 //    private Map<String, MultipartFile> files;
