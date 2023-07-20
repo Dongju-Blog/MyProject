@@ -4,21 +4,12 @@ package com.myapp.api.controller;
 import com.myapp.api.annotation.user.Authorize;
 import com.myapp.api.dto.article.ArticlesResDto;
 import com.myapp.api.dto.article.CreateArticleDto;
-import com.myapp.api.dto.board.ChangeBoardDto;
-import com.myapp.api.dto.board.ChangeBoardsOrdersDto;
-import com.myapp.api.dto.board.CreateBoardDto;
-import com.myapp.api.dto.user.*;
 import com.myapp.api.service.board.BoardService;
-import com.myapp.api.service.user.UserService;
 import com.myapp.core.constant.Role;
-import com.myapp.core.entity.EmailMessage;
-import com.myapp.core.entity.User;
-import com.myapp.core.exception.CustomException;
-import com.myapp.core.exception.ErrorCode;
-import com.myapp.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -102,7 +93,7 @@ public class BoardController {
      * getArticle
      *
      * @param (category, id)
-     * @return
+     * @return article
      */
     @GetMapping("/{category}/{id}")
     @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
@@ -110,6 +101,22 @@ public class BoardController {
 
         return new ResponseEntity<>(boardService.getArticle(category, id), HttpStatus.OK);
     }
+
+
+    /**
+     * deleteArticle
+     *
+     * @param (category, id)
+     * @return
+     */
+    @DeleteMapping("/{category}/{id}")
+    @Authorize({Role.ADMIN})
+    public ResponseEntity<?> deleteArticle(@PathVariable("category") String category, @PathVariable("id") Long id) {
+        boardService.deleteArticle(category, id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
 
     /**
      * getArticles
@@ -122,6 +129,32 @@ public class BoardController {
     public ResponseEntity<Page<ArticlesResDto>> getArticles(@PathVariable("category") String category, Pageable pageable) {
 
         return new ResponseEntity<>(boardService.getArticles(category, pageable), HttpStatus.OK);
+    }
+
+//    /**
+//     * getArticlesMobile
+//     *
+//     * @param category
+//     * @return
+//     */
+//    @GetMapping("/mobile/{category}")
+//    @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
+//    public ResponseEntity<Slice<ArticlesResDto>> getArticlesMobile(@PathVariable("category") String category, Pageable pageable) {
+//
+//        return new ResponseEntity<>(boardService.getArticlesMobile(category, pageable), HttpStatus.OK);
+//    }
+
+    /**
+     * getArticlesMobile
+     *
+     * @param category
+     * @return
+     */
+    @GetMapping("/mobile/{category}")
+    @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
+    public ResponseEntity<?> getArticlesMobile(@PathVariable("category") String category, @RequestParam Long lastId, @RequestParam int size) {
+
+        return new ResponseEntity<>(boardService.getArticlesMobile(category, lastId, size), HttpStatus.OK);
     }
 
 
