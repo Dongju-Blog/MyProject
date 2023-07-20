@@ -11,7 +11,7 @@ import BoardMobile from '@/components/Page/Board/BoardMobile';
 function index() {
   const router = useRouter()
   const {boardName, page} = router.query
-  const isMobile = useResponsive(mediaQuery.mobile)
+  const isMobile = useResponsive(mediaQuery.tablet)
 
   useEffect(() => {
     console.log(boardName, page)
@@ -52,12 +52,12 @@ const boardWrapperCSS = css`
   padding-top: 36px;
   padding-bottom: 36px;
   
-  @media ${mediaQuery.mobile} {
+  @media ${mediaQuery.tablet} {
     width: 95%;
     
     
   }
-  @media ${mediaQuery.desktop} {
+  @media ${mediaQuery.overTablet} {
     margin-top: 96px;
     width: 60%;
   }

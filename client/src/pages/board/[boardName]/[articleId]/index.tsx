@@ -15,39 +15,39 @@ const Article = dynamic(
 );
 
 function index() {
-  // const [article, setArticle] = useState<getArticleResponseType>()
   const router = useRouter()
   const {boardName, articleId} = router.query
 
-
-
-  // useEffect(() => {
-  //   categories.refetch()
-  // }, [articleId])
-
-  if (articleId !== undefined && boardName !== undefined) {
-    return (
-      <div data-color-mode="light" css={wrapperCSS}>
-        <div css={articleWrapperCSS}>
-          <Article boardName={String(boardName)} articleId={Number(articleId)} />
-        </div>
+  return (
+    <div data-color-mode="light" css={wrapperCSS}>
+      <div css={articleWrapperCSS}>
+        <Article boardName={String(boardName)} articleId={Number(articleId)} />
       </div>
-    )
-  }
-  
+    </div>
+  )
 }
 
 const wrapperCSS = css`
-  display:flex; flex-direction:column; align-items:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  flex: 1;
+  min-height: 100%;
+  
 `
 
 const articleWrapperCSS = css`
-  @media ${mediaQuery.mobile} {
+  padding-bottom: 36px;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  @media ${mediaQuery.tablet} {
     width: 100%;
     
     
   }
-  @media ${mediaQuery.desktop} {
+  @media ${mediaQuery.overTablet} {
     margin-top: 96px;
     width: 60%;
   }

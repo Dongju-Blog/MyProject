@@ -8,19 +8,23 @@ type BoardItemPropsType = {
   article: getArticlesItemType
   boardName: string
 }
-function BoardDesktopItem({article, boardName}: BoardItemPropsType) {
+function BoardDesktopListItem({article, boardName}: BoardItemPropsType) {
   const router = useRouter()
 
   return (
-    <div onClick={() => router.push(`/board/${boardName}/${article.id}`)} css={articleItemWrapperCSS}>
+    <div onClick={() => router.push(`/board/${boardName}/${article.id}`)} css={[articleDesktopItemWrapperCSS, articleDesktopItemWrapperSecondCSS]}>
       <div css={textWrapperCSS}>
+        
+        <div>
         <div css={titleWrapperCSS}>{article.title}</div>
-        <div css={previewWrapperCSS}>
-          {article.preview}
+          <div css={previewWrapperCSS}>
+            {article.preview}
+          </div>
+          
         </div>
         <div>
-          {dateFormatter(article.createdAt)}
-        </div>
+            {dateFormatter(article.createdAt)}
+          </div>
       </div>
       <div css={imageWrapperCSS}>
         {article.thumbnail ? <img src={article.thumbnail} css={css`height: 100%; width: auto;`}/> : <img src={"/assets/Thumbnail.png"} css={css`filter: invert(80%); width: 70%; height: auto;`}/>}
@@ -31,16 +35,20 @@ function BoardDesktopItem({article, boardName}: BoardItemPropsType) {
   )
 }
 
-const articleItemWrapperCSS = css`
+export const articleDesktopItemWrapperCSS = css`
   width: 100%;
   height: 200px;
   min-height: 200px;
   max-height: 200px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  
   border-radius: 4px;
   display: flex;
   cursor: pointer;
   overflow: hidden;
+`
+
+const articleDesktopItemWrapperSecondCSS = css`
+  border: 1px solid rgba(0, 0, 0, 0.1);
 `
 
 const textWrapperCSS = css`
@@ -48,10 +56,21 @@ const textWrapperCSS = css`
   flex: 5;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 `
 
 const previewWrapperCSS = css`
-  flex: 1;
+  /* flex: 1; */
+
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* 라인수 */
+  -webkit-box-orient: vertical;
+  word-wrap:break-word; 
+  line-height: 1.2em;
+  height: 4.8; /* line-height 가 1.2em 이고 3라인을 자르기 때문에 height는 1.2em * 3 = 3.6em */
 `
 
 const imageWrapperCSS = css`
@@ -72,4 +91,4 @@ const titleWrapperCSS = css`
   margin-bottom: 12px;
 `
 
-export default BoardDesktopItem
+export default BoardDesktopListItem

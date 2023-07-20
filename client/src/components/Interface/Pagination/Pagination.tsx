@@ -28,6 +28,8 @@ function Pagination({currentPage, maxPage, baseUrl, queryString}: PaginationProp
     const end = start + 10 <= maxPage ? start + 10 : maxPage
     const range = [...Array(end - start)].map((v = start,i) => v + i);
     setPages(() => range)
+
+    document.body.scrollTo({ left: 0, top: 0, behavior: "smooth" });
   }, [currentPage])
 
   const pageOnClickHandler = (page: number) => {

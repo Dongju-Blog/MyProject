@@ -6,7 +6,8 @@ const deviceSizes = {
 
 const mediaQuery = {
   mobile: `(max-width: ${deviceSizes.mobile}px)`,
-  tablet: `(min-width: ${deviceSizes.mobile + 1}px) and (max-width: ${deviceSizes.tablet}px)`,
+  tablet: `(max-width: ${deviceSizes.tablet}px)`,
+  overTablet: `(min-width: ${deviceSizes.tablet + 1}px) and (max-width: ${deviceSizes.desktop}px)`,
   desktop: `(min-width: ${deviceSizes.mobile + 1}px) and (max-width: ${deviceSizes.desktop}px)`,
 };
 

@@ -16,15 +16,19 @@ function Skeleton({...props}: SkeletonPropsType) {
 }
 
 const skeletonCSS = css`
-  
+  display: grid;
+  overflow: hidden;
   
   .skeleton {
     width: 100%;
     height: 100%;
+    border-radius: 4px;
+    
     color: rgba(0,0,0,0);
     background-image: linear-gradient(270deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.1));
     background-size: 200% 100%;
     animation: skeleton-loading 8s ease-in-out infinite;
+    display: grid;
   }
   @keyframes skeleton-loading {
       0% {

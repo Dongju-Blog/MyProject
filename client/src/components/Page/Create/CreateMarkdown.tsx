@@ -25,6 +25,7 @@ type CreateMarkdownPropsType = {
   setFiles: React.Dispatch<React.SetStateAction<filesType>>;
   content: string;
   setContent: React.Dispatch<React.SetStateAction<string>>;
+  isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -33,18 +34,21 @@ function CreateMarkdown({
   setContent,
   files,
   setFiles,
-  setIsLoading
+  isLoading,
+  setIsLoading,
 }: CreateMarkdownPropsType) {
   const editorRef = useRef<Editor>(null);
-  
 
   useEffect(() => {
     if (editorRef.current) {
-      editorRef.current.getInstance().insertText(content)
-      setIsLoading(() => false)
+      editorRef.current.getInstance().insertText(content);
+      setIsLoading(() => false);
     }
-  }, [editorRef.current])
+  }, [editorRef]);
 
+
+
+  
   return (
     <div
       css={css`
@@ -52,16 +56,15 @@ function CreateMarkdown({
         width: 100%;
       `}
     >
-      
+
       <Editor
         ref={editorRef}
         language="ko-KR"
         initialValue={content} // content는 글 수정시 사용
-        // props.editInitialContent
         onChange={() => {
           const value = editorRef.current
             ? editorRef.current.getInstance().getMarkdown()
-            : "";
+            : content;
           setContent(() => value);
         }}
         placeholder="내용을 입력해주세요."
@@ -107,5 +110,6 @@ function CreateMarkdown({
     </div>
   );
 }
+
 
 export default CreateMarkdown;
