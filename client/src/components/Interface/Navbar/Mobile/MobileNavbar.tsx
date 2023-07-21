@@ -48,8 +48,10 @@ const navbarWrapperCSS = ({isTop}: {isTop: boolean}) => {
   width: 100vw;
   height: var(--mobile-navbar-height);
   /* background-color: rgba(255, 255, 255, 0.3); */
-  transition: background-color 1s;
+  transition: background-color 1s, box-shadow 1s;
   background-color: ${!isTop && `rgba(255, 255, 255, 0.8)`};
+  backdrop-filter: ${!isTop && `blur(10px)`};
+  box-shadow: ${!isTop && `0px 0px 30px 1px rgba(0, 0, 0, 0.2)`};
   z-index: 20;
   padding: 24px;
   display: flex;
