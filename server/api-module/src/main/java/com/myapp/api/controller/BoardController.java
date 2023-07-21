@@ -97,9 +97,9 @@ public class BoardController {
      */
     @GetMapping("/{category}/{id}")
     @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
-    public ResponseEntity<?> getArticle(@PathVariable("category") String category, @PathVariable("id") Long id) {
+    public ResponseEntity<?> getArticle(HttpServletRequest request, @PathVariable("category") String category, @PathVariable("id") Long id) {
 
-        return new ResponseEntity<>(boardService.getArticle(category, id), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.getArticle(request, category, id), HttpStatus.OK);
     }
 
 
@@ -126,9 +126,9 @@ public class BoardController {
      */
     @GetMapping("/{category}")
     @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
-    public ResponseEntity<Page<ArticlesResDto>> getArticles(@PathVariable("category") String category, Pageable pageable) {
+    public ResponseEntity<Page<ArticlesResDto>> getArticles(HttpServletRequest request, @PathVariable("category") String category, Pageable pageable) {
 
-        return new ResponseEntity<>(boardService.getArticles(category, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.getArticles(request, category, pageable), HttpStatus.OK);
     }
 
 //    /**
@@ -152,9 +152,9 @@ public class BoardController {
      */
     @GetMapping("/mobile/{category}")
     @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
-    public ResponseEntity<?> getArticlesMobile(@PathVariable("category") String category, @RequestParam Long lastId, @RequestParam int size) {
+    public ResponseEntity<?> getArticlesMobile(HttpServletRequest request, @PathVariable("category") String category, @RequestParam Long lastId, @RequestParam int size) {
 
-        return new ResponseEntity<>(boardService.getArticlesMobile(category, lastId, size), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.getArticlesMobile(request, category, lastId, size), HttpStatus.OK);
     }
 
 

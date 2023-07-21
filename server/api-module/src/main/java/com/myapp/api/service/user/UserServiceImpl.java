@@ -14,6 +14,7 @@ import com.myapp.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.ehcache.EhCacheCache;
+import org.springframework.http.ResponseCookie;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +27,9 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -104,9 +107,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Map<String, String> login(LoginDto user) {
+    public Map<String, String> login(LoginDto user, HttpServletResponse response) {
         Optional<User> userInfo = userRepository.findByUsername(user.getUsername());
-        Map<String, String> response = new HashMap<>();
+        Map<String, String> returnObject = new HashMap<>();
 
         if (userInfo.isPresent()) {
             // 받은 비밀번호를 인코딩하면 다르게 인코딩(암호화)돼서 비교가 안됌
@@ -122,22 +125,62 @@ public class UserServiceImpl implements UserService {
             Status status = userInfo.get().getStatus();
             String username = userInfo.get().getUsername();
 
-            response.put("role", String.valueOf(role));
-            response.put("status", String.valueOf(status));
-            response.put("username", username);
+            returnObject.put("role", String.valueOf(role));
+            returnObject.put("status", String.valueOf(status));
+            returnObject.put("username", username);
 
-            response.put("accessToken", accessToken);
-            response.put("refreshToken", refreshToken);
+            returnObject.put("accessToken", accessToken);
+//            response.put("refreshToken", refreshToken);
             User existingUser = userInfo.get();
             existingUser.setRefreshToken(refreshToken);
             userRepository.save(existingUser);
 
-            return response;
+
+            Cookie httpOnlyCookie = new Cookie("RefreshToken", refreshToken);
+            httpOnlyCookie.setMaxAge(14 * 24 * 60 * 60);
+            httpOnlyCookie.setPath("/");
+            httpOnlyCookie.setHttpOnly(true); // HttpOnly 옵션 설정
+            httpOnlyCookie.setSecure(true); // HTTPS 프로토콜을 사용하는 경우에만 쿠키 전송
+            response.addCookie(httpOnlyCookie);
+
+//            ResponseCookie cookie = ResponseCookie.from("RefreshToken", refreshToken)
+//                    .maxAge(14 * 24 * 60 * 60)
+//                    .path("/")
+//                    .secure(true)
+//                    .sameSite("None")
+//                    .httpOnly(true)
+//                    .build();
+//            response.setHeader("Set-Cookie", cookie.toString());
+
+            return returnObject;
         } else {
             // 에러 Throw
             throw new CustomException(ErrorCode.NOT_FOUND_USERNAME);
         }
 
+    }
+
+    @Override
+    public Map<String, String> logout(HttpServletResponse response) {
+//        ResponseCookie cookie = ResponseCookie.from("RefreshToken", null)
+//                .maxAge(0)
+//                .path("/")
+//                .secure(true)
+//                .sameSite("None")
+//                .httpOnly(true)
+//                .build();
+//        response.setHeader("Set-Cookie", cookie.toString());
+//
+        Cookie httpOnlyCookie = new Cookie("RefreshToken", null);
+        httpOnlyCookie.setMaxAge(0);
+        httpOnlyCookie.setPath("/");
+        httpOnlyCookie.setHttpOnly(true); // HttpOnly 옵션 설정
+        httpOnlyCookie.setSecure(true); // HTTPS 프로토콜을 사용하는 경우에만 쿠키 전송
+        response.addCookie(httpOnlyCookie);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("result", "OK");
+        return result;
     }
 
 

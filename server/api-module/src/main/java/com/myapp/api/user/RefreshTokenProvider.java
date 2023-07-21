@@ -18,6 +18,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -75,12 +77,22 @@ public class RefreshTokenProvider {
     }
 
 
-    public String getExistedRefreshToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
+    public Cookie getExistedRefreshToken(HttpServletRequest request) {
+//        String authorizationHeader = request.getHeader("Authorization");
+//
+//        if (authorizationHeader != null && authorizationHeader.startsWith(PREFIX + " ")) {
+////            return authorizationHeader.substring(7);
+//            return authorizationHeader.replace(PREFIX + " ", "").trim();
+//        }
 
-        if (authorizationHeader != null && authorizationHeader.startsWith(PREFIX + " ")) {
-//            return authorizationHeader.substring(7);
-            return authorizationHeader.replace(PREFIX + " ", "").trim();
+
+        Cookie[] cookies = request.getCookies();
+        if(cookies!=null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("RefreshToken")) {
+                    return cookie;
+                }
+            }
         }
 
         return null;

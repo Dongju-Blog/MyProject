@@ -47,6 +47,7 @@ public enum ErrorCode{
     NOT_FOUND_ARTICLE(HttpStatus.BAD_REQUEST, "205", "게시글을 찾을 수 없습니다."),
     INVALID_BOARD_NAME(HttpStatus.BAD_REQUEST, "206", "카테고리 이름의 형식이 잘못되었습니다."),
     INVALID_FILE(HttpStatus.BAD_REQUEST, "206", "유효하지 않은 파일 형식입니다."),
+    NOT_FOUND_COMMENT(HttpStatus.BAD_REQUEST, "202", "해당 댓글을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;
