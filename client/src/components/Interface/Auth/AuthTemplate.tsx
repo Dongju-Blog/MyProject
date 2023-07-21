@@ -106,9 +106,9 @@ const pageWrapperCSS = css`
   }
 
   min-width: 100vw;
-  height: 100%;
+  /* height: var(--screen-height); */
   min-height: 100%;
-  /* height: 100%; */
+  height: 100%;
   overflow: hidden;
 `;
 
@@ -205,7 +205,7 @@ const inputSectionCSS = css`
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
-  border-radius: 1px;
+
   border: 1px solid rgba(0, 0, 0, 0.05);
   /* border-bottom: none; */
   border-radius: 4px;

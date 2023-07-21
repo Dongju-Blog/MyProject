@@ -20,6 +20,7 @@ export const postLoginAPI = async ({body}: paramsType) => {
         const response: responseType = await defaultInstance.post(`/user/login`, body)
         return response.data
     } catch (error: any) {
+        console.log(error)
         throw error
     }
 }

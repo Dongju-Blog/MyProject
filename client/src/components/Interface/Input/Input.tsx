@@ -4,7 +4,6 @@ import React, { Children, ReactElement, ReactNode, useState } from "react";
 type InputPropsType = {
   theme: ThemeProviderKeys;
   customCss?: SerializedStyles | SerializedStyles[];
-  label: string;
   children?: ReactNode;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
@@ -15,7 +14,6 @@ type contentPropsType = {
 function Input({
   theme,
   customCss,
-  label,
   children,
   ...props
 }: InputPropsType) {
@@ -29,7 +27,6 @@ function Input({
   const rightContent = childrenArray.filter((el) => el.type === RightContent);
 
   return (
-    <label htmlFor={props.id}>
       <div
         css={
           Array.isArray(customCss)
@@ -45,9 +42,11 @@ function Input({
               ]
         }
       >
+        <label htmlFor={props.id} css={initLabelCSS}>
         {leftContent}
 
         <input
+          {...props}
           css={initInputCSS}
           onChange={(e) => {
             props.onChange && props.onChange(e);
@@ -62,10 +61,12 @@ function Input({
             setIsFocusing(() => false);
           }}
         />
-
+        </label>
+  
         {rightContent}
+        
       </div>
-    </label>
+    
   );
 }
 
@@ -79,18 +80,31 @@ function RightContent({ children }: contentPropsType) {
 
 const initInputWrapperCSS = css`
   display: flex;
+  /* width: 100%; */
+  /* flex: 1; */
+  min-width: 0px;
 `;
 
-const initInputCSS = css`
-  margin: 4px 8px 4px 8px;
+const initLabelCSS = css`
+  /* width: 100%; */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  /* gap: 8px; */
+  min-width: 0px;
   flex: 1;
-  width: 100%;
-  height: 20px;
+`
+
+const initInputCSS = css`
+  /* margin: 0px 8px 0px 8px; */
+  flex: 1;
+  
+  height: 100%;
   /* width: 100%; */
   border: none;
   min-width: 0px;
   background-color: rgba(255, 255, 255, 0);
-  /* padding: 0px 12px 0px 12px; */
+  padding: 0px 12px 0px 12px;
   /* height: 100%; */
   &:focus {
     outline: none;
@@ -103,21 +117,34 @@ const initInputCSS = css`
   }
 `;
 
-type ThemeProviderKeys = "default" | "auth";
+type ThemeProviderKeys = "default" | "restraint" | "none";
 type themeProviderType = { [prop: string]: SerializedStyles[] };
 
 const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
   const themes: themeProviderType = {
-    default: [css``],
-    auth: [
+    default: [css`
+    /* border: 1px solid rgba(0, 0, 0, 0.1); */
+    border-radius: 20px;
+    transition: box-shadow 1s;
+    box-shadow: ${isFocusing
+      ? "0px 0px 1px 4px #789cff85"
+      : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
+
+    `],
+    restraint: [
       css`
-        background-color: white;
-        border: 1px solid black;
-        & span {
-          color: ${isFocusing ? "#0044ff" : "rgba(0, 0, 0, 0.6)"};
-        }
+        border-radius: 2px;
+        transition: box-shadow 1s;
+        box-shadow: ${isFocusing
+          ? "inset 0px 0px 0px 2px rgba(0, 0, 0, 0.3)"
+          : "inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
       `,
     ],
+    none: [
+      css`
+        
+      `
+    ]
   };
 
   return themes;

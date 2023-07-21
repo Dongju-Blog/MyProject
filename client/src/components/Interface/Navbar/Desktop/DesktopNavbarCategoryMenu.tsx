@@ -1,6 +1,8 @@
 import React from "react";
 import { css } from "@emotion/react";
 import { categoryMenuType } from "../Navbar";
+import UseAnimations from "react-useanimations";
+import loading from 'react-useanimations/lib/loading';
 
 type DesktopNavbarCategoryMenuPropsType = {
   categoryMenu: categoryMenuType;
@@ -14,7 +16,7 @@ function DesktopNavbarCategoryMenu({
     return <div css={menuItemCSS} onClick={() => {menu.function()}}>{menu.label}</div>
   })
   return <div css={categoryMenuWrapperCSS}>
-    {renderMenu}
+    {categoryMenu.length !== 0 ? renderMenu : <div><UseAnimations animation={loading} size={56} /></div>}
   </div>;
 }
 

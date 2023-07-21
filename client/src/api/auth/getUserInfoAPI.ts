@@ -29,7 +29,7 @@ type responseType = {
 
 export const getUserInfoAPI = () => {
     return tokenInstance.get('/user')
-      .then((response) => {
+      .then((response: responseType) => {
         return response.data;
       })
       .catch((err) => {
