@@ -14,6 +14,7 @@ type responseType = {
 export const getActiveBoardAPI = () => {
     return tokenInstance.get('/board')
       .then((response: responseType) => {
+        console.log(response)
         return response.data;
       })
       .catch((err) => {

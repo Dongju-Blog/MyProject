@@ -20,9 +20,7 @@ function DesktopNavbar({categoryList, isTop}: DesktopNavbarPropsType) {
   
   
 
-  const handleScroll = () => {
-    console.log('scrolled');
-  };
+
 
 
   const renderCategory = categoryList.map((category) => {
@@ -70,8 +68,10 @@ const navbarWrapperCSS = ({isTop}: {isTop: boolean}) => {
   top: 0;
   width: 100%;
   height: var(--desktop-navbar-height);
-  transition: background-color 1s;
-  background-color: ${!isTop && `rgba(255, 255, 255, 0.8)`};
+  transition: background-color 1s, box-shadow 1s;
+  background-color: ${!isTop && `rgba(255, 255, 255, 0.6)`};
+  backdrop-filter: ${!isTop && `blur(10px)`};
+  box-shadow: ${!isTop && `0px 0px 30px 1px rgba(0, 0, 0, 0.2)`};
   z-index: 20;
   padding: 24px;
   display: flex;

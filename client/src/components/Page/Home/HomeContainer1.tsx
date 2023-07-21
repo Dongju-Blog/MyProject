@@ -6,6 +6,10 @@ import { setConditionType } from "../../Interface/Container/useContainer";
 
 import useAnimator from "../../Interface/Animator/useAnimator";
 import useModal from "@/components/Interface/Modal/useModal";
+import { getActiveBoardAPI } from "@/api/board/getActiveBoardAPI";
+import { getAdminAllBoardAPI } from "@/api/admin/getAdminAllBoardAPI";
+import { postCommentAPI } from "@/api/comment/postCommentsAPI";
+import { getCommentsAPI } from "@/api/comment/getCommentsAPI";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -102,6 +106,7 @@ function HomeContainer1({
           >
             But I know how to handle the backend, CI/CD as well!
           </div>
+          
         </div>
         <div></div>
       </ContainerContent.Inner>

@@ -41,7 +41,7 @@ function CreateMarkdown({
 
   useEffect(() => {
     if (editorRef.current) {
-      editorRef.current.getInstance().insertText(content);
+      // editorRef.current.getInstance().insertText(content);
       setIsLoading(() => false);
     }
   }, [editorRef]);

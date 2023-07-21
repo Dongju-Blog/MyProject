@@ -20,11 +20,9 @@ export const getCommentsAPI = ({page, articleId, parentCommentId}: paramsType) =
 
     return tokenInstance.get(`/comment?page=${page}&articleId=${articleId}${parentCommentId ? `&parentCommentId=${parentCommentId}` : ""}`)
       .then((response: responseType) => {
-        console.log(response)
         return response.data;
       })
       .catch((err) => {
-        console.log(err)
         throw err;
       });
   };

@@ -100,7 +100,7 @@ const initInputCSS = css`
   /* margin: 0px 8px 0px 8px; */
   flex: 1;
   resize: none;
-
+  font-family: 'Pretendard';
   height: 100%;
   width: 100%;
   border: none;
@@ -127,6 +127,7 @@ const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
     default: [
       css`
         /* border: 1px solid rgba(0, 0, 0, 0.1); */
+        background-color: white;
         border-radius: 20px;
         transition: box-shadow 1s;
         box-shadow: ${isFocusing

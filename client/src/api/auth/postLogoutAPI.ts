@@ -1,23 +1,20 @@
-import { defaultInstance } from "@/api/instance"
+import { defaultInstance, tokenInstance } from "@/api/instance"
 import { loginBodyType, loginResponseType } from "@/types/auth"
 import { successReturnType, errorReturnType } from "@/types/common"
 
 
 
-type paramsType = {
-    body: loginBodyType
-}
-
 type responseType = {
     status: number
-    data: loginResponseType
+    data: successReturnType
 }
 
 
 
-export const postLoginAPI = async ({body}: paramsType) => {
+export const postLogoutAPI = async () => {
     try {
-        const response: responseType = await defaultInstance.post(`/user/login`, body)
+        const response: responseType = await tokenInstance.post(`/user/logout`)
+        console.log(response)
         return response.data
     } catch (error: any) {
         console.log(error)

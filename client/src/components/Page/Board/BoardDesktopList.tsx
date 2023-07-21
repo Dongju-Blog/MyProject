@@ -9,6 +9,7 @@ import { css } from "@emotion/react";
 import useResponsive from "@/hooks/useResponsive";
 import mediaQuery from "@/util/responsive";
 import BoardDesktopListLoading from "./BoardDesktopListLoading";
+import Alert from "@/components/Interface/Loading/Alert";
 
 
 type BoardPropsType = {
@@ -30,6 +31,7 @@ function BoardDesktopList({ boardName, currentPage }: BoardPropsType) {
       refetchOnMount: false,
       staleTime: 300000,
       cacheTime: 300000,
+      retry: 1,
     }
   );
 
@@ -39,7 +41,7 @@ function BoardDesktopList({ boardName, currentPage }: BoardPropsType) {
       return <BoardDesktopListItem article={el} boardName={boardName} />;
     });
 
-  if (article.data) {
+  if (article.data && !article.data.empty) {
     return (
       <div css={articlesListWrapperCSS}>
         <div css={articlesWrapperCSS}>{renderArticles}</div>
@@ -54,6 +56,13 @@ function BoardDesktopList({ boardName, currentPage }: BoardPropsType) {
         </div>
       </div>
     );
+  } else if (article.error && (article.error as any ).response.data.code === '202') {
+    return (
+      <div css={emptyWrapperCSS}>
+        <Alert label="게시글이 존재하지 않습니다!" />
+
+      </div>
+    )
   } else {
     return (
       <div css={articlesWrapperCSS}>
@@ -82,14 +91,22 @@ const boardWrapperCSS = css`
 const articlesWrapperCSS = css`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 36px;
 `;
 
-const desktopPaginationWrapperCSS = css``;
+const desktopPaginationWrapperCSS = css`
+  
+`;
 
 const categoryTitleWrapperCSS = css`
   font-size: 36px;
   font-weight: 700;
 `;
+
+const emptyWrapperCSS = css`
+  width: 100%;
+  height: 100%;
+
+`
 
 export default BoardDesktopList;

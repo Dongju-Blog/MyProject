@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getArticleResponseType } from "@/types/board";
@@ -25,8 +25,12 @@ function Article({ articleId, boardName }: ArticlePropsType) {
   const router = useRouter();
   const auth = useAuthority();
 
+  useEffect(() => {
+    document.body.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+  }, [])
+
   const article = useQuery<getArticleResponseType>(
-    [`${decodeURI(boardName)}`, `${articleId}`],
+    [`Article`, `${articleId}`],
     () => getArticleAPI({ category: decodeURI(boardName), id: articleId }),
     {
       refetchOnWindowFocus: false,
@@ -77,6 +81,7 @@ function Article({ articleId, boardName }: ArticlePropsType) {
         onClick={() => router.push(`/board/${boardName}/${articleId}/update`)}
         css={css`
           font-size: 12px;
+          font-weight: 500;;
         `}
       >
         수정
@@ -86,6 +91,7 @@ function Article({ articleId, boardName }: ArticlePropsType) {
         onClick={deleteOnClickHandler}
         css={css`
           font-size: 12px;
+          font-weight: 500;;
         `}
       >
         삭제
@@ -114,11 +120,13 @@ function Article({ articleId, boardName }: ArticlePropsType) {
   )
 
   return (
-    <React.Fragment>
+    <div css={articleWrapperCSS}>
       <div css={headerWrapperCSS}>
         <div css={titleWrapperCSS}>
           {article.data ? article.data.title : <Skeleton css={skeletonCSS} />}
+          
         </div>
+        <div css={decoratorCSS} className={"decoration"}/>
         <div css={articleInfoWrapperCSS}>
           <div css={subInfoWrapperCSS}>
             {article.data ? articleSubInfo : <Skeleton  css={skeletonCSS}/>}
@@ -126,16 +134,30 @@ function Article({ articleId, boardName }: ArticlePropsType) {
           {auth.currentUser.role === "ADMIN" && adminHeader}
         </div>
       </div>
-      <div css={viewerWrapperCSS}>
+      <div css={viewerWrapperCSS} className={"article-wrapper"}>
         {article.data ? <ArticleViewer content={article.data.content} /> : <Skeleton css={skeletonCSS}/>}
       </div>
       <div css={dividerCSS}/>
       <div css={commentsWrapperCSS}>
-        <ArticleComments articleId={articleId} parentCommentId={null} depth={0} />
+        <ArticleComments articleId={articleId} parentCommentId={null} depth={0} entity={10} />
       </div>
-    </React.Fragment>
+    </div>
   );
 }
+
+const articleWrapperCSS = css`
+  
+  @media ${mediaQuery.tablet} {
+    background-color: white;
+  }
+  @media ${mediaQuery.overTablet} {
+    width: 100%;
+  background-color: white;
+  box-shadow: 0px 0px 100px 1px rgba(0, 0, 0, 0.2);
+  padding: 48px;
+  border-radius: 4px;;
+  }
+`
 
 const headerWrapperCSS = css`
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -148,7 +170,7 @@ const headerWrapperCSS = css`
   }
   @media ${mediaQuery.overTablet} {
     margin-bottom: 16px;
-    padding: 96px 0px 8px 0px;
+    padding: 36px 0px 8px 0px;
   }
 `;
 
@@ -168,28 +190,57 @@ const viewerWrapperCSS = css`
   }
   flex: 1;
   min-height: 360px;
+  & div {
+    min-width: 280px !important;
+  }
+
+  
 `;
 
 const titleWrapperCSS = css`
   @media ${mediaQuery.tablet} {
-    
+    font-size: 36px;
     margin-bottom: 8px;
+    min-height: 36px;
   }
   @media ${mediaQuery.overTablet} {
-
-    font-weight: 700;
+    font-size: 64px;
+    font-weight: 500;
     margin-bottom: 16px;
+    min-height: 64px;
   }
-  font-size: 36px;
+  /* color: #FF6372; */
+  color: #006effd9;
   display: grid;
-  min-height: 36px;
+  
   width: 100%;
 
+  
+
 `;
+
+const decoratorCSS = css`
+
+    margin-top: 28px;
+    margin-bottom: 24px;
+    width: 36px;
+    height: 6px;
+    /* background-color: #FF6372; */
+    background-color: #006effd9;
+
+`
 
 const articleInfoWrapperCSS = css`
   display: flex;
   justify-content: space-between;
+  
+
+  @media ${mediaQuery.tablet} {
+
+  }
+  @media ${mediaQuery.overTablet} {
+    margin-top: 96px;
+  }
 `;
 
 const subInfoWrapperCSS = css`
@@ -221,6 +272,8 @@ const commentsWrapperCSS = css`
     margin-bottom: 16px;
     padding: 0px 0px 8px 0px;
   }
+
+  
 `
 
 export default Article;

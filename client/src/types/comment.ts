@@ -13,3 +13,13 @@ export type getCommentsItemType = {
 export type pageableSliceCommentsResponseType = pageableSliceType & {
   content: getCommentsItemType[];
 };
+
+export type postCommentBodyType = {
+  content: string;
+  articleId: number;
+  parentCommentId: number | null;
+};
+
+export type putCommentBodyType = {
+  content: string;
+};

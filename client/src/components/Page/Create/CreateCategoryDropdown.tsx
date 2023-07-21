@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Dropdown from "@/components/Interface/Dropdown/Dropdown";
 import { css } from "@emotion/react";
 import mediaQuery from "@/util/responsive";
+import useGetCategory from "@/hooks/useGetCategory";
 
 type CreateCategoryDropdownPropsType = {
   category: number;
@@ -14,19 +15,15 @@ function CreateCategoryDropdown({
   category,
   setCategory,
 }: CreateCategoryDropdownPropsType) {
-  const [categoryList, setCategoryList] = useState<activeBoardItemType[]>([]);
+  const categories = useGetCategory()
 
-  useEffect(() => {
-    getActiveBoardAPI().then((res) => {
-      setCategoryList(() => res);
-    });
-  }, []);
 
-  const renderCategoryDropdown = categoryList.map((el, idx) => {
+
+  const renderCategoryDropdown = categories.map((el, idx) => {
     return <Dropdown.Item id={el.id}>{el.name}</Dropdown.Item>;
   });
 
-  if (categoryList) {
+  if (categories) {
     return (
       <Dropdown
         theme={"default"}

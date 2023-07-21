@@ -9,6 +9,7 @@ import { getActiveBoardAPI } from '@/api/board/getActiveBoardAPI';
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { throttle } from 'lodash';
+import useGetCategory from '@/hooks/useGetCategory';
 
 export type categoryType = {
   id: number;
@@ -29,18 +30,15 @@ function Navbar() {
   const util = useNavbarUtil()
   const isMobile = useResponsive(mediaQuery.mobile)
   const router = useRouter()
+  const category = useGetCategory()
 
-  const categories = useQuery<getActiveBoardResponseType>(
-    ['active', `categories`],
-    getActiveBoardAPI,
-    {refetchOnWindowFocus : false, refetchOnMount : false, staleTime: 300000, cacheTime: 300000}
-  );
+
 
   const categoryOnClickHandler = ({name}: {name: string}) => {
     router.push(`/board/${name}`)
   }
 
-  const manufacturedCategories = categories.data && categories.data.map((el) => {
+  const manufacturedCategories = category.map((el) => {
     return {
       id: el.id,
       label: el.name,
@@ -90,7 +88,7 @@ function Navbar() {
     } else {
       setIsTop(() => true)
     }
-  }, 1000)
+  }, 500)
 
   useEffect(() => {
 

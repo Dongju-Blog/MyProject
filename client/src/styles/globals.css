@@ -80,9 +80,11 @@ body {
   overflow-x: hidden;
   font-family: 'Pretendard';
   height: 100%;
+
   /* --screen-height: calc(100% + 1px); */
 }
 
 #__next {
     height: 100%;
+
 }

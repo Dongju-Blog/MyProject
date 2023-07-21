@@ -1,22 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCommentsAPI } from '@/api/comment/getCommentsAPI';
-import { pageableSliceCommentsResponseType } from '@/types/comment';
+import { pageableSliceCommentsResponseType, postCommentBodyType } from '@/types/comment';
 import ArticleCommentsItem from './ArticleCommentsItem';
 import { css } from "@emotion/react";
 import Textarea from '@/components/Interface/Textarea/Textarea';
 import Button from '@/components/Interface/Button/Button';
 import ArticleCommentsLoading from './ArticleCommentsLoading';
+import { postCommentAPI } from '@/api/comment/postCommentsAPI';
+import useAuthority from '@/hooks/useAuthority';
+import ArticleCommentsTextarea from './ArticleCommentsTextarea';
 
 type ArticleCommentsPropsType = {
   articleId: number;
   parentCommentId: number | null
   depth: number
+  entity: number
 }
 
-function ArticleComments({articleId, parentCommentId, depth}: ArticleCommentsPropsType) {
-
-
+function ArticleComments({articleId, parentCommentId, depth, entity}: ArticleCommentsPropsType) {
+  const [ inputState, setInputState ] = useState<string>("")
+  const queryClient = useQueryClient();
+  const auth = useAuthority()
 
   const { data, fetchNextPage, hasNextPage, isLoading, isError, isFetched } =
     useInfiniteQuery<pageableSliceCommentsResponseType>(
@@ -40,6 +45,25 @@ function ArticleComments({articleId, parentCommentId, depth}: ArticleCommentsPro
       }
     );
 
+    const createCommentMutation = useMutation(
+      ({ body }: { body: postCommentBodyType }) =>
+      postCommentAPI({ body })
+    );
+
+    const submitHandler = () => {
+      const body = {
+        content: inputState,
+        articleId,
+        parentCommentId: parentCommentId
+      }
+      createCommentMutation.mutate({body}, {
+        onSuccess: () => {
+          queryClient.invalidateQueries([`comments`, `${articleId}-${parentCommentId}`]);
+          setInputState(() => "")
+        }
+      })
+    }
+
   const renderComments = data && data.pages.map((page) => {
     const renderPageItems = page.content.map((el, idx) => {
       return <ArticleCommentsItem comment={el} depth={depth} articleId={articleId} parentCommentId={parentCommentId} />
@@ -49,20 +73,31 @@ function ArticleComments({articleId, parentCommentId, depth}: ArticleCommentsPro
 
   const showMoreButton = (
     <div css={showMoreWrapperCSS}>
-      <Button theme={"text"} css={css`font-weight: 500;`}>Show More...</Button>
+      <Button onClick={() => fetchNextPage()} theme={"text"} css={css`font-weight: 500;`}>Show More...</Button>
     </div>
   )
 
   const renderTextarea = (
-    <Textarea theme={"default"} css={textareaCSS} placeholder='댓글을 입력해 주세요!'>
-          <Textarea.Bottom>
-            <div css={textareaButtonWrapperCSS}>
-              <div/>
-              <Button theme={"text"} css={buttonCSS}>Submit</Button>
-            </div>
-            
-          </Textarea.Bottom>
-        </Textarea>
+    
+    <ArticleCommentsTextarea inputState={inputState} setInputState={setInputState} submitHandler={submitHandler}/>
+  )
+
+  const renderRequireLogin = (
+    <div css={emptyWrapperCSS}>
+      댓글 작성은 로그인이 필요한 서비스입니다.
+    </div>
+  )
+
+  const renderEmpty = (
+    <React.Fragment>
+      
+      <div css={emptyWrapperCSS}>
+        댓글을 작성해 주세요!
+      </div>
+ 
+      {renderTextarea}
+
+      </React.Fragment>
   )
   
   if (isFetched && data?.pages[0].content.length !== 0) {
@@ -73,23 +108,21 @@ function ArticleComments({articleId, parentCommentId, depth}: ArticleCommentsPro
   
         {/* {showMoreButton} */}
         {depth === 0 && <div css={dividerCSS} />}
-        {renderTextarea}
+        {auth.currentUser.role === 'GUEST' ? (depth === 0 ? renderRequireLogin : null) : renderTextarea}
         {depth !== 0 && <div css={dividerCSS} />}
       </div>
     )
   } else if (isLoading || isError || !data) {
     return (
       <div css={commentsWrapperCSS}>
-        <ArticleCommentsLoading />
+        <ArticleCommentsLoading count={depth === 0 ? 10 : entity} />
+        {renderTextarea}
       </div>
     )
   } else if (!isLoading) {
     return (
       <React.Fragment>
-      <div css={emptyWrapperCSS}>
-        댓글을 작성해 주세요!
-      </div>
-      {renderTextarea}
+        {auth.currentUser.role === 'GUEST' ? renderRequireLogin : renderEmpty}
       </React.Fragment>
       
     )
@@ -117,6 +150,7 @@ const dividerCSS = css`
   width: 100%;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.1);
+  
   /* margin-top: 6px; */
   /* margin-bottom: 2px; */
 `
@@ -142,14 +176,14 @@ background-color: #f3f6ff85;
 
 const emptyWrapperCSS = css`
   width: 100%;
-  height: 120px;
+  min-height: 110px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 16px;
   color: rgba(0, 0, 0, 0.6);
-  margin-bottom: 36px;
-  background-color: #f3f6ff85;
-  border-radius: 4px;
+  margin-bottom: 16px;
+  background-color: #f3f6ff;
+  border-radius: 20px;
 `
 export default ArticleComments

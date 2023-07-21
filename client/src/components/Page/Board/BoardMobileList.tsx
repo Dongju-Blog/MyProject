@@ -15,6 +15,7 @@ import loading2 from "react-useanimations/lib/loading2";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import { throttle } from "lodash";
 import BoardMobileListLoading from "./BoardMobileListLoading";
+import Alert from "@/components/Interface/Loading/Alert";
 
 type BoardPropsType = {
   boardName: string;
@@ -33,7 +34,7 @@ function BoardMobileList({ boardName }: BoardPropsType) {
     fetchNextPage();
   });
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isError } =
+  const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
     useInfiniteQuery<mobileArticlesResponseType>(
       ["board", `${decodeURI(boardName)}`],
       ({ pageParam = { size, lastId: nextlastId } }) =>
@@ -52,6 +53,7 @@ function BoardMobileList({ boardName }: BoardPropsType) {
         refetchOnMount: false,
         staleTime: 18000000,
         cacheTime: 18000000,
+        retry: 1,
       }
     );
 
@@ -104,22 +106,26 @@ function BoardMobileList({ boardName }: BoardPropsType) {
     </div>
   );
 
-  if (data) {
+  if (data && data.pages[0].content.length !== 0) {
     return (
       <React.Fragment>
-        <div css={articlesWrapperCSS}>
-          {renderArticles}
-        </div>
+        <div css={articlesWrapperCSS}>{renderArticles}</div>
 
         {!data.pages[data.pages.length - 1].last && renderLoading}
       </React.Fragment>
+    );
+  } else if (error && (error as any).response.data.code === "202") {
+    return (
+      <div css={emptyWrapperCSS}>
+        <Alert label="게시글이 존재하지 않습니다!" />
+      </div>
     );
   } else {
     return (
       <div css={articlesWrapperCSS}>
         <BoardMobileListLoading />
       </div>
-    )
+    );
   }
 }
 
@@ -150,6 +156,11 @@ const loadingWrapperCSS = css`
   width: 100%;
   display: flex;
   justify-content: center;
+`;
+
+const emptyWrapperCSS = css`
+  width: 100%;
+  height: 100%;
 `;
 
 export default BoardMobileList;

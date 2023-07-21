@@ -4,15 +4,21 @@ import { layoutTokenStatusType, loginBodyType } from "@/types/auth";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { storeUser } from "@/store/store";
+import { storeUser, category } from "@/store/store";
 import { getUserInfoAPI } from "@/api/auth/getUserInfoAPI";
 import axios from "axios";
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
+import { getActiveBoardAPI } from "@/api/board/getActiveBoardAPI";
+import { cookies } from "next/dist/client/components/headers";
+import { postLogoutAPI } from "@/api/auth/postLogoutAPI";
+import { useQueryClient } from "@tanstack/react-query";
 
 function useAuthority() {
   const [storeUserAtom, setStoreUserAtom] = useAtom(storeUser);
   const noti = useNotification();
+  const queryClient = useQueryClient();
+
 
   const loginHandler = (body: loginBodyType) => {
     if (body.username === "" || body.password === "") {
@@ -29,19 +35,23 @@ function useAuthority() {
 
     return postLoginAPI({ body })
       .then((res) => {
+        const user = {
+          username: res.username,
+          status: res.status,
+          role: res.role,
+        }
         // setCookie("Authorization", res.accessToken, { path: "/", maxAge: 2 * 60 * 60 })
         setStoreUserAtom((prev) => {
           return {
             ...prev,
-            username: res.username,
-            status: res.status,
-            role: res.role,
+            ...user
           };
         });
-        setCookie("RefreshToken", res.refreshToken, {
-          path: "/",
-          maxAge: 14 * 24 * 60 * 60,
-        });
+        localStorage.setItem("user", JSON.stringify(user));
+        // setCookie("RefreshToken", res.refreshToken, {
+        //   path: "/",
+        //   maxAge: 14 * 24 * 60 * 60,
+        // });
         axios.defaults.headers.authorization = res.accessToken;
         // router.push('/')
       })
@@ -58,8 +68,13 @@ function useAuthority() {
   };
 
   const logoutHandler = async () => {
-    await removeCookie("RefreshToken");
-    axios.defaults.headers.authorization = await null;
+
+    await postLogoutAPI().then(() => {
+      axios.defaults.headers.authorization = "";
+    })
+    
+    await window.localStorage.clear();
+    await queryClient.clear()
     await setStoreUserAtom((prev) => {
       return {
         ...prev,
@@ -77,26 +92,29 @@ function useAuthority() {
 function useAuthorityInit() {
   const router = useRouter();
   const [storeUserAtom, setStoreUserAtom] = useAtom(storeUser);
+  
   const [isValidPage, setIsValidPage] = useState(false);
 
   useEffect(() => {
     if (storeUserAtom.role === null || storeUserAtom.role === null) {
-      const user = localStorage.getItem("user")
-      const parseUser = user && JSON.parse(user)
+      const user = localStorage.getItem("user");
+      const parseUser = user && JSON.parse(user);
 
       if (parseUser) {
-        setStoreUserAtom(() => parseUser)
+        setStoreUserAtom(() => parseUser);
       } else {
         getUserInfoHandler();
       }
     }
   }, []);
 
+
+
   const getUserInfoHandler = () => {
     getUserInfoAPI()
       .then((res) => {
         console.log(res);
-        localStorage.setItem("user", JSON.stringify(res))
+        localStorage.setItem("user", JSON.stringify(res));
         setStoreUserAtom(() => {
           return {
             username: res.username,

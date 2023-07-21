@@ -13,6 +13,11 @@ function BoardDesktopListItem({article, boardName}: BoardItemPropsType) {
 
   return (
     <div onClick={() => router.push(`/board/${boardName}/${article.id}`)} css={[articleDesktopItemWrapperCSS, articleDesktopItemWrapperSecondCSS]}>
+      <div css={imageWrapperCSS}>
+        {article.thumbnail ? <img src={article.thumbnail} css={css`height: 100%; width: auto;`}/> : <img src={"/assets/Thumbnail.png"} css={css`filter: invert(80%); width: 70%; height: auto;`}/>}
+        
+      </div>
+      
       <div css={textWrapperCSS}>
         
         <div>
@@ -26,10 +31,6 @@ function BoardDesktopListItem({article, boardName}: BoardItemPropsType) {
             {dateFormatter(article.createdAt)}
           </div>
       </div>
-      <div css={imageWrapperCSS}>
-        {article.thumbnail ? <img src={article.thumbnail} css={css`height: 100%; width: auto;`}/> : <img src={"/assets/Thumbnail.png"} css={css`filter: invert(80%); width: 70%; height: auto;`}/>}
-        
-      </div>
       
     </div>
   )
@@ -37,9 +38,9 @@ function BoardDesktopListItem({article, boardName}: BoardItemPropsType) {
 
 export const articleDesktopItemWrapperCSS = css`
   width: 100%;
-  height: 200px;
-  min-height: 200px;
-  max-height: 200px;
+  height: 230px;
+  min-height: 230px;
+  max-height: 230px;
   
   border-radius: 4px;
   display: flex;
@@ -48,7 +49,9 @@ export const articleDesktopItemWrapperCSS = css`
 `
 
 const articleDesktopItemWrapperSecondCSS = css`
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* border: 1px solid rgba(0, 0, 0, 0.1); */
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0px 0px 40px 1px rgba(0, 0, 0, 0.1);
 `
 
 const textWrapperCSS = css`
@@ -74,14 +77,14 @@ const previewWrapperCSS = css`
 `
 
 const imageWrapperCSS = css`
-  flex: 2;
+  flex: 3;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.05);
-
+  background-color: rgba(250, 250, 250, 1);
+  /* border-radius: 20px; */
 
 `
 

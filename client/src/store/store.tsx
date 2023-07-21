@@ -1,4 +1,5 @@
 import { storeUserType } from "@/types/auth";
+import { activeBoardItemType } from "@/types/board";
 import { createStore, atom } from "jotai"
 
 
@@ -16,7 +17,10 @@ const storeUser = atom<storeUserType>({
 	role: null,
 })
 
+const category = atom<activeBoardItemType[]>([])
+
 export {
 	stackNotification,
 	storeUser,
+	category
 }

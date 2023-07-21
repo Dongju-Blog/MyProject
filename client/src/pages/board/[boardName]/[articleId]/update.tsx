@@ -5,7 +5,7 @@ import Input from "@/components/Interface/Input/Input";
 import Dropdown from "@/components/Interface/Dropdown/Dropdown";
 
 import dynamic from "next/dynamic";
-import { filesType } from "@/types/board";
+import { filesType, postArticleBodyType } from "@/types/board";
 import CreateCategoryDropdown from "@/components/Page/Create/CreateCategoryDropdown";
 import Button from "@/components/Interface/Button/Button";
 import { postArticleAPI } from "@/api/board/postArticleAPI";
@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { getArticleAPI } from "@/api/board/getArticleAPI";
 import { putArticleAPI } from "@/api/board/putArticleAPI";
 import { update } from "lodash";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import CreateMarkdown from "@/components/Page/Create/CreateMarkdown";
 
 // https://github.com/uiwjs/react-md-editor#support-nextjs
@@ -30,9 +31,10 @@ function index() {
   const [title, setTitle] = useState<string>("");
   const [isSecret, setIsSecret] = useState<boolean>(false);
   const [isRepresentative, setIsRepresentative] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const {boardName, articleId} = router.query
-
+  
   useEffect(() => {
     if (boardName && articleId) {
       getArticleAPI({category: decodeURI(String(boardName)), id: Number(articleId)})
@@ -47,6 +49,11 @@ function index() {
     }
     
   }, [articleId])
+
+  const putArticleMutation = useMutation(
+    ({ id, body }: { id: number, body: postArticleBodyType }) =>
+    putArticleAPI({ id, body })
+  );
 
   const submitHandler = async () => {
     const fileUrls = await Object.keys(files).filter((el) =>
@@ -81,9 +88,15 @@ function index() {
       )
     );
 
-    putArticleAPI({ id, body: formData }).then((res) => {
-      router.push('/board' + res.url)
-    });
+    putArticleMutation.mutate({ id, body: formData }, {
+      onSuccess: (res) => {
+        queryClient.invalidateQueries([`Article`, `${articleId}`]).then(() => {
+          router.push('/board' + res.url)
+        });
+        
+      }
+    })
+
   };
 
   if (id) {
