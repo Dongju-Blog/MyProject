@@ -60,19 +60,19 @@ public class ErrorResponseEntity {
                         .build());
     }
 
-    /**
-     * max file size를 넘겼을 때 에러 코드 반환
-     *
-     * @param e
-     * @return
-     */
-    public static ResponseEntity<ErrorResponseEntity> toResponseEntity(MaxUploadSizeExceededException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_GATEWAY)
-                        .body(ErrorResponseEntity.builder()
-                                .code("34")
-                                .message("업로드 가능한 최대 사진 크기는 " + e.getMaxUploadSize() + "MB 입니다.")
-                                .build());
-    }
+//    /**
+//     * max file size를 넘겼을 때 에러 코드 반환
+//     *
+//     * @param e
+//     * @return
+//     */
+//    public static ResponseEntity<ErrorResponseEntity> toResponseEntity(MaxUploadSizeExceededException e) {
+//        return ResponseEntity
+//                .status(HttpStatus.BAD_GATEWAY)
+//                        .body(ErrorResponseEntity.builder()
+//                                .code("34")
+//                                .message("업로드 가능한 최대 사진 크기는 " + e.getMaxUploadSize() + "MB 입니다.")
+//                                .build());
+//    }
 
 }

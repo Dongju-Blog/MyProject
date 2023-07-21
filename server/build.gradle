@@ -2,7 +2,13 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.13'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+
 }
+
+
+
+
+
 
 bootJar.enabled = false
 
@@ -26,6 +32,7 @@ subprojects {
 	// spring boot dependency를 사용하여 사용중인 부트 버전에서 자동으로 의존성을 가져온다.
 	apply plugin: 'io.spring.dependency-management'
 
+
 	repositories {
 		mavenCentral()
 
@@ -34,8 +41,19 @@ subprojects {
 		}
 	}
 
+
+
+
+
+
+
+
 	dependencies {
 
+
+
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 		implementation('org.projectlombok:lombok')
 		annotationProcessor('org.projectlombok:lombok')
 		implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -62,7 +80,7 @@ subprojects {
 		runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
 
-//		annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
 	}
 
 	tasks.named('test') {
@@ -75,14 +93,25 @@ subprojects {
 
 
 project(":core-module") {
+
 	bootJar.enabled = false
 	jar.enabled = true
 
+
+
 	dependencies {
+
 	}
+
+
 }
 
 project(":api-module") {
+
+
+
+
+
 
 	bootJar {
 		archiveBaseName.set('myapp')
@@ -91,6 +120,7 @@ project(":api-module") {
 	}
 
 	dependencies {
+
 		implementation fileTree(dir: 'libs', include: ['*.jar'])
 		implementation project(':core-module')
 	}

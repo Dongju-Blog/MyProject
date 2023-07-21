@@ -2,10 +2,7 @@ package com.myapp.api.controller;
 
 
 import com.myapp.api.annotation.user.Authorize;
-import com.myapp.api.dto.user.EmailPostDto;
-import com.myapp.api.dto.user.LoginDto;
-import com.myapp.api.dto.user.SignUpDto;
-import com.myapp.api.dto.user.SignUpUsernameValidationDto;
+import com.myapp.api.dto.user.*;
 import com.myapp.api.service.user.UserService;
 import com.myapp.core.constant.Role;
 import com.myapp.core.entity.EmailMessage;
@@ -20,7 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
@@ -63,8 +62,47 @@ public class UserController {
      */
     @PostMapping("/login")
     @Authorize({Role.GUEST})
-    public ResponseEntity<?> getToken(@RequestBody LoginDto user) {
-        return new ResponseEntity<>(userService.login(user), HttpStatus.OK);
+    public ResponseEntity<?> getToken(@RequestBody LoginDto user, HttpServletResponse response) {
+        return new ResponseEntity<>(userService.login(user, response), HttpStatus.OK);
+    }
+
+
+    /**
+     * Logout
+     *
+     * @param
+     * @return token
+     */
+    @PostMapping("/logout")
+    @Authorize({Role.USER, Role.ADMIN})
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+
+        return new ResponseEntity<>(userService.logout(response), HttpStatus.OK);
+//        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+
+    /**
+     * 유저 회원가입
+     *
+     * @param requestDto
+     * @return id
+     */
+    @PostMapping("/change")
+    @Authorize({Role.USER, Role.ADMIN})
+    public ResponseEntity<?> changeUserInfo(HttpServletRequest request, @Valid @RequestBody ChangeUserInfoDto requestDto, Errors errors, Model model) {
+
+        Map<String, String> validatorResult = userService.changeUserInfo(request, requestDto, errors);
+
+        if (!validatorResult.isEmpty()) {
+            model.addAttribute("userDto", requestDto);
+            for (String key : validatorResult.keySet()) {
+                model.addAttribute(key, validatorResult.get(key));
+            }
+            return new ResponseEntity<>(validatorResult, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
 
@@ -75,10 +113,24 @@ public class UserController {
      * @return userInformation
      */
     @GetMapping
-    @Authorize({Role.USER})
+    @Authorize({Role.USER, Role.ADMIN})
     public ResponseEntity<?> getUserInformation(HttpServletRequest request) {
         return new ResponseEntity<>(userService.getUserInformation(request), HttpStatus.OK);
     }
+
+    /**
+     * GetVisibleUserInformation
+     *
+     * @param request
+     * @return userInformation
+     */
+    @GetMapping("/change")
+    @Authorize({Role.USER, Role.ADMIN})
+    public ResponseEntity<?> getVisibleUserInformation(HttpServletRequest request) {
+        return new ResponseEntity<>(userService.getVisibleUserInformation(request), HttpStatus.OK);
+    }
+
+
 
 
     /**

@@ -20,6 +20,7 @@ public enum ErrorCode{
     NOT_FOUND_EMAIL(HttpStatus.BAD_REQUEST, "6", "가입되지 않은 이메일입니다."),
     NOT_FOUND_ACCOUNT(HttpStatus.BAD_REQUEST, "7", "계정 정보가 존재하지 않습니다."),
     REQUEST_FAIL(HttpStatus.BAD_REQUEST, "8", "요청에 실패하였습니다."),
+    EMPTY_FIELD(HttpStatus.BAD_REQUEST, "8", "해당 항목은 필수 입력 값입니다."),
 
     EMPTY_NAME(HttpStatus.BAD_REQUEST, "100", "이름은 필수 입력 값입니다."),
     EMPTY_USERNAME(HttpStatus.BAD_REQUEST, "101", "아이디는 필수 입력 값입니다."),
@@ -38,6 +39,15 @@ public enum ErrorCode{
 
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "112", "비밀번호가 일치하지 않습니다."),
 
+    DUPLICATE_BOARD(HttpStatus.BAD_REQUEST, "200", "이미 존재하는 카테고리 이름입니다."),
+    DUPLICATE_ORDER(HttpStatus.BAD_REQUEST, "201", "이미 배정된 순서입니다."),
+    NOT_FOUND_BOARD(HttpStatus.BAD_REQUEST, "202", "카테고리를 찾을 수 없습니다."),
+    FAIL_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "203", "파일 업로드에 실패하였습니다."),
+    EMPTY_FILE(HttpStatus.BAD_REQUEST, "204", "첨부 파일이 비어있습니다."),
+    NOT_FOUND_ARTICLE(HttpStatus.BAD_REQUEST, "205", "게시글을 찾을 수 없습니다."),
+    INVALID_BOARD_NAME(HttpStatus.BAD_REQUEST, "206", "카테고리 이름의 형식이 잘못되었습니다."),
+    INVALID_FILE(HttpStatus.BAD_REQUEST, "206", "유효하지 않은 파일 형식입니다."),
+    NOT_FOUND_COMMENT(HttpStatus.BAD_REQUEST, "202", "해당 댓글을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

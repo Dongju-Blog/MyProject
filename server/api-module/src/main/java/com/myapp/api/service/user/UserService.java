@@ -1,15 +1,14 @@
 package com.myapp.api.service.user;
 
-import com.myapp.api.dto.user.EmailPostDto;
-import com.myapp.api.dto.user.LoginDto;
-import com.myapp.api.dto.user.SignUpDto;
-import com.myapp.api.dto.user.SignUpUsernameValidationDto;
+import com.myapp.api.dto.board.ChangeBoardsOrdersDto;
+import com.myapp.api.dto.user.*;
 import com.myapp.core.entity.EmailMessage;
 import com.myapp.core.entity.User;
 import com.myapp.core.exception.ErrorCode;
 import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public interface UserService {
@@ -23,7 +22,11 @@ public interface UserService {
     Map<String, String> signUp(SignUpDto requestDto, Errors errors);
 
 
-    Map<String, String> login(LoginDto user);
+    Map<String, String> login(LoginDto user, HttpServletResponse response);
+
+    Map<String, String> logout(HttpServletResponse response);
+
+    public Map<String, String> changeUserInfo(HttpServletRequest request, ChangeUserInfoDto requestDto, Errors errors);
 
     Map<String, String> getUserInformation(HttpServletRequest request);
 
@@ -36,5 +39,8 @@ public interface UserService {
      * @return
      */
     Boolean sendMail(EmailPostDto emailPostDto, String type);
+
+    Map<String, String> getVisibleUserInformation(HttpServletRequest request);
+
 
 }
