@@ -52,7 +52,7 @@ const backgroundCSS = css`
 		/* background-size: cover; */
     
 		/* filter: brightness(50%); */
-    background-image: url('/assets/Wallpaper5.jpg');
+    background-image: url('/assets/Wallpaper5_compressed.png');
     background-size: cover;
     background-color: rgba(0, 0, 0, 0.1);
     filter: opacity(50%) ;

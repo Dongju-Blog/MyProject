@@ -28,7 +28,7 @@ export type categoryMenuType = {
 
 function Navbar() {
   const util = useNavbarUtil()
-  const isMobile = useResponsive(mediaQuery.mobile)
+  const isMobile = useResponsive(mediaQuery.tablet)
   const router = useRouter()
   const category = useGetCategory()
 

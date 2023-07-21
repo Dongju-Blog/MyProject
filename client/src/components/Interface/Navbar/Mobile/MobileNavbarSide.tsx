@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { css } from "@emotion/react";
 import { categoryType } from '../Navbar';
 import Button from '../../Button/Button';
 import { useRouter } from 'next/router';
 import useAuthority from '@/hooks/useAuthority';
 import { AUTH_ICON } from '@/components/Assets/AuthIcons';
+
 
 type MobileNavbarSidePropsType = {
   categoryList: categoryType[]
@@ -14,6 +15,22 @@ type MobileNavbarSidePropsType = {
 function MobileNavbarSide({categoryList, closeModalHandler}: MobileNavbarSidePropsType) {
   const router = useRouter();
   const auth = useAuthority();
+
+  useEffect(() => {
+    router.beforePopState(({ url, as, options }) => {
+      if (as !== router.asPath) {
+        window.history.pushState('', '');
+        router.push(router.asPath);
+        closeModalHandler && closeModalHandler()
+        return false
+      }
+
+      return true
+    })
+    return () => {
+       router.beforePopState(() => true);
+    };
+	}, [])
 
   const renderCategory = categoryList.map((category, idx) => {
     const renderCategoryMenu = category.menu.map((menu, idx) => {
