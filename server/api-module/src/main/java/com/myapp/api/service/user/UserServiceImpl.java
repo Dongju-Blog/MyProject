@@ -136,21 +136,21 @@ public class UserServiceImpl implements UserService {
             userRepository.save(existingUser);
 
 
-            Cookie httpOnlyCookie = new Cookie("RefreshToken", refreshToken);
-            httpOnlyCookie.setMaxAge(14 * 24 * 60 * 60);
-            httpOnlyCookie.setPath("/");
-            httpOnlyCookie.setHttpOnly(true); // HttpOnly 옵션 설정
-            httpOnlyCookie.setSecure(true); // HTTPS 프로토콜을 사용하는 경우에만 쿠키 전송
-            response.addCookie(httpOnlyCookie);
+//            Cookie httpOnlyCookie = new Cookie("RefreshToken", refreshToken);
+//            httpOnlyCookie.setMaxAge(14 * 24 * 60 * 60);
+//            httpOnlyCookie.setPath("/");
+//            httpOnlyCookie.setHttpOnly(true); // HttpOnly 옵션 설정
+//            httpOnlyCookie.setSecure(true); // HTTPS 프로토콜을 사용하는 경우에만 쿠키 전송
+//            response.addCookie(httpOnlyCookie);
 
-//            ResponseCookie cookie = ResponseCookie.from("RefreshToken", refreshToken)
-//                    .maxAge(14 * 24 * 60 * 60)
-//                    .path("/")
-//                    .secure(true)
-//                    .sameSite("None")
-//                    .httpOnly(true)
-//                    .build();
-//            response.setHeader("Set-Cookie", cookie.toString());
+            ResponseCookie cookie = ResponseCookie.from("RefreshToken", refreshToken)
+                    .maxAge(14 * 24 * 60 * 60)
+                    .path("/")
+                    .secure(true)
+                    .sameSite("None")
+                    .httpOnly(true)
+                    .build();
+            response.setHeader("Set-Cookie", cookie.toString());
 
             return returnObject;
         } else {
@@ -162,21 +162,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, String> logout(HttpServletResponse response) {
-//        ResponseCookie cookie = ResponseCookie.from("RefreshToken", null)
-//                .maxAge(0)
-//                .path("/")
-//                .secure(true)
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .build();
-//        response.setHeader("Set-Cookie", cookie.toString());
+        ResponseCookie cookie = ResponseCookie.from("RefreshToken", null)
+                .maxAge(0)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+        response.setHeader("Set-Cookie", cookie.toString());
 //
-        Cookie httpOnlyCookie = new Cookie("RefreshToken", null);
-        httpOnlyCookie.setMaxAge(0);
-        httpOnlyCookie.setPath("/");
-        httpOnlyCookie.setHttpOnly(true); // HttpOnly 옵션 설정
-        httpOnlyCookie.setSecure(true); // HTTPS 프로토콜을 사용하는 경우에만 쿠키 전송
-        response.addCookie(httpOnlyCookie);
+//        Cookie httpOnlyCookie = new Cookie("RefreshToken", null);
+//        httpOnlyCookie.setMaxAge(0);
+//        httpOnlyCookie.setPath("/");
+//        httpOnlyCookie.setHttpOnly(true); // HttpOnly 옵션 설정
+//        httpOnlyCookie.setSecure(true); // HTTPS 프로토콜을 사용하는 경우에만 쿠키 전송
+//        response.addCookie(httpOnlyCookie);
 
         Map<String, String> result = new HashMap<>();
         result.put("result", "OK");
