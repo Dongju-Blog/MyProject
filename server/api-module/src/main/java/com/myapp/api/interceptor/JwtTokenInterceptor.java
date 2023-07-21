@@ -4,12 +4,14 @@ import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.api.user.RefreshTokenProvider;
 import com.myapp.core.exception.CustomException;
 import com.myapp.core.exception.ErrorCode;
+import com.myapp.core.exception.MyCustomException;
 import com.myapp.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,9 +27,18 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        // 액세스 토큰이 유효하지 않은 경우, 리프레시 토큰 확인 및 액세스 토큰 재발급 절차로 넘어간다.
+        Cookie getRefreshToken = refreshTokenProvider.getExistedRefreshToken(request);
+        String refreshToken = null;
+        if (getRefreshToken != null) {
+            refreshToken = getRefreshToken.getValue();
+//            throw new MyCustomException(refreshToken);
+        }
+
+
 
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader == null) {
+        if (authorizationHeader == null && refreshToken == null) {
             // 토큰의 정보가 아예 없을 경우, 패스
             return true;
         }
@@ -39,8 +50,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 액세스 토큰이 유효하지 않은 경우, 리프레시 토큰 확인 및 액세스 토큰 재발급 절차로 넘어간다.
-        String refreshToken = refreshTokenProvider.getExistedRefreshToken(request);
+
 
         //  && jwtTokenProvider.validateToken(refreshToken)
         if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
@@ -62,6 +72,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         }
 
         // 유효한 토큰이 없는 경우 또는 토큰 재발급에 실패한 경우에는 요청 거부
+//        throw new MyCustomException("뭔 에러야");
         throw new CustomException(ErrorCode.INVALID_TOKEN);
     }
 

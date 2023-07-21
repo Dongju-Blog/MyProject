@@ -2,6 +2,7 @@ package com.myapp.api.service.comment;
 
 import com.myapp.api.dto.comment.CommentsResDto;
 import com.myapp.api.dto.comment.CreateCommentDto;
+import com.myapp.api.dto.comment.UpdateCommentDto;
 import com.myapp.api.user.JwtTokenProvider;
 import com.myapp.core.entity.Article;
 import com.myapp.core.entity.Comment;
@@ -163,6 +164,74 @@ public class CommentServiceImpl implements CommentService {
 
 
         return validatorResult;
+    }
+
+    @Override
+    public Map<String, String> updateComment(Long id, HttpServletRequest request, UpdateCommentDto requestDto, Errors errors) {
+        Map<String, String> validatorResult = new HashMap<>();
+
+        for (FieldError error : errors.getFieldErrors()) {
+            String validKeyName = String.format(error.getField());
+            String errorName = ErrorCode.valueOfIgnoreCase(error.getDefaultMessage()).getMessage();
+            validatorResult.put(validKeyName, errorName);
+        }
+
+        if (!validatorResult.isEmpty()) {
+            return validatorResult;
+        }
+
+
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+        Long userId = jwtTokenProvider.getId(token);
+
+        Optional<User> getUser = userRepository.findById(userId);
+        if (getUser.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ACCOUNT);
+        }
+        User user = getUser.get();
+
+        Optional<Comment> getComment = commentRepository.findById(id);
+        if (getComment.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_COMMENT);
+        }
+
+        Comment comment = getComment.get();
+
+        if (!comment.getUser().equals(user)) {
+            throw new CustomException(ErrorCode.PROHIBITED);
+        }
+
+        comment.setContent(requestDto.getContent());
+
+        commentRepository.save(comment);
+
+        return validatorResult;
+    }
+
+
+    @Override
+    public void deleteComment(Long id, HttpServletRequest request) {
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+        Long userId = jwtTokenProvider.getId(token);
+
+        Optional<User> getUser = userRepository.findById(userId);
+        if (getUser.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ACCOUNT);
+        }
+        User user = getUser.get();
+
+        Optional<Comment> getComment = commentRepository.findById(id);
+        if (getComment.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_COMMENT);
+        }
+
+        Comment comment = getComment.get();
+
+        if (!comment.getUser().equals(user)) {
+            throw new CustomException(ErrorCode.PROHIBITED);
+        }
+
+        commentRepository.delete(comment);
     }
 
 

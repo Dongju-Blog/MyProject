@@ -18,8 +18,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     public WebConfig(AuthorizationInterceptor authorizationInterceptor, JwtTokenInterceptor jwtTokenInterceptor) {
-        this.authorizationInterceptor = authorizationInterceptor;
         this.jwtTokenInterceptor = jwtTokenInterceptor;
+        this.authorizationInterceptor = authorizationInterceptor;
+
     }
 
     @Override

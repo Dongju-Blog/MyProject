@@ -51,7 +51,7 @@ public class BoardServiceImpl implements BoardService {
         String token = jwtTokenProvider.getExistedAccessToken(request);
         List<Object> boards = new ArrayList<>();
 
-        if (!token.isEmpty()) {
+        if (token != null) {
             Role role = jwtTokenProvider.getRole(token);
             if (role.equals(Role.ADMIN)) {
                 List<ActiveBoards> boardsList = activeBoardsRepository.findAllByOrderByViewOrderAsc();
@@ -240,7 +240,9 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
-    public Map<String, Object> getArticle(String category, Long id) {
+    public Map<String, Object> getArticle(HttpServletRequest request, String category, Long id) {
+
+
         String urlDecode = category;
         try {
             // [URL 인코딩 된 문자 인지 확인 실시]
@@ -252,7 +254,14 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Map<String, Object> returnArticle = new HashMap<>();
-        Optional<Article> getArticle = articleRepository.findByBoard_NameAndId(urlDecode, id);
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+        Optional<Article> getArticle;
+        if (token != null && jwtTokenProvider.getRole(token) == Role.ADMIN) {
+            getArticle = articleRepository.findByBoard_NameAndId(urlDecode, id);
+        } else {
+            getArticle = articleRepository.findByBoard_NameAndIdAndBoardIsSecretFalse(urlDecode, id);
+        }
+
         if (getArticle.isPresent()) {
             Article article = getArticle.get();
             returnArticle.put("title", article.getTitle());
@@ -293,7 +302,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Page<ArticlesResDto> getArticles(String category, Pageable pageable) {
+    public Page<ArticlesResDto> getArticles(HttpServletRequest request, String category, Pageable pageable) {
+
 
         String urlDecode = category;
         try {
@@ -305,9 +315,20 @@ public class BoardServiceImpl implements BoardService {
             e.printStackTrace();
         }
 
+        String token = jwtTokenProvider.getExistedAccessToken(request);
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), 10, Sort.by("createdAt").descending());
+        Page<Article> getArticles;
+        if (token != null) {
+            Role role = jwtTokenProvider.getRole(token);
+            if (role == Role.ADMIN) {
+                getArticles = articleRepository.findByBoard_Name(urlDecode, pageRequest);
+            } else {
+                getArticles = articleRepository.findByBoard_NameAndIsSecretFalse(urlDecode, pageRequest);
+            }
+        } else {
+            getArticles = articleRepository.findByBoard_NameAndIsSecretFalse(urlDecode, pageRequest);
+        }
 
-        Page<Article> getArticles = articleRepository.findByBoard_NameAsPage(urlDecode, pageRequest);
         if (getArticles.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND_BOARD);
         }
@@ -381,7 +402,7 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
-    public Map<String, Object> getArticlesMobile(String category, Long lastId, int size) {
+    public Map<String, Object> getArticlesMobile(HttpServletRequest request, String category, Long lastId, int size) {
 
         String urlDecode = category;
         try {
@@ -393,10 +414,20 @@ public class BoardServiceImpl implements BoardService {
             e.printStackTrace();
         }
 
-
+        String token = jwtTokenProvider.getExistedAccessToken(request);
         PageRequest pageRequest = PageRequest.of(0, size);
+        Slice<Article> getArticles;
+        if (token != null) {
+            Role role = jwtTokenProvider.getRole(token);
+            if (role == Role.ADMIN) {
+                getArticles = articleRepository.findByBoard_NameAndIdLessThanOrderByIdDesc(lastId, urlDecode, pageRequest);
+            } else {
+                getArticles = articleRepository.findByBoard_NameAndIdLessThanAndBoardIsSecretFalseOrderByIdDesc(lastId, urlDecode, pageRequest);
+            }
+        } else {
+            getArticles = articleRepository.findByBoard_NameAndIdLessThanAndBoardIsSecretFalseOrderByIdDesc(lastId, urlDecode, pageRequest);
+        }
 
-        Slice<Article> getArticles = articleRepository.findByBoard_NameAndIdLessThanOrderByIdDesc(lastId, urlDecode, pageRequest);
 
         if (getArticles.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND_BOARD);

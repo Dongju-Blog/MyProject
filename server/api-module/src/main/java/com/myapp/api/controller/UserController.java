@@ -17,7 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
@@ -60,8 +62,23 @@ public class UserController {
      */
     @PostMapping("/login")
     @Authorize({Role.GUEST})
-    public ResponseEntity<?> getToken(@RequestBody LoginDto user) {
-        return new ResponseEntity<>(userService.login(user), HttpStatus.OK);
+    public ResponseEntity<?> getToken(@RequestBody LoginDto user, HttpServletResponse response) {
+        return new ResponseEntity<>(userService.login(user, response), HttpStatus.OK);
+    }
+
+
+    /**
+     * Logout
+     *
+     * @param
+     * @return token
+     */
+    @PostMapping("/logout")
+    @Authorize({Role.USER, Role.ADMIN})
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+
+        return new ResponseEntity<>(userService.logout(response), HttpStatus.OK);
+//        return ResponseEntity.ok(HttpStatus.OK);
     }
 
 

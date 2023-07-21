@@ -24,12 +24,12 @@ public interface BoardService {
 
     Map<String, String> updateArticle(Long id, CreateArticleDto json, Optional<List<MultipartFile>> files, Errors errors);
 
-    Map<String, Object> getArticle(String category, Long id);
+    Map<String, Object> getArticle(HttpServletRequest request, String category, Long id);
 
     void deleteArticle(String category, Long id);
 
-    Page<ArticlesResDto> getArticles(String category, Pageable pageable);
+    Page<ArticlesResDto> getArticles(HttpServletRequest request, String category, Pageable pageable);
 
 //    Slice<ArticlesResDto> getArticlesMobile(String category, Pageable pageable);
-    Map<String, Object> getArticlesMobile(String category, Long lastId, int size);
+    Map<String, Object> getArticlesMobile(HttpServletRequest request, String category, Long lastId, int size);
 }

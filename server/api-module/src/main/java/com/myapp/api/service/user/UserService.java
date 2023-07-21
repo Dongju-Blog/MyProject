@@ -8,6 +8,7 @@ import com.myapp.core.exception.ErrorCode;
 import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public interface UserService {
@@ -21,7 +22,9 @@ public interface UserService {
     Map<String, String> signUp(SignUpDto requestDto, Errors errors);
 
 
-    Map<String, String> login(LoginDto user);
+    Map<String, String> login(LoginDto user, HttpServletResponse response);
+
+    Map<String, String> logout(HttpServletResponse response);
 
     public Map<String, String> changeUserInfo(HttpServletRequest request, ChangeUserInfoDto requestDto, Errors errors);
 

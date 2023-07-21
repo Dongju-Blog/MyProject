@@ -4,6 +4,7 @@ package com.myapp.api.controller;
 import com.myapp.api.annotation.user.Authorize;
 import com.myapp.api.dto.comment.CommentsResDto;
 import com.myapp.api.dto.comment.CreateCommentDto;
+import com.myapp.api.dto.comment.UpdateCommentDto;
 import com.myapp.api.service.comment.CommentService;
 import com.myapp.core.constant.Role;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,44 @@ public class CommentController {
         }
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+
+    /**
+     * updateComment
+     *
+     * @param (id, request, requestDto)
+     * @return
+     */
+    @PutMapping("/{id}")
+    @Authorize({Role.USER ,Role.ADMIN})
+    public ResponseEntity<?> updateComment(@PathVariable("id") Long id, HttpServletRequest request, @Valid @RequestBody UpdateCommentDto requestDto, Errors errors, Model model) {
+        Map<String, String> validatorResult = commentService.updateComment(id, request, requestDto, errors);
+
+        if (!validatorResult.isEmpty()) {
+            model.addAttribute("boardDto", requestDto);
+            for (String key : validatorResult.keySet()) {
+                model.addAttribute(key, validatorResult.get(key));
+            }
+            return new ResponseEntity<>(validatorResult, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    /**
+     * deleteComment
+     *
+     * @param (id, request)
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    @Authorize({Role.USER ,Role.ADMIN})
+    public ResponseEntity<?> deleteComment(@PathVariable("id") Long id, HttpServletRequest request) {
+        commentService.deleteComment(id, request);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+
 
     /**
      * getComments
