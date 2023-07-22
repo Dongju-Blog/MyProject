@@ -14,6 +14,7 @@ import Button from "@/components/Interface/Button/Button";
 import useAuthority from "@/hooks/useAuthority";
 import BoardHeader from "./BoardHeader";
 
+
 type BoardPropsType = {
   boardName: string;
   currentPage: number;
@@ -23,8 +24,9 @@ function BoardDesktop({ boardName, currentPage }: BoardPropsType) {
   const auth = useAuthority()
   const router = useRouter()
 
+  
   const articlesQuery = useQuery<pageablePageArticlesResponseType>(
-    ["board", `${decodeURI(boardName)}`, `${currentPage}`],
+    ["board", `${boardName}`, `${currentPage}`],
     () => getArticlesAPI({ category: boardName, page: currentPage - 1 }),
     {
       refetchOnWindowFocus: false,
@@ -38,7 +40,7 @@ function BoardDesktop({ boardName, currentPage }: BoardPropsType) {
   return (
     <div css={boardWrapperCSS}>
       <div>
-      <BoardHeader label={decodeURI(boardName)} fontSize={36} />
+      <BoardHeader label={boardName} fontSize={36} />
       </div>
       
       <BoardDesktopList articlesQuery={articlesQuery} pageUrl={`/board/${boardName}`} currentPage={currentPage} />

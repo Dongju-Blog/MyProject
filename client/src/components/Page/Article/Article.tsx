@@ -52,6 +52,7 @@ function Article({ articleId, boardName }: ArticlePropsType) {
         { id: articleId, category: boardName },
         {
           onSuccess: () => {
+            
             noti({
               content: (
                 <NotiTemplate
@@ -61,7 +62,10 @@ function Article({ articleId, boardName }: ArticlePropsType) {
               ),
               duration: 5000,
             });
-            router.push(`/board/${boardName}`);
+            queryClient.invalidateQueries(["board", `${boardName}`]).then(() => {
+              router.push(`/board/${boardName}`);
+            });
+            
           },
         }
       );

@@ -14,6 +14,7 @@ import mediaQuery from "@/util/responsive";
 import markdownToTxt from 'markdown-to-txt';
 import Wrapper from "@/components/Interface/Wrapper/Wrapper";
 import Skeleton from "@/components/Interface/Loading/Skeleton";
+import { useRouter } from "next/router";
 
 const MDEditor = dynamic(
   () => import("@/components/Page/Create/CreateMarkdown"),
@@ -42,7 +43,7 @@ type CreatePropsType = {
 }
 
 function Create({title, setTitle, content, setContent, category, setCategory, files, setFiles, isSecret, setIsSecret, isRepresentative, setIsRepresentative, submitHandler}: CreatePropsType) {
-  
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
 
 
@@ -67,7 +68,7 @@ function Create({title, setTitle, content, setContent, category, setCategory, fi
         />
         <div css={buttonWrapperCSS}>
           <div css={goBackButtonCSS}>
-            <Button theme={"text"}>〈</Button>
+            <Button theme={"text"} onClick={() => router.back()}>〈</Button>
           </div>
           <Button theme={"grey"} onClick={submitHandler} customCss={buttonCSS}>
             Submit
@@ -92,7 +93,7 @@ const containerCSS = css`
   height: 100%;
   
   @media ${mediaQuery.mobile} {
-    padding-top: 24px;
+    padding-top: 8px;
     
   }
   @media ${mediaQuery.desktop} {

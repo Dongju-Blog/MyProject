@@ -51,33 +51,21 @@ const useContainer = ({
   const router = useRouter();
   useEffect(() => {
     if (router.asPath === "/") {
-      setReserveStep(() => init)
+      setReserveStep(() => init);
     } else {
-      const init = Number(router.asPath.split("#")[1])
-      setReserveStep(() => init)
+      const init = Number(router.asPath.split("#")[1]);
+      setReserveStep(() => init);
     }
-
   }, []);
 
   useEffect(() => {
-    // console.log(
-    //   "reverseStep: ",
-    //   reserveStep,
-    //   "steps: ",
-    //   steps,
-    //   "completeStep",
-    //   completeStep,
-    //   "isReady: ",
-    //   isReady
-    // );
-    const hashPath = Number(router.asPath.split("#")[1])
+    const hashPath = Number(router.asPath.split("#")[1]);
     if (
       isReady === true &&
       steps[1] === completeStep &&
       reserveStep === 0 &&
       steps[1] !== hashPath
     ) {
-      
       setReserveStep(() => hashPath);
       setIsReady(() => false);
     }
@@ -85,50 +73,34 @@ const useContainer = ({
 
   useEffect(() => {
     if (reserveStep !== 0) {
-      // console.log("reserveStep useEffect");
-      // console.log('reverseStep: ', reserveStep, 'steps: ', steps, 'isReady: ', isReady);
       const position = steps[1] > reserveStep ? "left" : "right";
       if (position === "left") {
-        // setSteps(() => [reserveStep - 1, reserveStep, steps[1]]);
         setSteps(() => [reserveStep, steps[1], steps[2]]);
       } else if (position === "right") {
-        // setSteps(() => [steps[1], reserveStep, reserveStep + 1]);
         setSteps(() => [steps[0], steps[1], reserveStep]);
       }
     }
-    
   }, [reserveStep]);
 
-  //---------------------------------------------------------------
-  //---------------------------------------------------------------
-
   useEffect(() => {
-    
     const position = steps[1] > reserveStep ? "left" : "right";
     const reservedContainerIdx = steps.indexOf(reserveStep);
-    // console.log("reservedContainerIdx: ", reservedContainerIdx);
     if (
       reserveStep !== 0 &&
       reservedContainerIdx !== 1 &&
       reservedContainerIdx !== -1
     ) {
-      //steps[1] === completeStep
       if (position === "left") {
-        // console.log("move");
         setTimeout(
           () => setSteps(() => [steps[0] - 1, steps[0], steps[1]]),
           100
         );
-        // setSteps(() => [steps[0] - 1, steps[0], steps[1]])
       } else if (position === "right") {
-        // console.log("move");
         setTimeout(
           () => setSteps(() => [steps[1], steps[2], steps[2] + 1]),
           100
         );
-        // setSteps(() => [steps[1], steps[2], steps[2] + 1])
       }
-      // setReserveStep(() => 0);
     }
 
     if (steps[1] === reserveStep) {
@@ -137,19 +109,9 @@ const useContainer = ({
         setCompleteStep(() => steps[1]);
       }, duration);
     }
-
-    // setTimeout(() => {
-    //   setCompleteStep(() => steps[1]);
-    // }, duration);
   }, [steps]);
 
-  //-----------------------------------------------------------------
-
-  //---------------------------------------------------------------
-
   useEffect(() => {
-    // console.log('reverseStep: ', reserveStep, 'steps: ', steps, 'isReady: ', isReady);
-
     if (
       steps[1] === completeStep &&
       (steps[1] - steps[0] !== 1 || steps[2] - steps[1] !== 1)
@@ -157,36 +119,16 @@ const useContainer = ({
       setSteps(() => [steps[1] - 1, steps[1], steps[1] + 1]);
     }
 
-    // if (
-    //   steps[1] === completeStep &&
-    //   reserveStep === 0
-    // ) {
-    //   setIsReady(() => true);
-    // }
-
     setIsReady(() => true);
-    const hashPath = Number(router.asPath.split("#")[1])
-    
-    if (
-      hashPath !== steps[1] &&
-      steps[1] === completeStep
-    ) {
+    const hashPath = Number(router.asPath.split("#")[1]);
+
+    if (hashPath !== steps[1] && steps[1] === completeStep) {
       setReserveStep(() => hashPath);
-      
     }
   }, [completeStep]);
 
-  //---------------------------------------------------------------
-  //---------------------------------------------------------
-
   const setStepHandler = throttle((value: number) => {
     if (steps[1] === completeStep && isReady === true && reserveStep === 0) {
-      // if (kind === "immediate") {
-      //   setSteps(value);
-      // } else if (kind === "reserve") {
-      //   // setReserveStep(value);
-      //   router.push(`/#${value}`)
-      // }
       router.push(`/#${value}`);
     }
   }, duration);
@@ -219,11 +161,8 @@ const Container = ({
   }, [steps]);
 
   const onScrollHandler = throttle((e: React.WheelEvent<HTMLDivElement>) => {
-    // console.log(e);
-
     const last = validChildren && validChildren.length;
     if (containerRef.current && completeStep === steps[1]) {
-      
       if (e.deltaY > 0 && steps[1] < Number(last) - 1) {
         if (
           containerRef.current.clientHeight >=
@@ -245,28 +184,32 @@ const Container = ({
     }
   }, duration);
 
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
-  const minSwipeDistance = 50 
-  
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 50;
 
   const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchEnd(null) // otherwise the swipe is fired even with usual touch events
-    setTouchStart(e.targetTouches[0].clientY)
-  }
+    setTouchEnd(null); // otherwise the swipe is fired even with usual touch events
+    setTouchStart(e.targetTouches[0].clientY);
+  };
 
-  const onTouchMove = throttle((e: React.TouchEvent<HTMLDivElement>) => setTouchEnd(e.targetTouches[0].clientY), duration)
-
-
+  const onTouchMove = throttle(
+    (e: React.TouchEvent<HTMLDivElement>) =>
+      setTouchEnd(e.targetTouches[0].clientY),
+    duration
+  );
 
   const onTouchHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!touchStart || !touchEnd) return
-    const deltaY = touchStart - touchEnd
-    
+    if (!touchStart || !touchEnd) return;
+    const deltaY = touchStart - touchEnd;
+
     const last = validChildren && validChildren.length;
     if (containerRef.current && completeStep === steps[1]) {
-      
-      if (deltaY > 0 && deltaY > minSwipeDistance && steps[1] < Number(last) - 1) {
+      if (
+        deltaY > 0 &&
+        deltaY > minSwipeDistance &&
+        steps[1] < Number(last) - 1
+      ) {
         if (
           containerRef.current.clientHeight >=
             containerRef.current.scrollHeight ||
@@ -275,7 +218,7 @@ const Container = ({
         ) {
           setStep(steps[1] + 1);
         }
-      } else if (deltaY < 0 && deltaY < -minSwipeDistance &&  steps[1] > 1) {
+      } else if (deltaY < 0 && deltaY < -minSwipeDistance && steps[1] > 1) {
         if (
           containerRef.current.clientHeight >=
             containerRef.current.scrollHeight ||
@@ -286,7 +229,6 @@ const Container = ({
       }
     }
   };
-
 
   const validChildren = children && [
     <div />,
@@ -303,8 +245,6 @@ const Container = ({
             return (
               <div
                 id={`container-${idx}`}
-                // onScroll={(e) => e.preventDefault()}
-
                 key={`step-${idx}`}
                 ref={steps[1] === idx ? containerRef : null}
                 css={stepComponentCSS({
@@ -324,7 +264,13 @@ const Container = ({
     );
 
   return (
-    <div onWheel={onScrollHandler} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchHandler} css={containerWrapperCSS}>
+    <div
+      onWheel={onScrollHandler}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchHandler}
+      css={containerWrapperCSS}
+    >
       <Indicator
         totalStep={validChildren ? validChildren.length : 0}
         currentStep={steps[1]}
