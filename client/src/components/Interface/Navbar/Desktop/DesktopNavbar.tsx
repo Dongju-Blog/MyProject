@@ -136,6 +136,7 @@ const navbarWrapperCSS = ({ isTop }: { isTop: boolean }) => {
 const categoryWrapperCSS = css`
   display: flex;
   gap: 16px;
+  align-items: center;
 `;
 
 const rightSectionCSS = css`
