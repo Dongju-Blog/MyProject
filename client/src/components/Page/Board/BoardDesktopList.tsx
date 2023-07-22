@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { pageablePageArticlesResponseType } from "@/types/board";
 import { getArticlesAPI } from "@/api/board/getArticlesAPI";
 import { useRouter } from "next/router";
@@ -13,50 +13,41 @@ import Alert from "@/components/Interface/Loading/Alert";
 
 
 type BoardPropsType = {
-  boardName: string;
+  articlesQuery: UseQueryResult<pageablePageArticlesResponseType, unknown>
+  pageUrl: string
   currentPage: number;
 };
 
-function BoardDesktopList({ boardName, currentPage }: BoardPropsType) {
+function BoardDesktopList({ articlesQuery, pageUrl, currentPage }: BoardPropsType) {
   const router = useRouter();
 
   // const [page, setPage] = useState(currentPage ? currentPage : 0)
   // const {page} = router.query
 
-  const article = useQuery<pageablePageArticlesResponseType>(
-    ["board", `${decodeURI(boardName)}`, `${currentPage}`],
-    () => getArticlesAPI({ category: boardName, page: currentPage - 1 }),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      staleTime: 300000,
-      cacheTime: 300000,
-      retry: 1,
-    }
-  );
+  
 
   const renderArticles =
-    article.data &&
-    article.data.content.map((el) => {
-      return <BoardDesktopListItem article={el} boardName={boardName} />;
+  articlesQuery.data &&
+  articlesQuery.data.content.map((el) => {
+      return <BoardDesktopListItem article={el} boardName={el.boardName} />;
     });
 
-  if (article.data && !article.data.empty) {
+  if (articlesQuery.data && !articlesQuery.data.empty) {
     return (
       <div css={articlesListWrapperCSS}>
         <div css={articlesWrapperCSS}>{renderArticles}</div>
         <div css={desktopPaginationWrapperCSS}>
           <Pagination
-            key={`${boardName}-${currentPage}`}
+            key={`${pageUrl}-${currentPage}`}
             currentPage={currentPage}
-            maxPage={article.data.totalPages}
-            baseUrl={`/board/${boardName}`}
+            maxPage={articlesQuery.data.totalPages}
+            baseUrl={`${pageUrl}`}
             queryString={"page"}
           />
         </div>
       </div>
     );
-  } else if (article.error && (article.error as any ).response.data.code === '202') {
+  } else if (articlesQuery.error) {
     return (
       <div css={emptyWrapperCSS}>
         <Alert label="게시글이 존재하지 않습니다!" />

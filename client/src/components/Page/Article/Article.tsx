@@ -34,7 +34,6 @@ function Article({ articleId, boardName }: ArticlePropsType) {
     () => getArticleAPI({ category: decodeURI(boardName), id: articleId }),
     {
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
       staleTime: 300000,
       cacheTime: 300000,
     }
@@ -120,7 +119,7 @@ function Article({ articleId, boardName }: ArticlePropsType) {
   )
 
   return (
-    <div css={articleWrapperCSS}>
+    <div key={article.data?.updatedAt} css={articleWrapperCSS}>
       <div css={headerWrapperCSS}>
         <div css={titleWrapperCSS}>
           {article.data ? article.data.title : <Skeleton css={skeletonCSS} />}
@@ -266,7 +265,7 @@ const commentsWrapperCSS = css`
   @media ${mediaQuery.tablet} {
     /* margin-top: 96px; */
     /* background-color: rgba(0, 0, 0, 0.05); */
-    padding: 0px 8px 16px 8px;
+    padding: 0px 24px 16px 24px;
   }
   @media ${mediaQuery.overTablet} {
     margin-bottom: 16px;

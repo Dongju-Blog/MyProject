@@ -62,6 +62,7 @@ export type getArticlesItemType = {
   thumbnail: string
   createdAt: string
   updatedAt: string
+  boardName: string
 }
 
 export type postArticleResponseType = {

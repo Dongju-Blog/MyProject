@@ -76,7 +76,7 @@ function Create({title, setTitle, content, setContent, category, setCategory, fi
         
       </div>
       
-      <MDEditor key={title} {...{ content, setContent, files, setFiles, isLoading, setIsLoading }} />
+      <MDEditor key={JSON.stringify(category)} {...{ content, setContent, files, setFiles, isLoading, setIsLoading }} />
       {isLoading && <Skeleton css={css`flex: 1; width: 100%; height: 100%;`} />}
       </div>
     </Wrapper>

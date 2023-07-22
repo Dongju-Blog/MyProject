@@ -91,7 +91,7 @@ function index() {
     putArticleMutation.mutate({ id, body: formData }, {
       onSuccess: (res) => {
         queryClient.invalidateQueries([`Article`, `${articleId}`]).then(() => {
-          router.push('/board' + res.url)
+          router.replace('/board' + res.url)
         });
         
       }

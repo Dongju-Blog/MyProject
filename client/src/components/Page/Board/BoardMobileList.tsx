@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { UseInfiniteQueryResult, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { mobileArticlesResponseType } from "@/types/board";
 import { getArticlesAPI } from "@/api/board/getArticlesAPI";
 import { useRouter } from "next/router";
@@ -18,44 +18,24 @@ import BoardMobileListLoading from "./BoardMobileListLoading";
 import Alert from "@/components/Interface/Loading/Alert";
 
 type BoardPropsType = {
-  boardName: string;
+  pageUrl: string;
+  articlesQuery: UseInfiniteQueryResult<mobileArticlesResponseType, unknown>
 };
 
-function BoardMobileList({ boardName }: BoardPropsType) {
+function BoardMobileList({ articlesQuery, pageUrl }: BoardPropsType) {
   const router = useRouter();
-  const [nextlastId, setNextLastId] = useState(99999999999);
-  const [size, setSize] = useState(10);
+  // const [nextlastId, setNextLastId] = useState(99999999999);
+  
   // const [content, setContent] = useState<>()
   const loadingRef = useRef<HTMLDivElement>(null);
   // const [page, setPage] = useState(currentPage ? currentPage : 0)
   // const {page} = router.query
 
   const [observe, unobserve] = useIntersectionObserver(() => {
-    fetchNextPage();
+    articlesQuery.fetchNextPage();
   });
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
-    useInfiniteQuery<mobileArticlesResponseType>(
-      ["board", `${decodeURI(boardName)}`],
-      ({ pageParam = { size, lastId: nextlastId } }) =>
-        getArticlesMobileAPI({ category: boardName, ...pageParam }),
-      {
-        getNextPageParam: (lastPage, allPosts) => {
-          // 마지막 페이지와 전체 페이지 목록을 받아서 다음 페이지의 파라미터를 계산
-          if (lastPage.last) {
-            // last 속성이 true이면 더 이상 데이터가 없으므로 null을 반환하여 무한 스크롤을 멈춤
-            return null;
-          }
-          // 마지막 페이지의 nextLastId를 사용하여 다음 페이지를 가져오기 위해 다음 페이지 파라미터를 반환
-          return { size, lastId: lastPage.nextLastId };
-        },
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        staleTime: 18000000,
-        cacheTime: 18000000,
-        retry: 1,
-      }
-    );
+  
 
   useEffect(() => {
     if (loadingRef.current) {
@@ -67,12 +47,12 @@ function BoardMobileList({ boardName }: BoardPropsType) {
         unobserve(loadingRef.current);
       }
     };
-  }, [data]);
+  }, [articlesQuery.data]);
 
   const onScrollHandler = throttle((e: any) => {
     if (e.target.scrollTop !== 0) {
       window.sessionStorage.setItem(
-        `board-${boardName}-scroll`,
+        `board-${pageUrl}-scroll`,
         e.target.scrollTop
       );
     }
@@ -80,7 +60,7 @@ function BoardMobileList({ boardName }: BoardPropsType) {
 
   useEffect(() => {
     const getScroll = window.sessionStorage.getItem(
-      `board-${boardName}-scroll`
+      `board-${pageUrl}-scroll`
     );
     if (getScroll) {
       document.body.scrollTo(0, JSON.parse(getScroll));
@@ -92,9 +72,9 @@ function BoardMobileList({ boardName }: BoardPropsType) {
     };
   }, []);
 
-  const renderArticles = data?.pages.map((page) => {
+  const renderArticles = articlesQuery.data?.pages.map((page) => {
     const renderPageItems = page.content.map((el) => {
-      return <BoardMobileListItem article={el} boardName={boardName} />;
+      return <BoardMobileListItem article={el} boardName={el.boardName} />;
     });
 
     return renderPageItems;
@@ -106,15 +86,15 @@ function BoardMobileList({ boardName }: BoardPropsType) {
     </div>
   );
 
-  if (data && data.pages[0].content.length !== 0) {
+  if (articlesQuery.data && articlesQuery.data.pages[0].content.length !== 0) {
     return (
       <React.Fragment>
         <div css={articlesWrapperCSS}>{renderArticles}</div>
 
-        {!data.pages[data.pages.length - 1].last && renderLoading}
+        {!articlesQuery.data.pages[articlesQuery.data.pages.length - 1].last && renderLoading}
       </React.Fragment>
     );
-  } else if (error && (error as any).response.data.code === "202") {
+  } else if (articlesQuery.error) {
     return (
       <div css={emptyWrapperCSS}>
         <Alert label="게시글이 존재하지 않습니다!" />

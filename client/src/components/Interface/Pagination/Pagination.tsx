@@ -61,8 +61,8 @@ function Pagination({currentPage, maxPage, baseUrl, queryString}: PaginationProp
 
   const renderPages = pages.map((el, idx) => {
     return (
-      <div css={buttonWrapperCSS({target: el + 1, current: currentPage})}>
-        <Button theme={"text"} onClick={() => {pageOnClickHandler(el)}}>{el + 1}</Button>
+      <div onClick={() => {pageOnClickHandler(el)}} css={buttonWrapperCSS({target: el + 1, current: currentPage})}>
+        <Button theme={"text"} >{el + 1}</Button>
       </div>
       
     )
@@ -71,9 +71,9 @@ function Pagination({currentPage, maxPage, baseUrl, queryString}: PaginationProp
 
   return (
     <div css={paginationWrapperCSS}>
-      <Button theme={"text"} onClick={prevOnClickHandler}>&lt; Prev</Button>
+      <Button theme={"text"} onClick={prevOnClickHandler}>〈 Prev</Button>
       {renderPages}
-      <Button theme={"text"} onClick={nextOnClickHandler}>Next &gt;</Button>
+      <Button theme={"text"} onClick={nextOnClickHandler}>Next 〉</Button>
   
     </div>
   )
@@ -94,6 +94,7 @@ const buttonWrapperCSS = ({target, current}: {target: number; current: number}) 
     align-items: center;
     border-radius: 100%;;
     background-color: ${target === current && 'rgba(0, 0, 0, 0.1)'};
+    cursor: pointer;
   `
 }
 

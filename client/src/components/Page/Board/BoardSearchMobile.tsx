@@ -15,24 +15,21 @@ import loading2 from "react-useanimations/lib/loading2";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import { throttle } from "lodash";
 import BoardMobileList from "./BoardMobileList";
-import useAuthority from "@/hooks/useAuthority";
-import Button from "@/components/Interface/Button/Button";
+import { getSearchedArticlesMobileAPI } from "@/api/board/getSearchedArticlesMobileAPI";
 import BoardHeader from "./BoardHeader";
 
 type BoardPropsType = {
-  boardName: string;
+  searchKeyword: string;
 };
 
-function BoardMobile({ boardName }: BoardPropsType) {
-  const auth = useAuthority()
-  const router = useRouter()
+function BoardSearchMobile({ searchKeyword }: BoardPropsType) {
   const [size, setSize] = useState(10);
 
   const articlesQuery =
   useInfiniteQuery<mobileArticlesResponseType>(
-    ["board", `${decodeURI(boardName)}`],
+    ["board", `${searchKeyword}`],
     ({ pageParam = { size, lastId: 99999999999 } }) =>
-      getArticlesMobileAPI({ category: boardName, ...pageParam }),
+      getSearchedArticlesMobileAPI({ searchKeyword: encodeURI(searchKeyword), ...pageParam }),
     {
       getNextPageParam: (lastPage, allPosts) => {
         // 마지막 페이지와 전체 페이지 목록을 받아서 다음 페이지의 파라미터를 계산
@@ -54,8 +51,8 @@ function BoardMobile({ boardName }: BoardPropsType) {
 
     return (
       <div css={boardWrapperCSS}>
-        <BoardHeader label={decodeURI(boardName)} fontSize={36} />
-        <BoardMobileList articlesQuery={articlesQuery} pageUrl={`/board/mobile/${boardName}`} />
+        <BoardHeader label={`"${searchKeyword}" 에 대한 검색 결과`} fontSize={24} hideCreate={true} />
+        <BoardMobileList articlesQuery={articlesQuery} pageUrl={`/search?keyword=${searchKeyword}`} />
 
 
       </div>
@@ -82,10 +79,8 @@ const desktopPaginationWrapperCSS = css`
 `;
 
 const categoryTitleWrapperCSS = css`
-  
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  font-size: 24px;
+  font-weight: 700;
 `;
 
 const loadingWrapperCSS = css`
@@ -94,8 +89,4 @@ const loadingWrapperCSS = css`
   justify-content: center;
 `;
 
-const buttonCSS = css`
-  width: 100px;
-`
-
-export default BoardMobile;
+export default BoardSearchMobile;

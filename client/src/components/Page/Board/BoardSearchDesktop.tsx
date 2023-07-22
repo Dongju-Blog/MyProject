@@ -12,20 +12,21 @@ import BoardMobileItem from "./BoardMobileListItem";
 import BoardDesktopList from "./BoardDesktopList";
 import Button from "@/components/Interface/Button/Button";
 import useAuthority from "@/hooks/useAuthority";
+import { getSearchedArticlesAPI } from "@/api/board/getSearchedArticlesAPI";
 import BoardHeader from "./BoardHeader";
 
 type BoardPropsType = {
-  boardName: string;
+  searchKeyword: string;
   currentPage: number;
 };
 
-function BoardDesktop({ boardName, currentPage }: BoardPropsType) {
+function BoardSearchDesktop({ searchKeyword, currentPage }: BoardPropsType) {
   const auth = useAuthority()
   const router = useRouter()
 
   const articlesQuery = useQuery<pageablePageArticlesResponseType>(
-    ["board", `${decodeURI(boardName)}`, `${currentPage}`],
-    () => getArticlesAPI({ category: boardName, page: currentPage - 1 }),
+    ["board", `${searchKeyword}`, `${currentPage}`],
+    () => getSearchedArticlesAPI({ searchKeyword: encodeURI(searchKeyword), page: currentPage - 1 }),
     {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
@@ -37,11 +38,8 @@ function BoardDesktop({ boardName, currentPage }: BoardPropsType) {
 
   return (
     <div css={boardWrapperCSS}>
-      <div>
-      <BoardHeader label={decodeURI(boardName)} fontSize={36} />
-      </div>
-      
-      <BoardDesktopList articlesQuery={articlesQuery} pageUrl={`/board/${boardName}`} currentPage={currentPage} />
+      <BoardHeader label={`"${searchKeyword}" 에 대한 검색 결과`} fontSize={36} hideCreate={true} />
+      <BoardDesktopList articlesQuery={articlesQuery} pageUrl={`/search?keyword=${searchKeyword}`} currentPage={currentPage} />
     </div>
   );
 }
@@ -55,9 +53,14 @@ const boardWrapperCSS = css`
 
 `;
 
-
+const categoryTitleWrapperCSS = css`
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
 const buttonCSS = css`
   width: 100px;
 `
-export default BoardDesktop;
+export default BoardSearchDesktop;
