@@ -15,11 +15,7 @@ function Layout({ children }: LayoutPropsType) {
   const auth = useAuthority.Init();
   const getCategory = useGetCategory.Init();
 
-  useEffect(() => {
-    console.log(auth.isValidPage)
-  
 
-  }, [auth.isValidPage])
   
   if (auth.isValidPage) {
     return (

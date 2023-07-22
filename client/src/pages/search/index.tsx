@@ -104,7 +104,7 @@ const boardWrapperCSS = css`
   
   
   @media ${mediaQuery.tablet} {
-    width: 95%;
+    width: 90%;
     
     
   }

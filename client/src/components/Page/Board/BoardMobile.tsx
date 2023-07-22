@@ -30,7 +30,7 @@ function BoardMobile({ boardName }: BoardPropsType) {
 
   const articlesQuery =
   useInfiniteQuery<mobileArticlesResponseType>(
-    ["board", `${decodeURI(boardName)}`],
+    ["board", `${boardName}`],
     ({ pageParam = { size, lastId: 99999999999 } }) =>
       getArticlesMobileAPI({ category: boardName, ...pageParam }),
     {
@@ -54,7 +54,7 @@ function BoardMobile({ boardName }: BoardPropsType) {
 
     return (
       <div css={boardWrapperCSS}>
-        <BoardHeader label={decodeURI(boardName)} fontSize={36} />
+        <BoardHeader label={boardName} fontSize={36} />
         <BoardMobileList articlesQuery={articlesQuery} pageUrl={`/board/mobile/${boardName}`} />
 
 

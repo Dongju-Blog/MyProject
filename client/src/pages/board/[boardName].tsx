@@ -23,7 +23,7 @@ function index() {
 
           <div className={"float"} css={boardWrapperCSS}>
             <div css={css`padding-bottom: 36px; width: 100%; flex: 1;`}>
-            {isMobile ? <BoardMobile boardName={String(boardName)} /> : <BoardDesktop boardName={String(boardName)} currentPage={page ? Number(page) : 1} />}
+            {isMobile ? <BoardMobile boardName={decodeURI(String(boardName))} /> : <BoardDesktop boardName={decodeURI(String(boardName))} currentPage={page ? Number(page) : 1} />}
             </div>
             
             
@@ -40,7 +40,7 @@ function index() {
 const wrapperCSS = css`
   width: 100%;
   height: 100%;
-  display: flex;;
+  display: flex;
   flex-direction: column;
   align-items: center;
   
@@ -104,7 +104,7 @@ const boardWrapperCSS = css`
   
   
   @media ${mediaQuery.tablet} {
-    width: 95%;
+    width: 90%;
     
     
   }

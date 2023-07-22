@@ -8,7 +8,7 @@ type WrapperPropsType = {
 function Wrapper({children, ...props}: WrapperPropsType) {
 
   return (
-    <div {...props} css={wrapperCSS}>
+    <div className={"wrapper-component"}  css={wrapperCSS} {...props}>
       {children}
     </div>
   )
@@ -19,11 +19,11 @@ const wrapperCSS = css`
   height: 100%;
   
 
-  @media ${mediaQuery.desktop} {
+  @media ${mediaQuery.overTablet} {
     padding-top: var(--desktop-navbar-height);
   }
 
-  @media ${mediaQuery.mobile} {
+  @media ${mediaQuery.tablet} {
     padding-top: var(--mobile-navbar-height);
   }
 `
