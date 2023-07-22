@@ -156,6 +156,7 @@ const usernameWrapperCSS = css`
 
 const inputCSS = css`
   height: 28px;
+
 `;
 
 const searchIconWrapperCSS = css`
