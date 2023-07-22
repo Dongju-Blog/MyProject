@@ -109,7 +109,7 @@ function ArticleComments({articleId, parentCommentId, depth, entity}: ArticleCom
         {/* {showMoreButton} */}
         {depth === 0 && <div css={dividerCSS} />}
         {auth.currentUser.role === 'GUEST' ? (depth === 0 ? renderRequireLogin : null) : renderTextarea}
-        {depth !== 0 && <div css={dividerCSS} />}
+        {/* {depth !== 0 && <div css={dividerCSS} />} */}
       </div>
     )
   } else if (isLoading || isError || !data) {
