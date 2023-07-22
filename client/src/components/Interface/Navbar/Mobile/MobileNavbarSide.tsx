@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import { css } from "@emotion/react";
 import { categoryType } from '../Navbar';
 import Button from '../../Button/Button';
 import { useRouter } from 'next/router';
 import useAuthority from '@/hooks/useAuthority';
 import { AUTH_ICON } from '@/components/Assets/AuthIcons';
+import Input from '../../Input/Input';
+import { SEARCH_ICON } from '@/components/Assets/CommonIcons';
 
 
 type MobileNavbarSidePropsType = {
@@ -15,6 +17,7 @@ type MobileNavbarSidePropsType = {
 function MobileNavbarSide({categoryList, closeModalHandler}: MobileNavbarSidePropsType) {
   const router = useRouter();
   const auth = useAuthority();
+  const [searchInputState, setSearchInputState] = useState("")
 
   useEffect(() => {
     router.beforePopState(({ url, as, options }) => {
@@ -121,11 +124,29 @@ function MobileNavbarSide({categoryList, closeModalHandler}: MobileNavbarSidePro
     </div>
   );
 
+  const searchHandler = () => {
+    router.push(`/search?keyword=${searchInputState}`)
+    closeModalHandler && closeModalHandler();
+  }
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === "Enter") {
+      searchHandler();
+    }
+  };
+
   return (
     <div css={sideMenuWrapperCSS}>
       
         {auth.currentUser.username ? forUser : forGuest}
-   
+        <div css={inputWrapperCSS}> 
+        <Input theme={"dark"} placeholder='Enter a search keyword.' css={inputCSS} value={searchInputState} onChange={(e) => setSearchInputState(() => e.target.value)} onKeyDown={handleKeyDown} >
+              <Input.Right>
+                <div css={searchIconWrapperCSS} onClick={searchHandler}>{SEARCH_ICON}</div>
+              </Input.Right>
+            </Input>
+        </div>
+        
       
 
       <div css={categoryWrapperCSS}>
@@ -143,7 +164,7 @@ const sideMenuWrapperCSS = css`
   right: 0;
   background-color: black;
   box-shadow: 0px 0px 40px 40px rgba(0, 0, 0, 1);
-
+  user-select: none;
   /* display: flex;
   flex-direction: column;
   align-items: center; */
@@ -196,7 +217,7 @@ const guestHeaderWrapperCSS = css`
   align-items: center;
   gap: 16px;
   padding-bottom: 36px;
-  margin-bottom: 36px;
+  margin-bottom: 18px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 `
 
@@ -206,7 +227,7 @@ const userHeaderWrapperCSS = css`
   align-items: center;
   gap: 16px;
   padding-bottom: 36px;
-  margin-bottom: 36px;
+  margin-bottom: 18px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 `
 
@@ -229,4 +250,34 @@ const userInfoWrapperCSS = css`
   align-items: center;
   gap: 16px;
 `
+
+const inputCSS = css`
+  height: 28px;
+`;
+
+const searchIconWrapperCSS = css`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-right: 6px;
+  padding-top: 2px;
+  cursor: pointer;
+  
+
+  &:hover {
+    & path {
+      stroke: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  & path {
+    transition: stroke 1s;
+    stroke: rgba(255, 255, 255, 0.4);
+  }
+`;
+
+const inputWrapperCSS = css`
+  margin-bottom: 16px;
+`
+
 export default MobileNavbarSide

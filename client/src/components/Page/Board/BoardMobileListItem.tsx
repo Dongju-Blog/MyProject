@@ -38,9 +38,12 @@ function BoardMobileListItem({ article, boardName }: BoardItemPropsType) {
       </div>
 
       <div css={textWrapperCSS}>
+        <div>
         <div css={titleWrapperCSS}>{article.title}</div>
         <div css={previewWrapperCSS}>{article.preview}</div>
-        <div>{dateFormatter(article.createdAt)}</div>
+        </div>
+        
+        <div css={createdAtWrapperCSS}>{dateFormatter(article.createdAt)}</div>
       </div>
     </div>
   );
@@ -71,6 +74,7 @@ const textWrapperCSS = css`
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 `;
 
 const previewWrapperCSS = css`
@@ -103,5 +107,10 @@ const titleWrapperCSS = css`
   font-weight: 700;
   margin-bottom: 12px;
 `;
+
+const createdAtWrapperCSS = css`
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+`
 
 export default BoardMobileListItem;

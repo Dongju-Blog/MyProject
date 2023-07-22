@@ -61,7 +61,7 @@ function index() {
     );
 
     postArticleAPI({ body: formData }).then((res) => {
-      router.push('/board' + res.url)
+      router.replace('/board' + res.url)
     });
   };
 

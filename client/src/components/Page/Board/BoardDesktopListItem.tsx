@@ -27,7 +27,7 @@ function BoardDesktopListItem({article, boardName}: BoardItemPropsType) {
           </div>
           
         </div>
-        <div>
+        <div css={createdAtWrapperCSS}>
             {dateFormatter(article.createdAt)}
           </div>
       </div>
@@ -92,6 +92,11 @@ const titleWrapperCSS = css`
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 12px;
+`
+
+const createdAtWrapperCSS = css`
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
 `
 
 export default BoardDesktopListItem

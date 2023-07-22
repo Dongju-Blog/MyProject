@@ -117,7 +117,7 @@ const initInputCSS = css`
   }
 `;
 
-type ThemeProviderKeys = "default" | "restraint" | "none";
+type ThemeProviderKeys = "default" | "navBar" | "restraint" | "dark" | "none";
 type themeProviderType = { [prop: string]: SerializedStyles[] };
 
 const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
@@ -131,6 +131,20 @@ const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
       : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
 
     `],
+    navBar: [css`
+    /* border: 1px solid rgba(0, 0, 0, 0.1); */
+    background-color: ${isFocusing ? `rgba(255, 255, 255, 0.4)` : `rgba(255, 255, 255, 0.3)`};
+    border-radius: 20px;
+    transition: box-shadow 1s, background-color 1s;
+    box-shadow: ${isFocusing
+      ? "0px 0px 1px 4px #ffffff85"
+      : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
+    & input::placeholder {
+      color: rgba(0, 0, 0, 0.5);
+      font-style: italic;
+    }
+
+    `],
     restraint: [
       css`
         border-radius: 2px;
@@ -140,6 +154,18 @@ const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
           : "inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
       `,
     ],
+    dark: [css`
+    /* border: 1px solid rgba(0, 0, 0, 0.1); */
+    border-radius: 20px;
+    background-color: #151515;
+    transition: box-shadow 1s;
+
+    & input {
+      color: white;
+    }
+    
+
+    `],
     none: [
       css`
         
