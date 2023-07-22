@@ -131,6 +131,26 @@ public class BoardController {
         return new ResponseEntity<>(boardService.getArticles(request, category, pageable), HttpStatus.OK);
     }
 
+
+    /**
+     * getSearchedArticles
+     *
+     * @param searchKeyword
+     * @return
+     */
+    @GetMapping("/search/{searchKeyword}")
+    @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
+    public ResponseEntity<Page<ArticlesResDto>> getSearchedArticles(HttpServletRequest request, @PathVariable("searchKeyword") String searchKeyword, Pageable pageable) {
+
+        return new ResponseEntity<>(boardService.getSearchedArticles(request, searchKeyword, pageable), HttpStatus.OK);
+    }
+
+
+
+
+
+
+
 //    /**
 //     * getArticlesMobile
 //     *
@@ -156,6 +176,25 @@ public class BoardController {
 
         return new ResponseEntity<>(boardService.getArticlesMobile(request, category, lastId, size), HttpStatus.OK);
     }
+
+
+
+    /**
+     * getSearchedArticlesMobile
+     *
+     * @param searchKeyword
+     * @return
+     */
+    @GetMapping("/mobile/search/{searchKeyword}")
+    @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
+    public ResponseEntity<?> getSearchedArticlesMobile(HttpServletRequest request, @PathVariable("searchKeyword") String searchKeyword, @RequestParam Long lastId, @RequestParam int size) {
+
+        return new ResponseEntity<>(boardService.getSearchedArticlesMobile(request, searchKeyword, lastId, size), HttpStatus.OK);
+    }
+
+
+
+
 
 
 }

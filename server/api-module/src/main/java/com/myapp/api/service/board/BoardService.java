@@ -30,6 +30,10 @@ public interface BoardService {
 
     Page<ArticlesResDto> getArticles(HttpServletRequest request, String category, Pageable pageable);
 
+    Page<ArticlesResDto> getSearchedArticles(HttpServletRequest request, String searchKeyword, Pageable pageable);
+
 //    Slice<ArticlesResDto> getArticlesMobile(String category, Pageable pageable);
     Map<String, Object> getArticlesMobile(HttpServletRequest request, String category, Long lastId, int size);
+
+    Map<String, Object> getSearchedArticlesMobile(HttpServletRequest request, String searchKeyword, Long lastId, int size);
 }
