@@ -135,8 +135,8 @@ const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
     /* border: 1px solid rgba(0, 0, 0, 0.1); */
     background-color: ${isFocusing ? `rgba(0, 0, 0, 0.07)` : `rgba(0, 0, 0, 0.03)`};
     border-radius: 20px;
-    mix-blend-mode: exclusion;
     transition: box-shadow 1s, background-color 1s;
+      
     box-shadow: ${isFocusing
       ? "0px 0px 1px 4px rgba(0, 0, 0, 0.2)"
       : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
