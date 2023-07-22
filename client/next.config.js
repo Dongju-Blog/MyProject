@@ -1,10 +1,6 @@
 /** @type {import('next').nextConfig} */
 
-
-
 // module.exports = nextConfig
-
-
 
 const nextConfig = {
   reactStrictMode: true,
@@ -13,18 +9,15 @@ const nextConfig = {
     emotion: true,
   },
   async rewrites() {
-    
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:8081/api/:path*"
-        // destination: "https://server.dj-blog.com/api/:path*",
+        // destination: "http://localhost:8081/api/:path*"
+        destination: "https://server.dj-blog.com/api/:path*",
       },
     ];
   },
-	
-
-}
+};
 
 // const removeImports = require('next-remove-imports')({
 
@@ -38,4 +31,4 @@ const nextConfig = {
 //   return config;
 // };
 
-module.exports = nextConfig
+module.exports = nextConfig;
