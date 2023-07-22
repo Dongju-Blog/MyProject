@@ -15,7 +15,7 @@ function index() {
 
 
   return (
-    <AuthTemplate imageSrc={"/assets/Wallpaper3.jpg"} mobileImageTop={'-5%'}>
+    <AuthTemplate imageSrc={"/assets/Wallpaper3_compressed.png"} mobileImageTop={'-5%'}>
       {!router.query?.func && <AuthLogin/>}
       {router.query?.func === 'recovery' && <AuthRecovery/>}
       {router.query?.func === 'recovery_proc' && <AuthRecoveryProc/>}

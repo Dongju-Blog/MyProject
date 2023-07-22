@@ -81,7 +81,7 @@ function index() {
   };
 
   return (
-    <AuthTemplate imageSrc={"/assets/Wallpaper3.jpg"} mobileImageTop={"-20%"}>
+    <AuthTemplate imageSrc={"/assets/Wallpaper3_compressed.png"} mobileImageTop={"-20%"}>
       <AuthTemplate.TitleWrapper
         title={
           <React.Fragment>
