@@ -17,6 +17,7 @@ public class ArticlesResDto {
     String thumbnail;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    String boardName;
 
     public ArticlesResDto(Article article) {
         this.id = article.getId();
@@ -24,6 +25,7 @@ public class ArticlesResDto {
         this.preview = article.getPreview();
         this.createdAt = article.getCreatedAt();
         this.updatedAt = article.getUpdatedAt();
+        this.boardName = article.getBoard().getName();
         if (!article.getFiles().isEmpty()) {
             this.thumbnail = article.getFiles().get(0).getUrl();
         } else {

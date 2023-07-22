@@ -21,13 +21,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
      */
     Optional<Article> findById(Long id);
 
-    /**
-     * Board table 에서 Name으로 게시글 가져오기
-     *
-     * @param title
-     * @return Article
-     */
-    Optional<Article> findByTitle(String title);
+
 
     /**
      * Board table 에서 카테고리 이름과 게시글 id로 게시판 게시글 가져오기
@@ -46,6 +40,35 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
      */
     @Query("SELECT a FROM Article a WHERE a.board.name = :boardName AND a.id = :id AND a.board.isSecret = false")
     Optional<Article> findByBoard_NameAndIdAndBoardIsSecretFalse(String boardName, Long id);
+
+
+
+
+//    /**
+//     * Board table 에서 게시글 제목으로 게시판 게시글 가져오기
+//     *
+//     * @param articleTitle
+//     * @return Article
+//     */
+//    Page<Article> findByTitle(String articleTitle, Pageable pageable);
+//
+//    /**
+//     * Board 테이블에서 카테고리의 isSecret이 false인 게시글 제목으로 게시판 게시글 가져오기
+//     *
+//     * @param articleTitle
+//     * @return Optional<Article>
+//     */
+//    @Query("SELECT a FROM Article a WHERE a.title = :articleTitle AND a.board.isSecret = false")
+//    Page<Article> findByTitleAndBoardIsSecretFalse(String articleTitle, Pageable pageable);
+
+
+    // Board table에서 게시글 제목으로 게시판 게시글 가져오기 (articleTitle이 title에 포함되면서 공백 상관 없이 검색)
+    @Query("SELECT a FROM Article a WHERE REPLACE(a.title, ' ', '') LIKE %?1%")
+    Page<Article> findByTitleContaining(String articleTitle, Pageable pageable);
+
+    // Board 테이블에서 카테고리의 isSecret이 false인 게시글 제목으로 게시판 게시글 가져오기 (articleTitle이 title에 포함되면서 공백 상관 없이 검색)
+    @Query("SELECT a FROM Article a WHERE REPLACE(a.title, ' ', '') LIKE %?1% AND a.board.isSecret = false")
+    Page<Article> findByTitleContainingAndBoardIsSecretFalse(String articleTitle, Pageable pageable);
 
 
 
@@ -76,5 +99,19 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query(value = "SELECT a FROM Article a WHERE a.id < ?1 AND a.board.name = ?2 AND a.board.isSecret = false ORDER BY a.id DESC")
     Page<Article> findByBoard_NameAndIdLessThanAndBoardIsSecretFalseOrderByIdDesc(Long lastArticleId, String boardName, Pageable pageable);
+
+
+
+//    @Query(value = "SELECT a FROM Article a WHERE a.id < ?1 AND a.title = ?2 ORDER BY a.id DESC")
+//    Page<Article> findByTitleAndIdLessThanOrderByIdDesc(Long lastArticleId, String articleTitle, Pageable pageable);
+//
+//    @Query(value = "SELECT a FROM Article a WHERE a.id < ?1 AND a.title = ?2 AND a.board.isSecret = false ORDER BY a.id DESC")
+//    Page<Article> findByTitleAndIdLessThanAndBoardIsSecretFalseOrderByIdDesc(Long lastArticleId, String articleTitle, Pageable pageable);
+
+    @Query("SELECT a FROM Article a WHERE a.id < ?1 AND REPLACE(a.title, ' ', '') LIKE %?2% ORDER BY a.id DESC")
+    Page<Article> findByTitleContainingAndIdLessThanOrderByIdDesc(Long lastArticleId, String articleTitle, Pageable pageable);
+
+    @Query(value = "SELECT a FROM Article a WHERE a.id < ?1 AND REPLACE(a.title, ' ', '') LIKE %?2% AND a.board.isSecret = false ORDER BY a.id DESC")
+    Page<Article> findByTitleContainingAndIdLessThanAndBoardIsSecretFalseOrderByIdDesc(Long lastArticleId, String articleTitle, Pageable pageable);
 
 }

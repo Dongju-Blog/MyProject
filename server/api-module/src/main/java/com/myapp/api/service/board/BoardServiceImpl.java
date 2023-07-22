@@ -8,6 +8,7 @@ import com.myapp.core.constant.Role;
 import com.myapp.core.entity.*;
 import com.myapp.core.exception.CustomException;
 import com.myapp.core.exception.ErrorCode;
+import com.myapp.core.exception.MyCustomException;
 import com.myapp.core.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -279,6 +280,14 @@ public class BoardServiceImpl implements BoardService {
 
     }
 
+
+
+
+
+
+
+
+
     @Override
     public void deleteArticle(String category, Long id) {
         String urlDecode = category;
@@ -344,16 +353,62 @@ public class BoardServiceImpl implements BoardService {
             }
         }
 
-//        for (Article article : getArticles) {
-//            Map<String, Object> articlesItem = new HashMap<>();
-//            articlesItem.put("title", article.getTitle());
-//            articlesItem.put("id", article.getId());
-//            articlesItem.put("thumbnail", domain + article.getFiles().get(0).getUrl());
-//            returnArticles.add(articlesItem);
-//        }
+        return new PageImpl<>(returnArticles, pageRequest, getArticles.getTotalElements());
+    }
+
+
+
+    @Override
+    public Page<ArticlesResDto> getSearchedArticles(HttpServletRequest request, String searchKeyword, Pageable pageable) {
+
+        String urlDecode = searchKeyword;
+        try {
+            // [URL 인코딩 된 문자 인지 확인 실시]
+            if (searchKeyword.contains("%")) {
+                urlDecode = URLDecoder.decode(searchKeyword, "UTF-8");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), 10, Sort.by("createdAt").descending());
+        Page<Article> getArticles;
+        if (token != null) {
+            Role role = jwtTokenProvider.getRole(token);
+            if (role == Role.ADMIN) {
+                getArticles = articleRepository.findByTitleContaining(urlDecode, pageRequest);
+            } else {
+                getArticles = articleRepository.findByTitleContainingAndBoardIsSecretFalse(urlDecode, pageRequest);
+            }
+        } else {
+            getArticles = articleRepository.findByTitleContainingAndBoardIsSecretFalse(urlDecode, pageRequest);
+        }
+
+        if (getArticles.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ARTICLE);
+        }
+        List<ArticlesResDto> returnArticles = getArticles.getContent()
+                .stream()
+                .map(ArticlesResDto::new)
+                .collect(Collectors.toList());
+
+        for (ArticlesResDto article : returnArticles) {
+            if (!Objects.equals(article.getThumbnail(), "")) {
+                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
+                article.setThumbnail(domain + article.getThumbnail());
+            }
+        }
 
         return new PageImpl<>(returnArticles, pageRequest, getArticles.getTotalElements());
     }
+
+
+
+
+
 
 
 //    @Override
@@ -459,6 +514,70 @@ public class BoardServiceImpl implements BoardService {
 
 
     }
+
+
+
+
+    @Override
+    public Map<String, Object> getSearchedArticlesMobile(HttpServletRequest request, String searchKeyword, Long lastId, int size) {
+
+        String urlDecode = searchKeyword;
+        try {
+            // [URL 인코딩 된 문자 인지 확인 실시]
+            if (searchKeyword.contains("%")) {
+                urlDecode = URLDecoder.decode(searchKeyword, "UTF-8");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String token = jwtTokenProvider.getExistedAccessToken(request);
+        PageRequest pageRequest = PageRequest.of(0, size);
+        Slice<Article> getArticles;
+        if (token != null) {
+            Role role = jwtTokenProvider.getRole(token);
+            if (role == Role.ADMIN) {
+                getArticles = articleRepository.findByTitleContainingAndIdLessThanOrderByIdDesc(lastId, urlDecode, pageRequest);
+            } else {
+                getArticles = articleRepository.findByTitleContainingAndIdLessThanAndBoardIsSecretFalseOrderByIdDesc(lastId, urlDecode, pageRequest);
+            }
+        } else {
+            getArticles = articleRepository.findByTitleContainingAndIdLessThanAndBoardIsSecretFalseOrderByIdDesc(lastId, urlDecode, pageRequest);
+        }
+
+
+        if (getArticles.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ARTICLE);
+
+        }
+
+        List<ArticlesResDto> returnArticles = getArticles.getContent()
+                .stream()
+                .map(ArticlesResDto::new)
+                .collect(Collectors.toList());
+
+        for (ArticlesResDto article : returnArticles) {
+            if (!Objects.equals(article.getThumbnail(), "")) {
+                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
+                article.setThumbnail(domain + article.getThumbnail());
+            }
+        }
+
+        Map<String, Object> returnObject = new HashMap<>();
+
+        boolean last = returnArticles.size() < size;
+        Long nextLastId = returnArticles.get(returnArticles.size() - 1).getId();
+
+        returnObject.put("content", returnArticles);
+        returnObject.put("last", last);
+        returnObject.put("nextLastId", nextLastId);
+
+        return returnObject;
+
+
+    }
+
 
 
 
