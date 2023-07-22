@@ -85,6 +85,7 @@ function DesktopNavbar({ categoryList, isTop }: DesktopNavbarPropsType) {
 
   const searchHandler = () => {
     router.push(`/search?keyword=${searchInputState}`)
+    setSearchInputState(() => "")
   }
 
   const handleKeyDown = (event: any) => {

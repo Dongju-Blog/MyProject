@@ -38,9 +38,9 @@ function BoardDesktopListItem({article, boardName}: BoardItemPropsType) {
 
 export const articleDesktopItemWrapperCSS = css`
   width: 100%;
-  height: 230px;
+  height: 25vh;
   min-height: 230px;
-  max-height: 230px;
+  max-height: 300px;
   
   border-radius: 4px;
   display: flex;
@@ -84,6 +84,7 @@ const imageWrapperCSS = css`
   align-items: center;
   overflow: hidden;
   background-color: rgba(250, 250, 250, 1);
+  min-width: 170px;
   /* border-radius: 20px; */
 
 `

@@ -90,6 +90,7 @@ const articleWrapperCSS = css`
   @media ${mediaQuery.overTablet} {
     margin-top: 96px;
     width: 60%;
+    max-width: 1080px;
   }
 `
 

@@ -74,10 +74,10 @@ const backgroundCSS = css`
   &::after {
 		content: "";
 		position: absolute;
-		top: 70%;
+		top: 50%;
 		left: 0;
 		width: 100vw;
-		height: 30%;
+		height: 50%;
     z-index: 0;
 		background-color: #ffffff;
     box-shadow: 0px 0px 300px 320px rgba(255, 255, 255, 1);
@@ -111,6 +111,8 @@ const boardWrapperCSS = css`
   @media ${mediaQuery.overTablet} {
     margin-top: 96px;
     width: 60%;
+
+    max-width: 1080px;
   }
 `
 

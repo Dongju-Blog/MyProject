@@ -126,6 +126,7 @@ function MobileNavbarSide({categoryList, closeModalHandler}: MobileNavbarSidePro
 
   const searchHandler = () => {
     router.push(`/search?keyword=${searchInputState}`)
+    setSearchInputState(() => "")
     closeModalHandler && closeModalHandler();
   }
 
