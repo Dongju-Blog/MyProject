@@ -1,7 +1,7 @@
 const deviceSizes = {
   mobile: 412,
   tablet: 768,
-  desktop: 1920,
+  desktop: 4080,
 };
 
 const mediaQuery = {

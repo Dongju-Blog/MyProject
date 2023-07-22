@@ -121,7 +121,8 @@ const formWrapperCSS = css`
   }
   @media ${mediaQuery.desktop} {
     width: 25vw;
-    min-width: 300px;
+    min-width: 400px;
+    max-width: 500px;
     border-radius: 20px;
     box-shadow: 0px 0px 150px 1px rgba(0, 0, 0, 0.4);
     position: relative;
