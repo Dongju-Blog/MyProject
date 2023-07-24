@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { SerializedStyles, css } from "@emotion/react";
+import mediaQuery from "@/util/responsive";
 
 type ContainerContentPropsType = {
   customCss?: SerializedStyles | SerializedStyles[];
@@ -52,7 +53,15 @@ const innerContentWrapperCSS = css`
   z-index: 10;
   min-width: 100%;
   min-height: 100%;
-  padding: 10vw 15vw 10vw 15vw;
+  
+
+  @media ${mediaQuery.overTablet} {
+    padding: 10vw 15vw 10vw 15vw;
+  }
+
+  @media ${mediaQuery.tablet} {
+    padding: 10vh 16px 10vh 16px;
+  }
   /* background-color: blue; */
 `;
 

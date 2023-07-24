@@ -36,18 +36,17 @@ export const formDataTokenInstance = axios.create({
   },
 });
 
-
 const getNewAccessToken = async (response: any) => {
   // 헤더에 접근
   const accessToken = response.headers.authorization;
-  
+
   // accessToken 상수에 액세스 토큰이 담겨 있다면
   if (accessToken) {
     // Axios의 default 헤더에 새로운 액세스 토큰 저장
     axios.defaults.headers.authorization = await accessToken;
     // 기존 API 복제
     const clonedRequest = await response.config;
-    
+
     // 복제된 API는 기존의 액세스 토큰이 그대로 들어있으므로 Authorization 헤더에 새로운 액세스 토큰 설정
     clonedRequest.headers["Authorization"] = await `Bearer ${accessToken}`;
 
@@ -80,13 +79,18 @@ tokenInstance.interceptors.request.use(
   (error) => {}
 );
 
-tokenInstance.interceptors.response.use(async (response) => {
-  const refreshResponse = await getNewAccessToken(response);
-  if (refreshResponse !== null) {
-    return refreshResponse;
+tokenInstance.interceptors.response.use(
+  async (response) => {
+    const refreshResponse = await getNewAccessToken(response);
+    if (refreshResponse !== null) {
+      return refreshResponse;
+    }
+    return response;
+  },
+  (error) => {
+    window.localStorage.removeItem("user");
   }
-  return response;
-});
+);
 
 // ----------------------------------------------------------------------------------------
 
@@ -103,7 +107,6 @@ formDataTokenInstance.interceptors.request.use(
   },
   (error) => {} //{Promise.reject(error)}
 );
-
 
 formDataTokenInstance.interceptors.response.use(async (response) => {
   const refreshResponse = await getNewAccessToken(response);

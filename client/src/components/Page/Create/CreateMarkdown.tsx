@@ -82,7 +82,16 @@ function CreateMarkdown({
         ]}
         hooks={{
           addImageBlobHook: async (blob, callback) => {
+
             const file = blob as File;
+            if (file.type === "image/gif" || file.type === "image/webp") {
+              const url = URL.createObjectURL(file);
+              setFiles((prev) => {
+                return { ...prev, [`${url}`]: file };
+              });
+              callback(url, "image");
+              return
+            }
             const options = {
               maxSizeMB: 1, // 이미지 최대 용량
               maxWidthOrHeight: 1920, // 최대 넓이(혹은 높이)
