@@ -8,6 +8,7 @@ import com.myapp.core.exception.MyCustomException;
 import com.myapp.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -31,9 +32,11 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         Cookie getRefreshToken = refreshTokenProvider.getExistedRefreshToken(request);
         String refreshToken = null;
         if (getRefreshToken != null) {
+
             refreshToken = getRefreshToken.getValue();
 //            throw new MyCustomException(refreshToken);
         }
+
 
 
 
@@ -43,12 +46,16 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             return true;
         }
 
+
         String token = jwtTokenProvider.getExistedAccessToken(request);
+
+
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
             // 액세스 토큰이 유효한 경우 요청 진행
             return true;
         }
+
 
 
 
@@ -69,7 +76,21 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
                 return false;
 
             }
+        } else {
+            ResponseCookie cookie = ResponseCookie.from("RefreshToken", null)
+                    .maxAge(0)
+                    .path("/")
+                    .secure(true)
+                    .sameSite("None")
+                    .httpOnly(true)
+                    .build();
+            response.setHeader("Set-Cookie", cookie.toString());
+
         }
+
+
+
+
 
         // 유효한 토큰이 없는 경우 또는 토큰 재발급에 실패한 경우에는 요청 거부
 //        throw new MyCustomException("뭔 에러야");

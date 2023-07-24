@@ -581,7 +581,31 @@ public class BoardServiceImpl implements BoardService {
 
 
 
+    @Override
+    public Page<ArticlesResDto> getRepresentativeArticles(Pageable pageable) {
 
+
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
+        Page<Article> getArticles = articleRepository.findByIsRepresentativeIsTrue(pageRequest);;
+
+
+        if (getArticles.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ARTICLE);
+        }
+        List<ArticlesResDto> returnArticles = getArticles.getContent()
+                .stream()
+                .map(ArticlesResDto::new)
+                .collect(Collectors.toList());
+
+        for (ArticlesResDto article : returnArticles) {
+            if (!Objects.equals(article.getThumbnail(), "")) {
+                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
+                article.setThumbnail(domain + article.getThumbnail());
+            }
+        }
+
+        return new PageImpl<>(returnArticles, pageRequest, getArticles.getTotalElements());
+    }
 
 
 
