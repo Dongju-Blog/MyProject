@@ -36,4 +36,6 @@ public interface BoardService {
     Map<String, Object> getArticlesMobile(HttpServletRequest request, String category, Long lastId, int size);
 
     Map<String, Object> getSearchedArticlesMobile(HttpServletRequest request, String searchKeyword, Long lastId, int size);
+
+    Page<ArticlesResDto> getRepresentativeArticles(Pageable pageable);
 }

@@ -193,7 +193,18 @@ public class BoardController {
     }
 
 
+    /**
+     * getRepresentativeArticles
+     *
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/sortBy/isRepresentative")
+    @Authorize({Role.GUEST, Role.USER, Role.ADMIN})
+    public ResponseEntity<Page<ArticlesResDto>> getRepresentativeArticles(Pageable pageable) {
 
+        return new ResponseEntity<>(boardService.getRepresentativeArticles(pageable), HttpStatus.OK);
+    }
 
 
 
