@@ -10,6 +10,14 @@ import { getActiveBoardAPI } from "@/api/board/getActiveBoardAPI";
 import { getAdminAllBoardAPI } from "@/api/admin/getAdminAllBoardAPI";
 import { postCommentAPI } from "@/api/comment/postCommentsAPI";
 import { getCommentsAPI } from "@/api/comment/getCommentsAPI";
+import useNewModal from "@/components/Interface/Modal/useNewModal";
+import SwipeableGallery from "@/components/Interface/SwipeableGallery/SwipeableGallery";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { getRepresentativeArticlesAPI } from "@/api/board/getRepresentativeArticlesAPI";
+import { mobileArticlesResponseType, pageablePageArticlesResponseType } from "@/types/board";
+import RepresentativeArticles from "./RepresentativeArticles";
+import useResponsive from "@/hooks/useResponsive";
+import mediaQuery from "@/util/responsive";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -24,7 +32,8 @@ function HomeContainer1({
 }: HomeContainer1Type) {
   const condition = setCondition(currentStep);
   const testRef = useRef<HTMLDivElement>(null);
-  const {Animator, render} = useAnimator(condition.immediate)
+  const { Animator, render } = useAnimator(condition.immediate);
+  const isMobile = useResponsive(mediaQuery.mobile)
 
   
 
@@ -55,6 +64,7 @@ function HomeContainer1({
 
   return (
     <ContainerContent customCss={containerWrapperCSS}>
+
       {render && parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
         <div>
@@ -90,7 +100,8 @@ function HomeContainer1({
           >
             I'm Frontend Developer!
           </div>
-          <div
+          
+          {/* <div
             css={[
               Animator.Translate({
                 id: "label",
@@ -105,10 +116,27 @@ function HomeContainer1({
             ]}
           >
             But I know how to handle the backend, CI/CD as well!
-          </div>
+          </div> */}
+
           
         </div>
-        <div></div>
+        
+        <div css={[Animator.Translate({
+                  id: "label",
+                  trigger: condition.maintain,
+                  duration: 1000,
+                  delay: 600,
+                  offset: ["0px", "100px"],
+                }), galleryWrapperCSS]}>
+                  <div css={portfolioTitleCSS}>Portfolio</div>
+          <div css={galleryInnerWrapperCSS}>
+            
+            {isMobile ? <RepresentativeArticles articleSize={1} key={`mobile-representative`} /> : <RepresentativeArticles articleSize={3} key={`desktop-representative`} />}
+              
+          </div>
+        </div>
+        
+        
       </ContainerContent.Inner>
     </ContainerContent>
   );
@@ -120,7 +148,30 @@ const containerWrapperCSS = css`
 `;
 
 const innerContentWrapperCSS = css`
-  display: flex;
+  /* display: flex; */
 `;
 
+const galleryWrapperCSS = css`
+  width: 100%;
+  height: 360px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  margin-top: 24px;
+
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 0px 50px 1px rgba(0, 0, 0, 0.05);
+  
+`
+
+const galleryInnerWrapperCSS = css`
+  flex: 1;
+`
+
+const portfolioTitleCSS = css`
+  margin-top: 16px;
+  margin-left: 36px;
+  font-size: 36px;
+  /* margin-bottom: 8px; */
+`
 export default HomeContainer1;

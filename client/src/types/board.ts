@@ -76,3 +76,4 @@ export type mobileArticlesResponseType = {
   last: boolean;
   nextLastId: number;
 }
+

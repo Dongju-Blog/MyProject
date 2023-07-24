@@ -15,6 +15,7 @@ import markdownToTxt from 'markdown-to-txt';
 import Wrapper from "@/components/Interface/Wrapper/Wrapper";
 import Skeleton from "@/components/Interface/Loading/Skeleton";
 import { useRouter } from "next/router";
+import CheckBox from "@/components/Interface/CheckBox/CheckBox";
 
 const MDEditor = dynamic(
   () => import("@/components/Page/Create/CreateMarkdown"),
@@ -49,7 +50,18 @@ function Create({title, setTitle, content, setContent, category, setCategory, fi
 
   const viewerRef = useRef<HTMLDivElement>(null)
 
+  useEffect(() => {
+    console.log('files', files)
+  }, [files])
 
+
+  const isRepresentativeHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setIsRepresentative(() => true)
+    } else {
+      setIsRepresentative(() => false)
+    }
+  }
 
   return (
     <Wrapper className="container"  data-color-mode="light">
@@ -66,6 +78,13 @@ function Create({title, setTitle, content, setContent, category, setCategory, fi
           value={title}
           onChange={(e) => {setTitle(() => e.target.value)}}
         />
+          <CheckBox theme={"default"} checked={isRepresentative} onChange={isRepresentativeHandler}>
+            <CheckBox.Left>
+              <span css={css`margin-right: 8px; `}>
+                대표글 지정
+              </span>
+            </CheckBox.Left>
+          </CheckBox>
         <div css={buttonWrapperCSS}>
           <div css={goBackButtonCSS}>
             <Button theme={"text"} onClick={() => router.back()}>〈</Button>
