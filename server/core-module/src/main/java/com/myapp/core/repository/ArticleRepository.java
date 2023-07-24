@@ -22,6 +22,15 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Optional<Article> findById(Long id);
 
 
+    /**
+     * Board table 에서 Id로 게시글 가져오기
+     *
+     * @param pageable
+     * @return Article
+     */
+    Page<Article> findByIsRepresentativeIsTrue(Pageable pageable);
+
+
 
     /**
      * Board table 에서 카테고리 이름과 게시글 id로 게시판 게시글 가져오기
