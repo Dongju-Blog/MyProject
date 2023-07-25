@@ -17,6 +17,13 @@ import Skeleton from "@/components/Interface/Loading/Skeleton";
 import { useRouter } from "next/router";
 import CheckBox from "@/components/Interface/CheckBox/CheckBox";
 
+
+
+
+
+
+
+
 const MDEditor = dynamic(
   () => import("@/components/Page/Create/CreateMarkdown"),
   { ssr: false }
@@ -26,6 +33,9 @@ const MDViewer = dynamic(
   () => import("@/components/Page/Article/ArticleViewer"),
   { ssr: false }
 );
+
+
+
 
 type CreatePropsType = {
   title: string
@@ -49,6 +59,9 @@ function Create({title, setTitle, content, setContent, category, setCategory, fi
 
 
   const viewerRef = useRef<HTMLDivElement>(null)
+
+
+
 
   useEffect(() => {
     console.log('files', files)
