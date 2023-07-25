@@ -66,7 +66,7 @@ function ArticleComments({articleId, parentCommentId, depth, entity}: ArticleCom
 
   const renderComments = data && data.pages.map((page) => {
     const renderPageItems = page.content.map((el, idx) => {
-      return <ArticleCommentsItem comment={el} depth={depth} articleId={articleId} parentCommentId={parentCommentId} />
+      return <ArticleCommentsItem key={`comments-${el.createdAt}`} comment={el} depth={depth} articleId={articleId} parentCommentId={parentCommentId} />
     })
     return renderPageItems
   })

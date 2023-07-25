@@ -29,7 +29,7 @@ function BoardDesktopList({ articlesQuery, pageUrl, currentPage }: BoardPropsTyp
   const renderArticles =
   articlesQuery.data &&
   articlesQuery.data.content.map((el) => {
-      return <BoardDesktopListItem article={el} boardName={el.boardName} />;
+      return <BoardDesktopListItem key={`board-desktop-list-item-${el.id}`} article={el} boardName={el.boardName} />;
     });
 
   if (articlesQuery.data && !articlesQuery.data.empty) {

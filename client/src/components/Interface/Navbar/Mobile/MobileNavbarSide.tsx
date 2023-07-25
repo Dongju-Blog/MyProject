@@ -38,13 +38,13 @@ function MobileNavbarSide({categoryList, closeModalHandler}: MobileNavbarSidePro
   const renderCategory = categoryList.map((category, idx) => {
     const renderCategoryMenu = category.menu.map((menu, idx) => {
       return (
-        <div css={categoryMenuItemCSS} onClick={() => {menu.function(); closeModalHandler && closeModalHandler();}}>
+        <div key={`mobile-category-menu-${menu.label}`} css={categoryMenuItemCSS} onClick={() => {menu.function(); closeModalHandler && closeModalHandler();}}>
           {menu.label}
         </div>
       )
     })
     return (
-      <div css={categoryItemWrapperCSS}>
+      <div key={`mobile-category-${category.label}`} css={categoryItemWrapperCSS}>
         <span css={categoryLabelCSS}>{category.label}</span>
         <div css={categoryMenuWrapperCSS}>
           {renderCategoryMenu}

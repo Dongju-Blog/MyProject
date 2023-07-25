@@ -72,7 +72,7 @@ function Dropdown({
 
   const renderItem = itemArray.map((el, idx) => {
     return (
-      <div className={"item"} onClick={() => selectHandler(el.props.id)}>
+      <div key={`dropdown-${el.props.id}-${idx}`} className={"item"} onClick={() => selectHandler(el.props.id)}>
         {el}
       </div>
     );

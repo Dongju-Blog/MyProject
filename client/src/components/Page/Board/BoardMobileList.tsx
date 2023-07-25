@@ -74,7 +74,7 @@ function BoardMobileList({ articlesQuery, pageUrl }: BoardPropsType) {
 
   const renderArticles = articlesQuery.data?.pages.map((page) => {
     const renderPageItems = page.content.map((el) => {
-      return <BoardMobileListItem article={el} boardName={el.boardName} />;
+      return <BoardMobileListItem key={`board-mobile-list-item-${el.id}`} article={el} boardName={el.boardName} />;
     });
 
     return renderPageItems;

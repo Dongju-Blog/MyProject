@@ -188,7 +188,7 @@ function CategoryDragAndDrop({categories}: CategoryDragAndDropPropsType) {
 
 
   const renderDummy = orders?.map((el, idx) => {
-    return <div css={dummyCSS} />;
+    return <div key={`category-dummy-${idx}`} css={dummyCSS} />;
   });
 
   const renderSeparator = (<Swipe

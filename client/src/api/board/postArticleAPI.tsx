@@ -21,6 +21,7 @@ export const postArticleAPI = async ({body}: paramsType) => {
         console.log(response)
         return response.data
     } catch (error: any) {
+        console.log(error)
         throw error
     }
 }

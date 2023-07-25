@@ -7,9 +7,9 @@ import Skeleton from '@/components/Interface/Loading/Skeleton';
 function BoardDesktopListLoading() {
   const array = Array.from({length:10}); 
 
-  const renderLoading = array.map((el) => {
+  const renderLoading = array.map((el, idx) => {
     return (
-      <Skeleton css={articleDesktopItemWrapperCSS} />
+      <Skeleton key={`board-desktop-list-loading-${idx}`} css={articleDesktopItemWrapperCSS} />
     )
   })
   return (

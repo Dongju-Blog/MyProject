@@ -13,7 +13,7 @@ function DesktopNavbarCategoryMenu({
 }: DesktopNavbarCategoryMenuPropsType) {
 
   const renderMenu = categoryMenu.map((menu) => {
-    return <div css={menuItemCSS} onClick={() => {menu.function()}}>{menu.label}</div>
+    return <div key={`desktop-category-menu-${menu.label}`} css={menuItemCSS} onClick={() => {menu.function()}}>{menu.label}</div>
   })
   return <div css={categoryMenuWrapperCSS}>
     {categoryMenu.length !== 0 ? renderMenu : <div><UseAnimations animation={loading} size={56} /></div>}
