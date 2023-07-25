@@ -14,9 +14,18 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 
 import prism from "prismjs";
 import "prismjs/themes/prism.css";
+
 // @ts-ignore
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js";
 import Skeleton from "@/components/Interface/Loading/Skeleton";
+// @ts-ignore
+import { createFFmpeg, fetchFile, FFmpeg } from "@ffmpeg/ffmpeg";
+
+const ffmpeg = createFFmpeg({
+  mainName: "main",
+  log: true,
+  corePath: "https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js",
+});
 
 // https://mdxeditor.dev/editor/docs/getting-started
 
@@ -39,16 +48,18 @@ function CreateMarkdown({
 }: CreateMarkdownPropsType) {
   const editorRef = useRef<Editor>(null);
 
+  const loadFfmpeg = async () => {
+    if (!ffmpeg.isLoaded()) {
+      await ffmpeg.load();
+    }
+  };
   useEffect(() => {
     if (editorRef.current) {
-      // editorRef.current.getInstance().insertText(content);
       setIsLoading(() => false);
     }
+    loadFfmpeg();
   }, [editorRef]);
 
-
-
-  
   return (
     <div
       css={css`
@@ -56,7 +67,6 @@ function CreateMarkdown({
         width: 100%;
       `}
     >
-
       <Editor
         ref={editorRef}
         language="ko-KR"
@@ -82,16 +92,48 @@ function CreateMarkdown({
         ]}
         hooks={{
           addImageBlobHook: async (blob, callback) => {
-
             const file = blob as File;
-            if (file.type === "image/gif" || file.type === "image/webp") {
-              const url = URL.createObjectURL(file);
-              setFiles((prev) => {
-                return { ...prev, [`${url}`]: file };
-              });
-              callback(url, "image");
-              return
+
+            if (file.type === "image/gif") {
+              if (editorRef.current) {
+                await ffmpeg.FS(
+                  "writeFile",
+                  "input.gif",
+                  await fetchFile(file)
+                );
+                await ffmpeg.run(
+                  "-f",
+                  "gif",
+                  "-i",
+                  "input.gif",
+                  "-movflags",
+                  "+faststart",
+                  "-pix_fmt",
+                  "yuv420p",
+                  "-vf",
+                  "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+                  "output.mp4"
+                );
+
+                const data = ffmpeg.FS("readFile", "output.mp4");
+
+                const converted = new File([data.buffer], "output.mp4", {
+                  type: "video/mp4",
+                });
+                const convertedUrl = URL.createObjectURL(converted);
+
+                setFiles((prev) => {
+                  return { ...prev, [`${convertedUrl}`]: converted };
+                });
+
+                editorRef.current.getInstance()
+                  .insertText(`<video autoPlay loop muted playsInline width="100%" height="100%">
+                  <source src="${convertedUrl}" type="video/mp4" />
+                </video>`);
+                return;
+              }
             }
+
             const options = {
               maxSizeMB: 1, // 이미지 최대 용량
               maxWidthOrHeight: 1920, // 최대 넓이(혹은 높이)
@@ -119,6 +161,5 @@ function CreateMarkdown({
     </div>
   );
 }
-
 
 export default CreateMarkdown;

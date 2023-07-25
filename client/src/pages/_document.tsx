@@ -9,6 +9,9 @@ export default function Document() {
         <Main />
         <NextScript />
       </body>
+      <script>
+        if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;
+      </script>
     </Html>
   )
 }
