@@ -48,16 +48,11 @@ function CreateMarkdown({
 }: CreateMarkdownPropsType) {
   const editorRef = useRef<Editor>(null);
 
-  const loadFfmpeg = async () => {
-    if (!ffmpeg.isLoaded()) {
-      await ffmpeg.load();
-    }
-  };
+
   useEffect(() => {
     if (editorRef.current) {
       setIsLoading(() => false);
     }
-    loadFfmpeg();
   }, [editorRef]);
 
   return (
@@ -96,6 +91,14 @@ function CreateMarkdown({
 
             if (file.type === "image/gif") {
               if (editorRef.current) {
+                if (!ffmpeg.isLoaded()) {
+                  await ffmpeg.load();
+                } else {
+                  await ffmpeg.exit()
+                  await ffmpeg.load();
+                  
+                }
+
                 await ffmpeg.FS(
                   "writeFile",
                   "input.gif",
