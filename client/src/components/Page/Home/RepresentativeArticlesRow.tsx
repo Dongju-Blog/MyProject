@@ -23,13 +23,13 @@ function RepresentativeArticlesRow({articles, size, fetchNextPage, currentIdx, c
 
   const renderArticles = articles && articles.map((article) => {
     return (
-      <RepresentativeArticlesRowItem article={article}/>
+      <RepresentativeArticlesRowItem key={`articles-row-item-${article.createdAt}`} article={article}/>
     )
   })
 
-  const renderLoading = Array.from({length: size}).map((el) => {
+  const renderLoading = Array.from({length: size}).map((el, idx) => {
     return (
-      <Skeleton css={carouselArticleitemWrapperCSS} />
+      <Skeleton key={`articles-row-loading-${idx}`} css={carouselArticleitemWrapperCSS} />
     )
   })
 

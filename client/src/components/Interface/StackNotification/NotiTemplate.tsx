@@ -26,6 +26,7 @@ function NotiTemplate({
       {buttons?.map((el, idx) => {
         return (
           <Button
+            key={`noti-button-${el.label}`}
             theme={"default"}
             onClick={() => {
               el.function();

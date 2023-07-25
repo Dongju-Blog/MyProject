@@ -61,7 +61,7 @@ function Pagination({currentPage, maxPage, baseUrl, queryString}: PaginationProp
 
   const renderPages = pages.map((el, idx) => {
     return (
-      <div onClick={() => {pageOnClickHandler(el)}} css={buttonWrapperCSS({target: el + 1, current: currentPage})}>
+      <div key={`pagination-${el}`} onClick={() => {pageOnClickHandler(el)}} css={buttonWrapperCSS({target: el + 1, current: currentPage})}>
         <Button theme={"text"} >{el + 1}</Button>
       </div>
       

@@ -8,9 +8,9 @@ import { articleMobileItemWrapperCSS } from './BoardMobileListItem';
 function BoardMobileListLoading() {
   const array = Array.from({length:10}); 
 
-  const renderLoading = array.map((el) => {
+  const renderLoading = array.map((el, idx) => {
     return (
-      <Skeleton css={articleMobileItemWrapperCSS} />
+      <Skeleton key={`board-desktop-list-loading-${idx}`} css={articleMobileItemWrapperCSS} />
     )
   })
   return (

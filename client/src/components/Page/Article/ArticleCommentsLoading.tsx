@@ -9,9 +9,9 @@ type ArticleCommentsLoadingPropsType = {
 function ArticleCommentsLoading({count}: ArticleCommentsLoadingPropsType) {
   const array = Array.from({length:count}); 
 
-  const renderLoading = array.map((el) => {
+  const renderLoading = array.map((el, idx) => {
     return (
-      <Skeleton css={commentsItemWrapperCSS} />
+      <Skeleton key={`article-loading-${idx}`} css={commentsItemWrapperCSS} />
     )
   })
   return (

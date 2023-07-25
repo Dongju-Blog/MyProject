@@ -20,7 +20,7 @@ function DesktopNavbar({ categoryList, isTop }: DesktopNavbarPropsType) {
   const [searchInputState, setSearchInputState] = useState("")
 
   const renderCategory = categoryList.map((category) => {
-    return <DesktopNavbarCategory category={category} />;
+    return <DesktopNavbarCategory key={`desktop-navbar-category-${category.label}`} category={category} />;
   });
 
   const forUser = (

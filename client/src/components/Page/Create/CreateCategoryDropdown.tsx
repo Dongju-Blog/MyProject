@@ -20,7 +20,7 @@ function CreateCategoryDropdown({
 
 
   const renderCategoryDropdown = categories.map((el, idx) => {
-    return <Dropdown.Item id={el.id}>{el.name}</Dropdown.Item>;
+    return <Dropdown.Item key={`dropdown-item-${el.id}`} id={el.id}>{el.name}</Dropdown.Item>;
   });
 
   if (categories) {
