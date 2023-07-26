@@ -20,6 +20,7 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
             css={css`
               height: 100%;
               width: auto;
+              object-fit: cover;
             `}
           />
         ) : (
