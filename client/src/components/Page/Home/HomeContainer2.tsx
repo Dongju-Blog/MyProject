@@ -203,6 +203,9 @@ const containerWrapperCSS = css`
 
 const contentWrapperCSS = css`
   width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 `
 
 const innerContentWrapperCSS = css`

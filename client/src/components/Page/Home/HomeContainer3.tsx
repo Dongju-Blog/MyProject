@@ -54,8 +54,8 @@ function HomeContainer3({ setCondition, currentStep }: HomeContainer1Type) {
   return (
     <ContainerContent customCss={containerWrapperCSS}>
       {render && parellelogram}
-      <ContainerContent.Inner customCss={innerContentWrapperCSS}>
-        <div>
+      <ContainerContent.Inner >
+        <div css={innerContentWrapperCSS}>
           <div
             css={[
               Animator.Translate({
@@ -118,7 +118,10 @@ const containerWrapperCSS = css`
 `;
 
 const innerContentWrapperCSS = css`
+  height: 70%;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export default HomeContainer3;
