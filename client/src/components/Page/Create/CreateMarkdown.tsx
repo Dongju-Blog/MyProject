@@ -88,7 +88,16 @@ function CreateMarkdown({
         hooks={{
           addImageBlobHook: async (blob, callback) => {
             const file = blob as File;
-
+            if (file.type === "video/mp4") {
+              if (editorRef.current) {
+                const url = URL.createObjectURL(file);
+                editorRef.current.getInstance()
+                  .insertText(`<video autoPlay loop muted playsInline width="100%" height="100%">
+                  <source src="${url}" type="video/mp4" />
+                </video>`);
+                return;
+              }
+            }
             if (file.type === "image/gif") {
               if (editorRef.current) {
                 if (!ffmpeg.isLoaded()) {
@@ -117,6 +126,8 @@ function CreateMarkdown({
                   "scale=trunc(iw/2)*2:trunc(ih/2)*2",
                   "output.mp4"
                 );
+
+                
 
                 
 

@@ -46,15 +46,16 @@ export const carouselArticleitemWrapperCSS = css`
   height: 80%;
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 0px 30px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 30px 1px rgba(0, 0, 0, 0.3);
   background-color: white;
   overflow: hidden;
   border-radius: 20px;;
   cursor: pointer;
 
-  transition: transform 1s;
+  transition: transform 1s, box-shadow 1s;
   &:hover {
-    transform: scale(110%);
+    transform: scale(105%);
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.4);
   }
 `
 

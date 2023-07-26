@@ -33,7 +33,7 @@ function HomeContainer1({
   const condition = setCondition(currentStep);
   const testRef = useRef<HTMLDivElement>(null);
   const { Animator, render } = useAnimator(condition.immediate);
-  const isMobile = useResponsive(mediaQuery.mobile)
+
 
   
 
@@ -94,14 +94,14 @@ function HomeContainer1({
                 offset: ["0px", "100px"],
               }),
               css`
-                font-size: 5vw;
+                font-size: 6vw;
               `,
             ]}
           >
-            I'm Frontend Developer!
+            I'm Junior Frontend <span css={css`font-weight: 700;`}>Developer!</span>
           </div>
           
-          {/* <div
+          <div
             css={[
               Animator.Translate({
                 id: "label",
@@ -111,29 +111,52 @@ function HomeContainer1({
                 offset: ["0px", "100px"],
               }),
               css`
+                margin-top: 32px;
                 font-size: 2vw;
+                color: rgba(0, 0, 0, 0.5);
               `,
             ]}
           >
-            But I know how to handle the backend, CI/CD as well!
-          </div> */}
+            항상 노력하고, 다양한 경험을 하고자 합니다.
+            
+          </div>
+          <div
+            css={[
+              Animator.Translate({
+                id: "label",
+                trigger: condition.maintain,
+                duration: 1000,
+                delay: 500,
+                offset: ["0px", "100px"],
+              }),
+              css`
+                margin-top: 8px;
+                font-size: 1vw;
+                color: rgba(0, 0, 0, 0.5);
+              `,
+            ]}
+          >
+            JavaScript | TypeScript | Java | React.js | Next.js | Spring Boot | CI/CD
+          </div>
 
+          
+
+              
           
         </div>
         
-        <div css={[Animator.Translate({
-                  id: "label",
-                  trigger: condition.maintain,
-                  duration: 1000,
-                  delay: 600,
-                  offset: ["0px", "100px"],
-                }), galleryWrapperCSS]}>
-                  <div css={portfolioTitleCSS}>Portfolio</div>
-          <div css={galleryInnerWrapperCSS}>
-            
-            {isMobile ? <RepresentativeArticles articleSize={1} key={`mobile-representative`} /> : <RepresentativeArticles articleSize={3} key={`desktop-representative`} />}
-              
-          </div>
+        <div css={[
+              Animator.Translate({
+                id: "profile-animation",
+                trigger: condition.maintain,
+                duration: 1000,
+                delay: 700,
+                offset: ["100px", "0px"],
+  
+              }),
+              profileWrapperCSS
+            ]}>
+          <img src={"/assets/Profile.png"}/>
         </div>
         
         
@@ -148,30 +171,24 @@ const containerWrapperCSS = css`
 `;
 
 const innerContentWrapperCSS = css`
-  /* display: flex; */
+  display: flex;
+  
 `;
 
-const galleryWrapperCSS = css`
-  width: 100%;
-  height: 360px;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 20px;
-  margin-top: 24px;
 
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0px 0px 50px 1px rgba(0, 0, 0, 0.05);
-  
-`
 
-const galleryInnerWrapperCSS = css`
-  flex: 1;
-`
 
-const portfolioTitleCSS = css`
-  margin-top: 16px;
-  margin-left: 36px;
-  font-size: 36px;
-  /* margin-bottom: 8px; */
+const profileWrapperCSS = css`
+  position: absolute;
+  right: 20%;;
+  top: 10%;
+  height: 750px;
+  width: 250px;
+
+  & img {
+    height: 100%;
+    width: auto;
+
+  }
 `
 export default HomeContainer1;

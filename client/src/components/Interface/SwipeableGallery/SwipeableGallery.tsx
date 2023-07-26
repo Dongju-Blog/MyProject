@@ -113,10 +113,10 @@ const SwipeableGallery = ({ content, contentCount, setContentCount }: SwipeableG
 	const indicatorBtn = (
 		<>
 			<div css={prevBtnCSS} onClick={onClickPrevBtn}>
-				〈
+			⇠
 			</div>
 			<div css={nextBtnCSS} onClick={onClickNextBtn}>
-				〉
+			⇢
 			</div>
 		</>
 	)
@@ -224,17 +224,17 @@ const prevBtnCSS = css`
 	display: flex;
 	align-items: center;
 	font-size: 48px;
-	font-weight: 700;
-	padding-left: 8px;
-	padding-right: 8px;
-	color: white;
-	transition-property: font-size;
-	transition-duration: 0.2s;
+	font-weight: 100;
+	margin-left: -8px;
+	/* color: white; */
+	color: rgba(0, 0, 0, 0.5);
+	transition-property: color;
+	transition-duration: 1s;
 	cursor: pointer;
 	user-select: none;
 
 	&:hover {
-		font-size: 54px;
+		color: rgba(0, 0, 0, 1);
 	}
 `
 
@@ -246,17 +246,17 @@ const nextBtnCSS = css`
 	display: flex;
 	align-items: center;
 	font-size: 48px;
-	font-weight: 700;
-	padding-left: 8px;
-	padding-right: 8px;
-	color: white;
-	transition-property: font-size;
-	transition-duration: 0.2s;
+	font-weight: 100;
+	margin-right: -8px;
+	/* color: white; */
+	color: rgba(0, 0, 0, 0.5);
+	transition-property: color;
+	transition-duration: 1s;
 	cursor: pointer;
 	user-select: none;
 
 	&:hover {
-		font-size: 54px;
+		color: rgba(0, 0, 0, 1);
 	}
 `
 

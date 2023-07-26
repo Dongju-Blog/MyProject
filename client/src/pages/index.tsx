@@ -40,9 +40,9 @@ export default function Home() {
         <Container.Step>
           <HomeContainer3 setCondition={setCondition} currentStep={3} />
         </Container.Step>
-        <Container.Step>
+        {/* <Container.Step>
           <HomeContainer4 setCondition={setCondition} currentStep={4} />
-        </Container.Step>
+        </Container.Step> */}
       </Container>
     </div>
   );
