@@ -21,21 +21,27 @@ function ContainerContent({ customCss, children }: ContainerContentPropsType) {
           : [containerContentWrapperCSS, customCss]
       }
     >
-      {children}
-    </div>
+      
+        {children}
+      </div>
+      
+    
   );
 }
 
 function InnerContent({ customCss, children }: InnerContentPropsType) {
   return (
+
+    <div css={innerContentWrapperCSS}>
     <div
       css={
         Array.isArray(customCss)
-          ? [innerContentWrapperCSS, ...customCss]
-          : [innerContentWrapperCSS, customCss]
+          ? [innerContentSecondWrapperCSS, ...customCss]
+          : [innerContentSecondWrapperCSS, customCss]
       }
     >
       {children}
+    </div>
     </div>
   );
 }
@@ -53,17 +59,37 @@ const innerContentWrapperCSS = css`
   z-index: 10;
   min-width: 100%;
   min-height: 100%;
-  
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  display: grid;
+  place-items: center;
 
-  @media ${mediaQuery.overTablet} {
+  /* @media ${mediaQuery.overTablet} {
     padding: 10vw 15vw 10vw 15vw;
   }
 
   @media ${mediaQuery.tablet} {
     padding: 10vh 48px 10vh 48px;
-  }
+  } */
   /* background-color: blue; */
 `;
+
+const innerContentSecondWrapperCSS = css`
+
+/* background-color: red; */
+  @media ${mediaQuery.overTablet} {
+    max-width: 1440px;
+    width: 60%;
+    height: 100%;
+  }
+
+  @media ${mediaQuery.tablet} {
+    width: 100%;
+    height: 100%;
+    padding: 10vh 48px 10vh 48px;
+  }
+`
 
 ContainerContent.Inner = InnerContent;
 export default ContainerContent;

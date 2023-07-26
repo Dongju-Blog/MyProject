@@ -67,7 +67,7 @@ function HomeContainer1({
 
       {render && parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
-        <div>
+        <div css={css`display:flex; flex-direction:column; justify-content:center;`}>
           <div
             css={[
               Animator.Translate({
@@ -78,7 +78,7 @@ function HomeContainer1({
                 offset: ["0px", "100px"],
               }),
               css`
-                font-size: 5vw;
+                font-size: 4vw;
               `,
             ]}
           >
@@ -94,7 +94,7 @@ function HomeContainer1({
                 offset: ["0px", "100px"],
               }),
               css`
-                font-size: 6vw;
+                font-size: 5vw;
               `,
             ]}
           >
@@ -180,10 +180,10 @@ const innerContentWrapperCSS = css`
 
 const profileWrapperCSS = css`
   position: absolute;
-  right: 20%;;
+  right: 16%;;
   top: 10%;
-  height: 750px;
-  width: 250px;
+  height: 90vh;
+  width: 20vw;
 
   & img {
     height: 100%;
