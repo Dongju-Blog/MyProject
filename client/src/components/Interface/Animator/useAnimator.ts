@@ -131,6 +131,70 @@ const Rotate = ({
 };
 
 
+const Scale = ({
+  id = "scale",
+  trigger = true,
+  duration,
+  delay,
+  offset,
+  option = {
+    opacityFrom: "100%",
+    opacityTo: "100%",
+    hasReverse: false,
+  },
+}: TranslatePropsType): SerializedStyles => {
+  if (trigger) {
+    return css`
+
+      animation: ${id}-scale ${duration}ms ease forwards;
+      animation-delay: ${delay}ms;
+      -webkit-animation-delay: ${delay}ms;
+      opacity: ${option.opacityFrom};
+      transform: scale(${offset[0]});
+      @keyframes ${id}-scale {
+        from {
+          opacity: ${option.opacityFrom};
+          transform: scale(${offset[0]});
+          visibility: visible;
+        }
+
+        to {
+          opacity: ${option.opacityTo};
+          transform: scale(${offset[1]});
+          visibility: visible;
+        }
+      }
+    `;
+  } else if (option.hasReverse) {
+    return css`
+    
+      animation: ${id}-reverse-scale ${duration}ms ease forwards;
+      /* -webkit-animation-delay: ${delay}ms; */
+      opacity: ${option.opacityTo};
+
+      @keyframes ${id}-reverse-scale {
+        from {
+          opacity: ${option.opacityTo};
+          transform: scale(${offset[1]});
+          visibility: visible;
+        }
+
+        to {
+          opacity: ${option.opacityFrom};
+          transform: scale(${offset[0]});
+        }
+      }
+    `;
+  } else {
+    return css`
+      opacity: ${option.opacityFrom};
+    `;
+  }
+};
+
+
+
+
 
 
 
@@ -145,6 +209,7 @@ function useAnimator(condition: boolean) {
   const Animator = {
     Translate,
     Rotate,
+    Scale
   };
   return {Animator, render}
 }

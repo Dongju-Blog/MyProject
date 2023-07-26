@@ -53,24 +53,19 @@ function Navbar() {
       menu: [
         {
           id: 0,
-          label: 'Example 1',
+          label: 'Introduce',
           function: util.Example1
         },
         {
           id: 1,
-          label: 'Example 2',
+          label: 'Portfolio',
           function: util.Example2
         },
         {
           id: 2,
-          label: 'Example 3',
+          label: 'Contact',
           function: util.Example3
         },
-        {
-          id: 3,
-          label: 'Example 4',
-          function: util.Example4
-        }
       ]
     },
     {

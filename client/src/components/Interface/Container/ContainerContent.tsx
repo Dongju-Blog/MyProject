@@ -60,7 +60,7 @@ const innerContentWrapperCSS = css`
   }
 
   @media ${mediaQuery.tablet} {
-    padding: 10vh 16px 10vh 16px;
+    padding: 10vh 48px 10vh 48px;
   }
   /* background-color: blue; */
 `;
