@@ -18,7 +18,7 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
           <img
             src={article.thumbnail}
             css={css`
-              height: auto;
+              height: 100%;
               width: 100%;
               object-fit: cover;
             `}

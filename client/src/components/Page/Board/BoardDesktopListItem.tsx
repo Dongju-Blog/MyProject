@@ -14,7 +14,7 @@ function BoardDesktopListItem({article, boardName}: BoardItemPropsType) {
   return (
     <div onClick={() => router.push(`/board/${boardName}/${article.id}`)} css={[articleDesktopItemWrapperCSS, articleDesktopItemWrapperSecondCSS]}>
       <div css={imageWrapperCSS}>
-        {article.thumbnail ? <img src={article.thumbnail} css={css`height: auto; width: 100%; object-fit: cover;`}/> : <img src={"/assets/Thumbnail.png"} css={css`filter: invert(80%); width: 70%; height: auto;`}/>}
+        {article.thumbnail ? <img src={article.thumbnail} css={css`height: 100%; width: 100%; object-fit: cover;`}/> : <img src={"/assets/Thumbnail.png"} css={css`filter: invert(80%); width: 70%; height: auto;`}/>}
         
       </div>
       
