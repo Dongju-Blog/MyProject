@@ -19,13 +19,13 @@ import "prismjs/themes/prism.css";
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js";
 import Skeleton from "@/components/Interface/Loading/Skeleton";
 // @ts-ignore
-import { createFFmpeg, fetchFile, FFmpeg } from "@ffmpeg/ffmpeg";
+// import { createFFmpeg, fetchFile, FFmpeg } from "@ffmpeg/ffmpeg";
 
-const ffmpeg = createFFmpeg({
-  mainName: "main",
-  log: true,
-  corePath: "https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js",
-});
+// const ffmpeg = createFFmpeg({
+//   mainName: "main",
+//   log: true,
+//   corePath: "https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js",
+// });
 
 // https://mdxeditor.dev/editor/docs/getting-started
 
@@ -98,57 +98,57 @@ function CreateMarkdown({
                 return;
               }
             }
-            if (file.type === "image/gif") {
-              if (editorRef.current) {
-                if (!ffmpeg.isLoaded()) {
-                  await ffmpeg.load();
-                } else {
-                  await ffmpeg.exit()
-                  await ffmpeg.load();
+            // if (file.type === "image/gif") {
+            //   if (editorRef.current) {
+            //     if (!ffmpeg.isLoaded()) {
+            //       await ffmpeg.load();
+            //     } else {
+            //       await ffmpeg.exit()
+            //       await ffmpeg.load();
                   
-                }
+            //     }
 
-                await ffmpeg.FS(
-                  "writeFile",
-                  "input.gif",
-                  await fetchFile(file)
-                );
-                await ffmpeg.run(
-                  "-f",
-                  "gif",
-                  "-i",
-                  "input.gif",
-                  "-movflags",
-                  "+faststart",
-                  "-pix_fmt",
-                  "yuv420p",
-                  "-vf",
-                  "scale=trunc(iw/2)*2:trunc(ih/2)*2",
-                  "output.mp4"
-                );
-
-                
+            //     await ffmpeg.FS(
+            //       "writeFile",
+            //       "input.gif",
+            //       await fetchFile(file)
+            //     );
+            //     await ffmpeg.run(
+            //       "-f",
+            //       "gif",
+            //       "-i",
+            //       "input.gif",
+            //       "-movflags",
+            //       "+faststart",
+            //       "-pix_fmt",
+            //       "yuv420p",
+            //       "-vf",
+            //       "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+            //       "output.mp4"
+            //     );
 
                 
 
-                const data = ffmpeg.FS("readFile", "output.mp4");
+                
 
-                const converted = new File([data.buffer], "output.mp4", {
-                  type: "video/mp4",
-                });
-                const convertedUrl = URL.createObjectURL(converted);
+            //     const data = ffmpeg.FS("readFile", "output.mp4");
 
-                setFiles((prev) => {
-                  return { ...prev, [`${convertedUrl}`]: converted };
-                });
+            //     const converted = new File([data.buffer], "output.mp4", {
+            //       type: "video/mp4",
+            //     });
+            //     const convertedUrl = URL.createObjectURL(converted);
 
-                editorRef.current.getInstance()
-                  .insertText(`<video autoPlay loop muted playsInline width="100%" height="100%">
-                  <source src="${convertedUrl}" type="video/mp4" />
-                </video>`);
-                return;
-              }
-            }
+            //     setFiles((prev) => {
+            //       return { ...prev, [`${convertedUrl}`]: converted };
+            //     });
+
+            //     editorRef.current.getInstance()
+            //       .insertText(`<video autoPlay loop muted playsInline width="100%" height="100%">
+            //       <source src="${convertedUrl}" type="video/mp4" />
+            //     </video>`);
+            //     return;
+            //   }
+            // }
 
             const options = {
               maxSizeMB: 1, // 이미지 최대 용량
