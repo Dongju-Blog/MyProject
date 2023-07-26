@@ -21,8 +21,8 @@ function BoardMobileListItem({ article, boardName }: BoardItemPropsType) {
           <img
             src={article.thumbnail}
             css={css`
-              height: 100%;
-              width: auto;
+              height: auto;
+              width: 100%;
               object-fit: cover;
             `}
           />
