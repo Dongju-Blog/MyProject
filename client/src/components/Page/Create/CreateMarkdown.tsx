@@ -95,6 +95,10 @@ function CreateMarkdown({
                   .insertText(`<video autoPlay loop muted playsInline width="100%" height="100%">
                   <source src="${url}" type="video/mp4" />
                 </video>`);
+
+                setFiles((prev) => {
+                        return { ...prev, [`${url}`]: file };
+                });
                 return;
               }
             }
