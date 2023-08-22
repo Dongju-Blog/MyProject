@@ -4,6 +4,8 @@ import { css } from "@emotion/react";
 import { getArticlesItemType } from "@/types/board";
 import dynamic from "next/dynamic";
 import Button from "@/components/Interface/Button/Button";
+import { useRouter } from "next/dist/client/router";
+import { throttle } from "lodash";
 // import Article from "./Article";
 
 const Article = dynamic(
@@ -27,6 +29,17 @@ function ModalArticle({
 }: ModalArticlePropsType) {
   const [isTriggered, setIsTriggered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isTop, setIsTop] = useState(true)
+  const router = useRouter()
+
+  const onScrollHandler = throttle((e: any) => {
+    if (e.target && e.target.scrollTop > 0) {
+      setIsTop(() => false)
+    } else {
+      setIsTop(() => true)
+    }
+  }, 500)
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -56,13 +69,14 @@ function ModalArticle({
           <div css={renderThumbnailWrapperCSS({isTriggered, isExpanded})}>
             {thumbnail}
           </div>
-          <div css={articleWrapperCSS({isExpanded})}>
-            <div css={headerCSS}>
+          <div css={articleWrapperCSS({isExpanded})} onScroll={onScrollHandler}>
+            <div css={headerCSS({isTop})}>
               <div css={headerContentWrapperCSS}>
-                Board <span css={css`color: rgba(0, 0, 0, 0.3);`}> / </span> {article.boardName} <span css={css`color: rgba(0, 0, 0, 0.3);`}> / </span> {article.title}
+
+                <Button onClick={() => {router.push(`/board/${article.boardName}`)}} theme={"grey"}>Board <span css={css`color: rgba(0, 0, 0, 0.3);`}>&nbsp;/&nbsp;</span> {article.boardName}</Button>
               </div>
               <div css={headerContentWrapperCSS}>
-                <Button onClick={closeHandler} theme={"grey"}>Close</Button>
+                <Button onClick={closeHandler} theme={"grey"}>Close ✕</Button>
               </div>
             </div>
             {isTriggered && <Article articleId={article.id} boardName={article.boardName} isDelayed={!isExpanded}/>}
@@ -104,7 +118,7 @@ const wrapperCSS = ({
     transition-property: width height transform background-color;
     transition-duration: 0.5s;
     max-width: 1080px;
-    width: ${isTriggered ? `100%` : `${parent && parent.clientWidth}px`};
+    width: ${isTriggered ? `80%` : `${parent && parent.clientWidth}px`};
     height: ${isTriggered ? `90%` : `${parent && parent.clientHeight}px`};
     border-radius: ${isTriggered ? `10px` : `20px`};
     box-shadow: ${isTriggered && `0px 0px 50px 0px rgba(0, 0, 0, 0.4)`};
@@ -172,7 +186,7 @@ const renderThumbnailWrapperCSS = ({ isTriggered, isExpanded }: { isTriggered: b
 
 const articleWrapperCSS = ({ isExpanded }: { isExpanded: boolean }) => {
   return css`
-    width: 100vw;
+    width: 80vw;
     max-width: 1080px;
     height: 100vh;
     overflow-y: scroll;
@@ -180,25 +194,33 @@ const articleWrapperCSS = ({ isExpanded }: { isExpanded: boolean }) => {
   `
 } 
 
-const headerCSS = css`
+const headerCSS = ({isTop}: {isTop: boolean}) => {
+  return css`
+  transition-property: box-shadow background-color padding transform;
+  transition-duration: 1s;
+
   width: 100%;
   height: 64px;
   display: flex;
   justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: ${!isTop && `rgba(255, 255, 255, 0.9)`};
   position: fixed;
   z-index: 99;
   pointer-events: none;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: ${!isTop && `0px 0px 10px 0px rgba(0, 0, 0, 0.1)`};
 
   align-items: center;
-  padding: 24px;
+  transform: ${isTop && `translateY(20px)`};
+  padding: ${!isTop ? `24px 24px` : `24px 40px`};
 
 `
+} 
 
 const headerContentWrapperCSS = css`
   pointer-events: auto;
 `
+
+
 
 
 export default ModalArticle;
