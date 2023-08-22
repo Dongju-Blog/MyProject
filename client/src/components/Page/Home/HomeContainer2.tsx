@@ -181,7 +181,7 @@ function HomeContainer2({ setCondition, currentStep }: HomeContainer1Type) {
                   offset: ["0px", "100px"],
                 }), galleryWrapperCSS]}>
                   {/* <div css={portfolioTitleCSS}>Portfolio</div> */}
-                  <div css={galleryInnerWrapperCSS}>
+                  <div css={galleryInnerWrapperCSS} onTouchEnd={(e) => {e.stopPropagation()}}>
             
             {isMobile ? <RepresentativeArticles articleSize={1} key={`mobile-representative`} /> : <RepresentativeArticles articleSize={3} key={`desktop-representative`} />}
               
