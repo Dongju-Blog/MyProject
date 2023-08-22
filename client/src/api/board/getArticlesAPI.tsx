@@ -19,11 +19,11 @@ export const getArticlesAPI = ({category, page}: paramsType) => {
 
     return tokenInstance.get(`/board/${category}?page=${page}`)
       .then((response: responseType) => {
-        console.log(response)
+        console.log("getArticlesAPI => ", response)
         return response.data;
       })
       .catch((err) => {
-        console.log(err)
+        console.log("getArticlesAPI => ", err)
         throw err;
       });
   };

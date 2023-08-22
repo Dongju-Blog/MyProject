@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9a77dd70-fcbd-4685-839c-98e4961c2913" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/public/test.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Home/HomeContainer1.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Home/HomeContainer2.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Home/HomeContainer3.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Home/HomeContainer4.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Interface/Container/useContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Interface/Container/useContainer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Interface/Navbar/Desktop/DesktopNavbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Interface/Navbar/Desktop/DesktopNavbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Interface/Navbar/Desktop/DesktopNavbarCategory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Interface/Navbar/Desktop/DesktopNavbarCategory.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Layout/Layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Layout/Layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/test/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/board/getArticlesAPI.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/board/getArticlesAPI.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,15 +16,20 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": -1
+}]]></component>
   <component name="ProjectId" id="2SNoYOjlaNHxCPTbdO5s72IVqdi" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "feat/fe/container",
+    "git-widget-placeholder": "feat/fe/mp4",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -47,7 +43,11 @@
       <option name="presentableId" value="Default" />
       <updated>1688996449339</updated>
       <workItem from="1688996451370" duration="4000" />
+      <workItem from="1692681746452" duration="7000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

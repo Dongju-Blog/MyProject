@@ -207,15 +207,15 @@ const titleWrapperCSS = css`
     min-height: 36px;
   }
   @media ${mediaQuery.overTablet} {
-    font-size: 64px;
+    font-size: 48px;
     font-weight: 500;
     margin-bottom: 16px;
-    min-height: 64px;
+    min-height: 48px;
   }
   /* color: #FF6372; */
   color: #006effd9;
   display: grid;
-  
+  word-break: keep-all;
   width: 100%;
 
   
