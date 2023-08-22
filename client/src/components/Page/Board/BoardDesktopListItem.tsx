@@ -93,6 +93,7 @@ const titleWrapperCSS = css`
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 12px;
+  word-break: keep-all;
 `
 
 const createdAtWrapperCSS = css`
