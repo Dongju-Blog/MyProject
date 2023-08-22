@@ -49,7 +49,7 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
         )}
       </div>
       <div css={contentWrapperCSS}>
-          <div css={css`font-size: 20px;`}>{article.title}</div>
+          <div css={css`font-size: 20px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;`}>{article.title}</div>
           <div css={css`font-size: 14px; color: rgba(0, 0, 0, 0.5);`}>{dateFormatter(article.createdAt)}</div>
       </div>
     </React.Fragment>
