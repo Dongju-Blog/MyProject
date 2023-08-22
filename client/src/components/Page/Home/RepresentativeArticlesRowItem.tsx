@@ -2,7 +2,8 @@ import { getArticlesItemType } from '@/types/board'
 import { dateFormatter } from '@/util/dateFormatter'
 import { css } from '@emotion/react'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, {useRef, useState} from 'react'
+import ModalArticle from '../Article/ModalArticle'
 
 type RepresentativeArticlesRowItemPropsType = {
   article: getArticlesItemType
@@ -10,9 +11,11 @@ type RepresentativeArticlesRowItemPropsType = {
 
 function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemPropsType) {
   const router = useRouter()
+  const itemRef = useRef<HTMLDivElement>(null)
+  const [isModalOn, setIsModalOn] = useState(false)
 
-  return (
-    <div css={carouselArticleitemWrapperCSS} onClick={() => router.push(`/board/${article.boardName}/${article.id}`)}>
+  const render = (
+    <React.Fragment>
       <div css={imageWrapperCSS}>
         {article.thumbnail ? (
           <img
@@ -38,6 +41,15 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
           <div css={css`font-size: 20px;`}>{article.title}</div>
           <div css={css`font-size: 14px; color: rgba(0, 0, 0, 0.5);`}>{dateFormatter(article.createdAt)}</div>
       </div>
+    </React.Fragment>
+  )
+
+  return (
+    //onClick={() => router.push(`/board/${article.boardName}/${article.id}`)}
+    <div ref={itemRef} css={carouselArticleitemWrapperCSS} onClick={() => {setIsModalOn(() => true)}}>
+      {/* <div  css={css`width: 100%; height: 100%; position: absolute; background-color: blue;`}/> */}
+      {isModalOn && <ModalArticle parentRef={itemRef} setIsModalOn={setIsModalOn} article={article} thumbnail={render} />}
+      {render}
     </div>
   )
 }
@@ -51,6 +63,7 @@ export const carouselArticleitemWrapperCSS = css`
   background-color: white;
   overflow: hidden;
   border-radius: 20px;;
+  position: relative;
   cursor: pointer;
 
   transition: transform 1s, box-shadow 1s;
@@ -61,22 +74,25 @@ export const carouselArticleitemWrapperCSS = css`
 `
 
 const imageWrapperCSS = css`
-  flex: 3;
+  /* flex: 3; */
+  height: 70%;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.05);
-  height: 200px;
+  /* height: 200px; */
 `;
 
 const contentWrapperCSS = css`
-  flex: 1;
+  /* flex: 1; */
+  height: 30%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 12px;
+  /* background-color: red; */
 `
 
 export default RepresentativeArticlesRowItem

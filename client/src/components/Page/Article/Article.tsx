@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getArticleResponseType } from "@/types/board";
@@ -14,20 +14,26 @@ import mediaQuery from "@/util/responsive";
 import { dateFormatter } from "@/util/dateFormatter";
 import Skeleton from "@/components/Interface/Loading/Skeleton";
 import ArticleComments from "./ArticleComments";
+import ArticleCommentsLoading from "./ArticleCommentsLoading";
 
 type ArticlePropsType = {
   articleId: number;
   boardName: string;
+  isDelayed?: boolean;
 };
 
-function Article({ articleId, boardName }: ArticlePropsType) {
+function Article({ articleId, boardName, isDelayed = false }: ArticlePropsType) {
   const noti = useNotification();
   const router = useRouter();
   const auth = useAuthority();
 
+
   useEffect(() => {
     document.body.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+
+
   }, [])
+
 
   const article = useQuery<getArticleResponseType>(
     [`Article`, `${articleId}`],
@@ -126,23 +132,25 @@ function Article({ articleId, boardName }: ArticlePropsType) {
     <div key={article.data?.updatedAt} css={articleWrapperCSS}>
       <div css={headerWrapperCSS}>
         <div css={titleWrapperCSS}>
-          {article.data ? article.data.title : <Skeleton css={skeletonCSS} />}
+          {isDelayed === false && article.data ? article.data.title : <Skeleton css={skeletonCSS} />}
           
         </div>
         <div css={decoratorCSS} className={"decoration"}/>
         <div css={articleInfoWrapperCSS}>
           <div css={subInfoWrapperCSS}>
-            {article.data ? articleSubInfo : <Skeleton  css={skeletonCSS}/>}
+            {isDelayed === false && article.data ? articleSubInfo : <Skeleton  css={skeletonCSS}/>}
           </div>
           {auth.currentUser.role === "ADMIN" && adminHeader}
         </div>
       </div>
       <div css={viewerWrapperCSS} className={"article-wrapper"}>
-        {article.data ? <ArticleViewer content={article.data.content} /> : <Skeleton css={skeletonCSS}/>}
+        {isDelayed === false && article.data ? <ArticleViewer content={article.data.content} /> : <Skeleton css={skeletonCSS}/>}
       </div>
       <div css={dividerCSS}/>
       <div css={commentsWrapperCSS}>
-        <ArticleComments articleId={articleId} parentCommentId={null} depth={0} entity={10} />
+      {isDelayed === false ?
+        <ArticleComments articleId={articleId} parentCommentId={null} depth={0} entity={10} /> :
+        <ArticleCommentsLoading count={1} />}
       </div>
     </div>
   );
@@ -178,6 +186,7 @@ const headerWrapperCSS = css`
 `;
 
 const viewerWrapperCSS = css`
+  content-visibility: auto;
   margin-top: 16px;
   /* display: flex;
   flex-direction: column; */
@@ -278,5 +287,8 @@ const commentsWrapperCSS = css`
 
   
 `
+
+
+
 
 export default Article;
