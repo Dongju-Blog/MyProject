@@ -4,6 +4,8 @@ import { css } from '@emotion/react'
 import { useRouter } from 'next/router'
 import React, {useRef, useState} from 'react'
 import ModalArticle from '../Article/ModalArticle'
+import useResponsive from '@/hooks/useResponsive'
+import mediaQuery from '@/util/responsive'
 
 type RepresentativeArticlesRowItemPropsType = {
   article: getArticlesItemType
@@ -13,6 +15,15 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
   const router = useRouter()
   const itemRef = useRef<HTMLDivElement>(null)
   const [isModalOn, setIsModalOn] = useState(false)
+  const isMobile = useResponsive(mediaQuery.tablet)
+
+  const onClickHandler = () => {
+    if (isMobile) {
+      router.push(`/board/${article.boardName}/${article.id}`)
+    } else {
+      setIsModalOn(() => true)
+    }
+  }
 
   const render = (
     <React.Fragment>
@@ -46,7 +57,7 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
 
   return (
     //onClick={() => router.push(`/board/${article.boardName}/${article.id}`)}
-    <div ref={itemRef} css={carouselArticleitemWrapperCSS} onClick={() => {setIsModalOn(() => true)}}>
+    <div ref={itemRef} css={carouselArticleitemWrapperCSS} onClick={onClickHandler}>
       {/* <div  css={css`width: 100%; height: 100%; position: absolute; background-color: blue;`}/> */}
       {isModalOn && <ModalArticle parentRef={itemRef} setIsModalOn={setIsModalOn} article={article} thumbnail={render} />}
       {render}
