@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 import Button from "@/components/Interface/Button/Button";
 import { useRouter } from "next/dist/client/router";
 import { throttle } from "lodash";
+import { useAtom } from "jotai";
+import { pauseAnimation } from "@/store/store";
 // import Article from "./Article";
 
 const Article = dynamic(
@@ -30,6 +32,7 @@ function ModalArticle({
   const [isTriggered, setIsTriggered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTop, setIsTop] = useState(true)
+  const [pauseAnimationAtom, setPauseAnimationAtom] = useAtom(pauseAnimation)
   const router = useRouter()
 
   const onScrollHandler = throttle((e: any) => {
@@ -58,6 +61,7 @@ function ModalArticle({
     }, 500);
     setTimeout(() => {
       setIsModalOn(() => false);
+      setPauseAnimationAtom(() => false)
     }, 1000);
   };
 
