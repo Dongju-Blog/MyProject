@@ -6,6 +6,8 @@ import React, {useRef, useState} from 'react'
 import ModalArticle from '../Article/ModalArticle'
 import useResponsive from '@/hooks/useResponsive'
 import mediaQuery from '@/util/responsive'
+import { useAtom } from "jotai";
+import { pauseAnimation } from "@/store/store";
 
 type RepresentativeArticlesRowItemPropsType = {
   article: getArticlesItemType
@@ -16,11 +18,13 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
   const itemRef = useRef<HTMLDivElement>(null)
   const [isModalOn, setIsModalOn] = useState(false)
   const isMobile = useResponsive(mediaQuery.tablet)
+  const [pauseAnimationAtom, setPauseAnimationAtom] = useAtom(pauseAnimation)
 
   const onClickHandler = () => {
     if (isMobile) {
       router.push(`/board/${article.boardName}/${article.id}`)
     } else {
+      setPauseAnimationAtom(() => true)
       setIsModalOn(() => true)
     }
   }

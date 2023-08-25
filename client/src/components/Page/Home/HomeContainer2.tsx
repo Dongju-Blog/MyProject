@@ -7,6 +7,9 @@ import useAnimator from "../../Interface/Animator/useAnimator";
 import useResponsive from "@/hooks/useResponsive";
 import mediaQuery from "@/util/responsive";
 import RepresentativeArticles from "./RepresentativeArticles";
+import { useAtom } from "jotai";
+import { pauseAnimation } from "@/store/store";
+
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -17,6 +20,7 @@ function HomeContainer2({ setCondition, currentStep }: HomeContainer1Type) {
   const condition = setCondition(currentStep);
   const {Animator, render} = useAnimator(condition.immediate)
   const isMobile = useResponsive(mediaQuery.mobile)
+  const [pauseAnimationAtom, setPauseAnimationAtom] = useAtom(pauseAnimation)
 
   // const parellelogram = (
   //   <div
@@ -104,8 +108,8 @@ function HomeContainer2({ setCondition, currentStep }: HomeContainer1Type) {
           height: 100vh;
           width: 100vw;
           object-fit: cover;
-
           opacity: 50%;;
+          animation-play-state: ${pauseAnimationAtom ? `paused` : `running`};
         `]} src={"/assets/Wallpaper7_compressed.png"}/>
       </div>
       

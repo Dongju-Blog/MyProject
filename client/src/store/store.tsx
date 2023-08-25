@@ -19,8 +19,11 @@ const storeUser = atom<storeUserType>({
 
 const category = atom<activeBoardItemType[]>([])
 
+const pauseAnimation = atom<boolean>(false)
+
 export {
 	stackNotification,
 	storeUser,
-	category
+	category,
+	pauseAnimation
 }
