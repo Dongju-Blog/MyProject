@@ -74,6 +74,7 @@ public class SourceCodeServiceImpl implements SourceCodeService {
                     .rootName(json.getRootName())
                     .description(json.getDescription())
                     .fileUrl(uploadFile.get(0))
+                    .imageUrl(null)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
@@ -161,10 +162,12 @@ public class SourceCodeServiceImpl implements SourceCodeService {
 
         Optional<SourceCode> getSourceCode = sourceCodeRepository.findById(id);
 
-
+        String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
         SourceCodeResDto returnSourceCode;
         if (getSourceCode.isPresent()) {
             SourceCode sourceCode = getSourceCode.get();
+            sourceCode.setImageUrl(domain + sourceCode.getImageUrl());
+            sourceCode.setFileUrl(domain + sourceCode.getFileUrl());
             returnSourceCode = new SourceCodeResDto().of(sourceCode);
         } else {
             throw new CustomException(ErrorCode.NOT_FOUND_ARTICLE);

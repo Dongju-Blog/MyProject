@@ -35,7 +35,7 @@ public class SourceCode {
     @Column(nullable = false)
     private String fileUrl;
 
-    @Column()
+    @Column(nullable = true)
     private String imageUrl;
 
     @Column(nullable = false)
