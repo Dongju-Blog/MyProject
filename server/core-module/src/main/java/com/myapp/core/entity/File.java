@@ -25,4 +25,5 @@ public class File {
     @JoinColumn(name = "article_id")
     private Article article;
 
+
 }

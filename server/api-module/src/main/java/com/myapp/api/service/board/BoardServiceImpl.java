@@ -346,9 +346,9 @@ public class BoardServiceImpl implements BoardService {
                 .map(ArticlesResDto::new)
                 .collect(Collectors.toList());
 
+        String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
         for (ArticlesResDto article : returnArticles) {
             if (!Objects.equals(article.getThumbnail(), "")) {
-                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
                 article.setThumbnail(domain + article.getThumbnail());
             }
         }
@@ -395,9 +395,9 @@ public class BoardServiceImpl implements BoardService {
                 .map(ArticlesResDto::new)
                 .collect(Collectors.toList());
 
+        String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
         for (ArticlesResDto article : returnArticles) {
             if (!Objects.equals(article.getThumbnail(), "")) {
-                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
                 article.setThumbnail(domain + article.getThumbnail());
             }
         }
@@ -494,9 +494,9 @@ public class BoardServiceImpl implements BoardService {
                 .map(ArticlesResDto::new)
                 .collect(Collectors.toList());
 
+        String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
         for (ArticlesResDto article : returnArticles) {
             if (!Objects.equals(article.getThumbnail(), "")) {
-                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
                 article.setThumbnail(domain + article.getThumbnail());
             }
         }
@@ -557,9 +557,9 @@ public class BoardServiceImpl implements BoardService {
                 .map(ArticlesResDto::new)
                 .collect(Collectors.toList());
 
+        String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
         for (ArticlesResDto article : returnArticles) {
             if (!Objects.equals(article.getThumbnail(), "")) {
-                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
                 article.setThumbnail(domain + article.getThumbnail());
             }
         }
@@ -597,9 +597,9 @@ public class BoardServiceImpl implements BoardService {
                 .map(ArticlesResDto::new)
                 .collect(Collectors.toList());
 
+        String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
         for (ArticlesResDto article : returnArticles) {
             if (!Objects.equals(article.getThumbnail(), "")) {
-                String domain = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
                 article.setThumbnail(domain + article.getThumbnail());
             }
         }
