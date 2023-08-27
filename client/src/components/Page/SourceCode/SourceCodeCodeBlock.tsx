@@ -90,17 +90,22 @@ const scrollWrapperCSS = css`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.05);
+  
 `
 
 const outerWrapperCSS = ({wrap}: {wrap: boolean}) => {
   return css`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
+  display: grid;
+  /* grid-template-columns: auto auto; */
+  grid-template-rows: auto auto minmax(0px, 100vh);
   font-size: 14px;
+  position: relative;
   /* overflow: scroll; */
-  
+
   /* overflow:hidden; */
     
   & .token-line {
@@ -115,6 +120,13 @@ const outerWrapperCSS = ({wrap}: {wrap: boolean}) => {
     /* display: inline-block; */
   }
 
+  & .token {
+    word-wrap: ${wrap && `break-word`};
+    white-space: ${wrap && `pre-wrap`};
+    max-width: 100%;
+    
+  }
+
   & .indicator {
     font-family: 'Consolas';
     color: rgba(0, 0, 0, 0.4);
@@ -125,10 +137,13 @@ const outerWrapperCSS = ({wrap}: {wrap: boolean}) => {
     min-width: 64px;
     margin-right: 24px;
     display: inline-block;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    /* border-left: 1px solid rgba(0, 0, 0, 0.1); */
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     /* height: 100%; */
     user-select: none;
+
+    position: sticky;
+    left: 0;
   }
 `
 }
@@ -143,8 +158,8 @@ const topDummyCSS = css`
 `;
 
 const bottomDummyCSS = css`
-  flex: 1;
-  
+
+  height: 100%;
   & .indicator {
     height: 100%;
   }

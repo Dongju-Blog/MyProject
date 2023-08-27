@@ -2,6 +2,7 @@ import React from "react";
 import { fileTreeType } from "../useGetExtractedDir";
 import SourceCodeExplorerListItem from "./SourceCodeExplorerListItem";
 import { selectFileHandlerType } from "../SourceCodeIDE";
+import { css } from "@emotion/react";
 
 type SourceCodeExplorerListPropsType = {
   depth: number;
@@ -52,11 +53,40 @@ function SourceCodeExplorerList({
     });
 
   return (
-    <div>
+    <div css={wrapperCSS}>
+      <div className={"separator"} css={lineCSS({depth})}/>
       {renderDir}
       {renderFile}
     </div>
   );
+}
+
+const wrapperCSS = css`
+  position: relative;
+  display: grid;
+  &:hover {
+    .separator {
+      opacity: 100%;
+    } 
+    
+  }
+`
+
+const lineCSS = ({depth}: {depth: number}) => {
+  return css`
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  transform: translateX(${(depth - 1) * 8}px);
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 1s;
+
+  
+`
 }
 
 export default SourceCodeExplorerList;
