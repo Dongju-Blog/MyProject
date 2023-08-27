@@ -104,14 +104,16 @@ const itemWrapperCSS = ({
   isSelected: boolean;
 }) => {
   return css`
-    width: 100%;
+  
+    /* min-width: 100%; */
     background-color: ${isSelected
       ? `rgba(230, 230, 230, 1)`
       : `rgba(250, 250, 250, 1)`};
     padding: 3px;
-    padding-left: ${depth * 6}px;
+    padding-left: ${depth * 8}px;
     font-size: 13px;
 
+    
     display: flex;
     align-items: center;
     gap: 6px;
@@ -149,12 +151,12 @@ const bracketImgCSS = ({
     /* height: 18px; */
     height: ${bracketSize};
     transform: ${isOpened ? "rotate( 0deg )" : "rotate( -90deg )"};
-    margin-left: 10px;
+    margin-left: 2px;
   `;
 };
 
 const fileIconSpaceCSS = css`
-  margin-right: 21px;
+  margin-right: 13px;
 `;
 
 export default SourceCodeExplorerListItem;
