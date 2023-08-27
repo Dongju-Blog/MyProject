@@ -35,6 +35,8 @@ export type filesType = {
 
 export type postArticleBodyType = FormData
 
+
+
 // export type postArticleBodyType = {
 //   title: string;
 //   content: string;
@@ -76,4 +78,28 @@ export type mobileArticlesResponseType = {
   last: boolean;
   nextLastId: number;
 }
+
+
+
+export type postSourceCodeBodyType = FormData
+
+export type postSourceCodeResponseType = {
+  url: string
+}
+
+export type getSourceCodeResponseType = {
+  "id": number
+  "title": string
+  "rootName": string
+  "description": string
+  "fileUrl": string
+  "imageUrl": string
+  "createdAt": string
+  "updatedAt": string
+}
+
+
+
+export type pageablePageSourceCodesResponseType = pageablePageType & {content: getSourceCodeResponseType[]}
+
 

@@ -17,15 +17,15 @@ function useNavbarUtil() {
     router.push('/#3')
   }
 
-  const Example4 = () => {
-    router.push('/#4')
+  const NAVIGATE_TO_PLAYGROUND = () => {
+    router.push('/playground')
   }
 
   const returnObject = {
     Example1,
     Example2,
     Example3,
-    Example4
+    NAVIGATE_TO_PLAYGROUND
   }
 
   return returnObject

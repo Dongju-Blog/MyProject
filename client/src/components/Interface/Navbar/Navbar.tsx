@@ -72,7 +72,18 @@ function Navbar() {
       id: 1,
       label: 'BOARD',
       menu: manufacturedCategories ? manufacturedCategories : []
-    }
+    },
+    {
+      id: 2,
+      label: 'CODE',
+      menu: [
+        {
+          id: 0,
+          label: 'Source Code',
+          function: util.NAVIGATE_TO_PLAYGROUND
+        },
+      ]
+    },
   ]
 
   const [isTop, setIsTop] = useState(true)

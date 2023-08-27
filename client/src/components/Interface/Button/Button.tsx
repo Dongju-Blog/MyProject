@@ -31,7 +31,7 @@ const initButtonCSS = css`
   justify-content: center;
 `;
 
-type ThemeProviderKeys = "default" | "grey" | "outline" | "text" | "dark";
+type ThemeProviderKeys = "default" | "grey" | "outline" | "text" | "dark" | "normalText";
 
 type themeProviderType = { [prop: string]: SerializedStyles[] };
 const themeProvider = () => {
@@ -112,6 +112,21 @@ const themeProvider = () => {
       css`
         font-size: 16px;
         font-weight: 700;
+        cursor: pointer;
+        color: rgba(0, 0, 0, 0.6);
+        transition-property: transform color;
+        transition-duration: 1s;
+
+        &:hover {
+          transform: scale(110%);
+          color: rgba(0, 0, 0, 1);
+        }
+      `,
+    ],
+    normalText: [
+      css`
+        /* font-size: 16px;
+        font-weight: 700; */
         cursor: pointer;
         color: rgba(0, 0, 0, 0.6);
         transition-property: transform color;
