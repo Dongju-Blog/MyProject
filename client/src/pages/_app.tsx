@@ -8,6 +8,7 @@ import { CookiesProvider } from "react-cookie";
 import "./ToastEditor.css";
 import React, {useState, useEffect} from 'react'
 
+
 export default function App({ Component, pageProps }: AppProps) {
   // const queryClient = new QueryClient()
   const [queryClient] = useState(() => new QueryClient());
