@@ -8,8 +8,25 @@ import { OverlayScrollbarsComponent, useOverlayScrollbars } from 'overlayscrollb
 import { useAtom } from "jotai";
 import { codeBlockOption } from "@/store/store";
 
+import Prism from 'prismjs';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-docker';
+import 'prismjs/components/prism-gradle';
+import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-properties';
+import 'prismjs/components/prism-git';
+import 'prismjs/components/prism-batch';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-markdown';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-ignore.js';
+import 'prismjs/components/prism-kotlin';
+import 'prismjs/components/prism-cshtml';
+import 'prismjs/components/prism-rust';
 
-  
 
 type SourceCodeCodeBlockPropsType = {
   content: string
@@ -41,7 +58,7 @@ function SourceCodeCodeBlock({content, language}: SourceCodeCodeBlockPropsType) 
       <div css={topDummyCSS}>
         <div className='indicator' />
       </div> 
-      <Highlight theme={themes.github} code={content} language={language}>
+      <Highlight prism={Prism} theme={themes.github} code={content} language={language}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre>
             {tokens.map((line, i) => (

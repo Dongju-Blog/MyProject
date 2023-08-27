@@ -12,7 +12,9 @@ function DesktopNavbarCategory({category}: DesktopNavbarCategoryPropsType) {
 
   const onClickHandler = () => {
     // 메뉴가 하나일 때는 메뉴를 렌더링하지 않고 다이렉트 라우팅
-    category.menu[0].function()
+    if (category.menu.length === 1) {
+      category.menu[0].function()
+    }
   }
 
   return (
@@ -21,7 +23,7 @@ function DesktopNavbarCategory({category}: DesktopNavbarCategoryPropsType) {
         <div>
           <div className={'menu'} css={categoryItemMenuCSS}>
             
-            {category.menu.length > 1 && 
+            {category.menu.length !== 1 && 
               <React.Fragment>
                 <div css={arrowCSS}/>
                 <DesktopNavbarCategoryMenu categoryMenu={category.menu} />
