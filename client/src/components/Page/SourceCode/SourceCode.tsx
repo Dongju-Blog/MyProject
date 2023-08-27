@@ -17,6 +17,7 @@ import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate"
 import useResponsive from "@/hooks/useResponsive";
 import mediaQuery from "@/util/responsive";
 import Alert from "@/components/Interface/Loading/Alert";
+import useAuthority from "@/hooks/useAuthority";
 
 type SourceCodePropsType = {
   sourceCodeId: number
@@ -27,7 +28,7 @@ function SourceCode({sourceCodeId}: SourceCodePropsType) {
   const router = useRouter()
   const noti = useNotification()
   const isMobile = useResponsive(mediaQuery.tablet)
-  
+  const auth = useAuthority();
 
 
   const sourceCodeQuery = useQuery<getSourceCodeResponseType>(
@@ -132,12 +133,16 @@ function SourceCode({sourceCodeId}: SourceCodePropsType) {
           {sourceCodeQuery.data && sourceCodeQuery.data.title}
         </div>
         <div css={headerRightCSS}>
-          <Button onClick={deleteOnClickHandler} theme={'normalText'}>
-            삭제
-          </Button>
-          <Button theme={'normalText'} onClick={() => {router.push(`/playground/${sourceCodeId}/update`)}}>
-            수정
-          </Button>
+          {auth.currentUser.role === "ADMIN" && 
+          <React.Fragment>
+            <Button onClick={deleteOnClickHandler} theme={'normalText'}>
+              삭제
+            </Button>
+            <Button theme={'normalText'} onClick={() => {router.push(`/playground/${sourceCodeId}/update`)}}>
+              수정
+            </Button>
+          </React.Fragment>
+          }
           <CheckBox
             theme={"default"}
             checked={codeBlockOptionAtom.wrap}

@@ -162,6 +162,9 @@ function useAuthorityInit() {
     "/test": { role: ["USER"], status: ["APPROVED"] },
     "/admin/category": { role: ["ADMIN"], status: ["APPROVED"] },
     "/create": { role: ["ADMIN"], status: ["APPROVED"] },
+    "/board/[boardName]/[articleId]/update": { role: ["ADMIN"], status: ["APPROVED"] },
+    "/playground/create": { role: ["ADMIN"], status: ["APPROVED"] },
+    "/playground/[sourceCodeId]/update": { role: ["ADMIN"], status: ["APPROVED"] },
   };
 
   useEffect(() => {
