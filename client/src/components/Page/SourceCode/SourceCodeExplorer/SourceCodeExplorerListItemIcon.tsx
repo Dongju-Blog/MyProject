@@ -2,12 +2,12 @@ import React from "react";
 import { getIcon, getAllIcons } from "material-file-icons";
 import { css, SerializedStyles } from "@emotion/react";
 
-type ExplorerListItemIcon = {
+type SourceCodeExplorerListItemIcon = {
   name: string;
   css: SerializedStyles
 } & React.HTMLAttributes<HTMLDivElement>;
 
-function ExplorerListItemIcon({ name, ...props }: ExplorerListItemIcon) {
+function SourceCodeExplorerListItemIcon({ name, ...props }: SourceCodeExplorerListItemIcon) {
   return (
     <React.Fragment>
       <div
@@ -22,4 +22,4 @@ const iconCSS = css`
   width: 18px;
   height: 18px;
 `;
-export default ExplorerListItemIcon;
+export default SourceCodeExplorerListItemIcon;

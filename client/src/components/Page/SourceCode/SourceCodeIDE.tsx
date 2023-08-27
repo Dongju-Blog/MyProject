@@ -2,22 +2,25 @@ import React, { useEffect, useState } from "react";
 import JSZip from "jszip";
 import Wrapper from "@/components/Interface/Wrapper/Wrapper";
 import { getFileAPI } from "@/api/playground/getFileAPI";
-import useGetExtractedDir from "@/components/Page/Playground/useGetExtractedDir";
-import CodeBlock from "@/components/Page/Playground/CodeBlock";
-import Explorer from "@/components/Page/Playground/Explorer/Explorer";
+import useGetExtractedDir from "@/components/Page/SourceCode/useGetExtractedDir";
+import SourceCodeCodeBlock from "@/components/Page/SourceCode/SourceCodeCodeBlock";
+import SourceCodeExplorer from "@/components/Page/SourceCode/SourceCodeExplorer/SourceCodeExplorer";
 import { css } from "@emotion/react";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import Loading from "@/components/Interface/Loading/Loading";
 
 
 export type selectFileHandlerType = ({file}: {file: Blob; pathIncludeName: string}) => void
 
-type PlaygroundPropsType = {
+type SourceCodeIDEPropsType = {
   url: string
+  rootName: string
 }
 
-function Playground({url}: PlaygroundPropsType) {
+function SourceCodeIDE({url, rootName}: SourceCodeIDEPropsType) {
   const fileTree = useGetExtractedDir({
-    url
+    url,
+    rootName
   });
 
   const [selectedFile, setSelectedFile] = useState<Blob>()
@@ -31,6 +34,7 @@ function Playground({url}: PlaygroundPropsType) {
   const selectFileHandler: selectFileHandlerType = ({file, pathIncludeName}: {file: Blob; pathIncludeName: string}) => {
     setSelectedFilePathIncludeName(() => pathIncludeName)
     setSelectedFile(() => file)
+    
   }
 
   useEffect(() => {
@@ -57,8 +61,8 @@ function Playground({url}: PlaygroundPropsType) {
     
     <div css={wrapperCSS}>
       
-      {fileTree && <Explorer fileTree={fileTree} selectFileHandler={selectFileHandler} selectedFilePathIncludeName={selectedFilePathIncludeName}/>}
-      <CodeBlock content={String(content)} language={selectedFileType}/>
+      {fileTree ? <SourceCodeExplorer fileTree={fileTree} selectFileHandler={selectFileHandler} selectedFilePathIncludeName={selectedFilePathIncludeName}/> : <Loading label={"파일 트리를 구성하는 중입니다."}/>}
+      <SourceCodeCodeBlock content={String(content)} language={selectedFileType}/>
       
     </div>
     
@@ -74,4 +78,4 @@ const wrapperCSS = css`
 
 
 
-export default Playground;
+export default SourceCodeIDE;

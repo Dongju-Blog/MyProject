@@ -73,10 +73,14 @@ const outerWrapperCSS = css`
   font-size: 14px;
   /* overflow: scroll; */
   
-
+  /* overflow:hidden; */
+    
   & .token-line {
     font-family: 'Consolas';
     padding: 0px;
+    /* display: flex;
+    flex-wrap: wrap; */
+
   }
 
   & .indicator {

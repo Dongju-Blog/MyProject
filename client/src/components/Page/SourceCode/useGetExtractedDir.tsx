@@ -4,13 +4,14 @@ import { getFileAPI } from "@/api/playground/getFileAPI";
 
 type useGetExtractedDirPropsType = {
   url: string;
+  rootName: string
 };
 
 export type fileTreeType = {
   [prop: string]: { file: { [prop: string]: Blob }; dir: string[] };
 }
 
-function useGetExtractedDir({ url }: useGetExtractedDirPropsType) {
+function useGetExtractedDir({ url, rootName }: useGetExtractedDirPropsType) {
   const [zip, setZip] = useState(new JSZip());
   const [file, setFile] = useState<Blob>();
   const [zipData, setZipData] = useState<any>();
@@ -25,47 +26,59 @@ function useGetExtractedDir({ url }: useGetExtractedDirPropsType) {
       zip.loadAsync(blob).then((res) => {
         setZipData(() => res);
       });
+      console.log("file!!!!", res)
     });
   }, []);
 
   useEffect(() => {
-    const fileTree: fileTreeType = {};
-    zip.forEach(function (relativePath, entry) {
-      // const path = entry.name.split("/")
-      // for(let i = 0; i < path.length; i++){
-      //   if (path[i] in fileTree === false) {
+    console.log(file)
+  }, [file])
 
-      //   }
-      // }
+  useEffect(() => {
+    const root = `root/${rootName}/`
+
+    // 최상위 폴더 root 생성.
+    // root를 생성하지 않으면 원래 zip 파일에 존재하던 최상위 폴더 내의 파일, 폴더가 보이지 않음
+    const fileTree: fileTreeType = {
+      "root/": {
+        file: {},
+        dir: [root]
+      },
+      [root]: {
+        file: {},
+        dir: []
+      }
+    };
+    
+    zip.forEach(function (relativePath, entry) {
+      // 가상으로 최상위 폴더 root를 생성했기 때문에 root를 붙여서 entry.name을 추가한다.
       if (entry.dir) {
-        fileTree[entry.name] = {
+        fileTree[root + entry.name] = {
           file: {},
           dir: [],
         };
       }
-      // console.log(entry.dir ? "dir : " : "file : ",entry.name);
+
     });
     zip.forEach(function (relativePath, entry) {
       if (entry.dir) {
         const splitted = entry.name.split("/");
         const path = splitted.slice(0, splitted.length - 2).join("/") + "/";
-        if (path in fileTree) {
-          fileTree[path]["dir"].push(entry.name);
+        if (root + path in fileTree) {
+          fileTree[root + path]["dir"].push(root + entry.name);
         }
-        // const splitted = entry.name.split("/")
-        // splitted.pop()
-        // for(let i = splitted.length - 1; i >= 0; i--){
-        //   const joined = splitted.join('/') + '/'
-        //   if (joined in fileTree && joined !== path) {
-        //     fileTree[joined]['directory'].push(entry.name)
-        //   }
-        //   splitted.pop()
-        // }
+
+        // 최상위 폴더의 path 상수는 "/"이다. 그렇게 되면 위 조건으로는 "root//"가 되버리기 때문에 아래의 조건을 추가해준다.
+        if (path === "/") {
+          fileTree[root]["dir"].push(root + entry.name);
+        }
+
       } else {
         const path = entry.name.substring(0, entry.name.lastIndexOf("/") + 1);
-        if (path in fileTree) {
+        
+        if (root + path in fileTree) {
           entry.async("blob").then((res) => {
-            fileTree[path]["file"][
+            fileTree[root + path]["file"][
               entry.name.substring(
                 entry.name.lastIndexOf("/") + 1,
                 entry.name.length
@@ -73,6 +86,10 @@ function useGetExtractedDir({ url }: useGetExtractedDirPropsType) {
             ] = res;
           });
         }
+
+
+
+        console.log(path)
       }
     });
 

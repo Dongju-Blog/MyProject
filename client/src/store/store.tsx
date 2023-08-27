@@ -21,9 +21,14 @@ const category = atom<activeBoardItemType[]>([])
 
 const pauseAnimation = atom<boolean>(false)
 
+const codeBlockOption = atom<{wrap: boolean}>({
+	wrap: true
+})
+
 export {
 	stackNotification,
 	storeUser,
 	category,
-	pauseAnimation
+	pauseAnimation,
+	codeBlockOption
 }

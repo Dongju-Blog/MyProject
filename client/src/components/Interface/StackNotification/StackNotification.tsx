@@ -13,7 +13,6 @@ const NotificationOverlay = (props: any) => {
 
 	const notiProcessor = Object.keys(stackNotificationAtom).map((key) => {
 		const numKey = Number(key)
-		console.log(stackNotificationAtom)
 		return (
 			<Notification
 				// passToFixed={stackNotificationAtom[numKey].passToFixed}

@@ -53,6 +53,7 @@ function useAuthority() {
         //   maxAge: 14 * 24 * 60 * 60,
         // });
         axios.defaults.headers.authorization = res.accessToken;
+        console.log(res.accessToken)
         // router.push('/')
       })
       .catch((err) => {
