@@ -131,7 +131,8 @@ const themeProvider = () => {
         color: rgba(0, 0, 0, 0.6);
         transition-property: transform color;
         transition-duration: 1s;
-
+        height: 14px;
+        font-size: 13px !important;
         &:hover {
           transform: scale(110%);
           color: rgba(0, 0, 0, 1);

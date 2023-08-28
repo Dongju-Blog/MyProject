@@ -129,7 +129,7 @@ function SourceCode({sourceCodeId}: SourceCodePropsType) {
       <div css={headerCSS}>
    
         <div css={headerLeftCSS}>
-          <div css={iconWrapperCSS}>SOURCE CODE</div>
+          {sourceCodeQuery.data &&<div css={iconWrapperCSS}>{sourceCodeQuery.data.updatedAt} /&nbsp;</div>}
           {sourceCodeQuery.data && sourceCodeQuery.data.title}
         </div>
         <div css={headerRightCSS}>
@@ -152,6 +152,7 @@ function SourceCode({sourceCodeId}: SourceCodePropsType) {
               <span
                 css={css`
                   margin-right: 8px;
+                  font-size: 14px;
                 `}
               >
                 강제 줄바꿈
@@ -179,15 +180,16 @@ const wrapperCSS = css`
 
 const headerCSS = css`
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  height: 48px;
-  box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
+  height: 18px;
+  /* box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2); */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   z-index: 10;
   padding: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  font-size: 20px;
+  font-size: 14px;
 `;
 
 const headerLeftCSS = css`
@@ -203,13 +205,13 @@ const headerRightCSS = css`
 `;
 
 const iconWrapperCSS = css`
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 20px;
-  padding: 6px 12px 6px 12px;
-  color: rgba(0, 0, 0, 0.6);
-  margin-right: 12px;
-  font-size: 16px;
-  font-weight: 700;
+  /* background-color: rgba(0, 0, 0, 0.05); */
+  /* border-radius: 20px; */
+  /* padding: 2px 12px 2px 12px; */
+  color: rgba(0, 0, 0, 0.5);
+  /* margin-right: 4px; */
+  font-size: 14px;
+  /* font-weight: 500; */
 `;
 
 export default SourceCode;

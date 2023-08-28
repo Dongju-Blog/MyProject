@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useState, useEffect, ReactNode, ReactElement, JSXElementConstructor, useCallback, useMemo } from "react"
 import Portal from "../Portal/Portal"
 import { css } from "@emotion/react"
 import { useRouter } from "next/router"
@@ -6,82 +6,107 @@ import { useAtom } from "jotai"
 
 
 
+
 type ModalPropsType = {
-	children: JSX.Element
+	transition: any
+	duration: number
+	hasBackdrop: boolean;
+	compState: boolean
+	closeHandler: () => void
+	content: ReactNode
 }
 
-type useModalPropsType = 'fadeIn' | 'scale' | 'rightToLeft' | 'bottomToTop' | 'flip'
+type useModalPropsType = {
+	transition?: transitionsKeyType
+	duration?: number
+	hasBackdrop?: boolean
+}
 
-function useModal(transition: useModalPropsType, duration: number) {
-	const [isModalOn, setIsModalOn] = useState(false)
+function useModal({transition = 'scale', duration = 1000, hasBackdrop = true}: useModalPropsType = {}) {
+	const [modalState, setModalState] = useState(false)
 
-	const openModalHandler = () => {
-		setIsModalOn(() => true)
-	}
-
-	const Modal = useMemo(() => ({ children }: ModalPropsType) => {
-		const [modalState, setModalState] = useState<boolean>(false)
-		const router = useRouter()
-		
-		const [inModalState, setInModalState] = useState<boolean>(isModalOn)
-		const [closeModalState, setCloseModalState] = useState<boolean>(false)
-
-		const closeModalHandler = () => {
-			setCloseModalState(() => true)
+	const modal = (content: ReactNode): any => {
+		if (content) {
+			return ModalBridge.bind(null, {transition, duration, hasBackdrop, compState: modalState, closeHandler: setModalState.bind(null, () => false), content})()
 		}
+		
+	}
+	
+	modal.open = setModalState.bind(null, () => true)
+	modal.close = setModalState.bind(null, () => false)
+	modal.state = modalState
 
-		useEffect(() => {
-			if (closeModalState) {
-				setInModalState(() => false)
-			}
-		}, [closeModalState])
 
-		useEffect(() => {
-			if (!closeModalState) {
-				setTimeout(() => {
-					setModalState(() => true)
-				}, 30)
-			} else {
+
+	return modal
+
+	
+
+	
+}
+
+
+function ModalBridge(props: ModalPropsType) {
+	return <Modal {...props}/>
+}
+
+
+
+
+function Modal({transition, duration, hasBackdrop, compState , closeHandler, content}: ModalPropsType  ) {
+
+	const [modalState, setModalState] = useState<boolean>(false)
+	const router = useRouter()
+
+	useEffect(() => {
+		if (compState) {
+			setTimeout(() => {
+				setModalState(() => true)
+			}, 30)
+		} else {
+			if (modalState) {
 				setTimeout(() => {
 					setModalState(() => false)
-					setIsModalOn(() => false)
 				}, duration)
 			}
-		}, [closeModalState])
+			
+		}
+	}, [compState])
 
-		const renderContent = React.cloneElement(children, {
-			closeModalHandler,
-		})
 
-		if (isModalOn) {
-			return (
-				<Portal>
-					<div css={modalWrapperCSS}>
-						<div css={backdropCSS({ inModalState, modalState, duration })} />
-						<div css={transitions({ inModalState, modalState, duration })[transition]} onClick={closeModalHandler} >
+
+
+	const renderContent = React.cloneElement(content as ReactElement<any, string | JSXElementConstructor<any>>, {
+		closeComp: closeHandler,
+	})
+
+
+	if (modalState || compState) {
+		return (
+			<Portal>
+				<div css={modalWrapperCSS}>
+						<div css={backdropCSS({ hasBackdrop, compState, modalState, duration })} />
+						<div css={transitions({ compState, modalState, duration })[transition]} onClick={closeHandler} >
 							<div className={"inner-wrapper"} css={innerWrapperCSS} onClick={(e) => e.stopPropagation()}>
 								{renderContent}
 							</div>
 						</div>
 					</div>
-				</Portal>
-			)
-		} else {
-			return <React.Fragment />
-		}
-	}, [isModalOn])
-	
-	return [Modal, openModalHandler, isModalOn] as const
-
+			</Portal>
+		)
+	} else {
+		return <React.Fragment />
+	}
 }
 
-const backdropCSS = ({ inModalState, modalState, duration }: { inModalState: boolean; modalState: boolean, duration: number }) => {
+
+const backdropCSS = ({ hasBackdrop, compState, modalState, duration }: { hasBackdrop: boolean; compState: boolean; modalState: boolean, duration: number }) => {
 	return css`
 		position: fixed;
 		width: 100vw;
 		height: 100%;
 		background-color: rgba(0, 0, 0, 0.2);
-		opacity: ${inModalState ? (modalState ? "100%" : "0%") : "0%"};
+		opacity: ${hasBackdrop && compState ? (modalState ? "100%" : "0%") : "0%"};
 		transition-duration: ${duration}ms;
 		transition-property: opacity;
 	`
@@ -97,16 +122,18 @@ const modalWrapperCSS = css`
 	align-items: center;
 `
 
-const transitions = ({ inModalState, modalState, duration }: { inModalState: boolean; modalState: boolean; duration: number }) => {
+type transitionsKeyType = 'fadeIn' | 'scale' | 'rightToLeft' | 'bottomToTop' | 'flip'
+
+const transitions = ({ compState, modalState, duration }: { compState: boolean; modalState: boolean; duration: number }) => {
 	const data: { [prop: string]: any } = {
 		fadeIn: css`
 			position: relative;
-			/* width: 100%;
-			height: 100%; */
+			width: 100%;
+			height: 100%;
 			transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
 			transition-duration: ${duration}ms;
 			transition-property: opacity;
-			opacity: ${inModalState ? (modalState ? "100%" : "0%") : "0%"};
+			opacity: ${compState ? (modalState ? "100%" : "0%") : "0%"};
 		`,
 		scale: css`
 			position: relative;
@@ -115,8 +142,8 @@ const transitions = ({ inModalState, modalState, duration }: { inModalState: boo
 			transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
 			transition-duration: ${duration}ms;
 			transition-property: opacity transform;
-			opacity: ${inModalState ? (modalState ? "100%" : "0%") : "0%"};
-			transform: ${inModalState ? (modalState ? "scale(1)" : "scale(1.1)") : "scale(1.1)"};
+			opacity: ${compState ? (modalState ? "100%" : "0%") : "0%"};
+			transform: ${compState ? (modalState ? "scale(1)" : "scale(1.1)") : "scale(1.1)"};
 		`,
 		rightToLeft: css`
 			position: relative;
@@ -125,7 +152,7 @@ const transitions = ({ inModalState, modalState, duration }: { inModalState: boo
 			transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
 			transition-duration: ${duration}ms;
 			transition-property: left;
-			left: ${inModalState ? (modalState ? "0" : "100%") : "100%"};
+			left: ${compState ? (modalState ? "0" : "100%") : "100%"};
 		`,
 		bottomToTop: css`
 			position: relative;
@@ -134,7 +161,7 @@ const transitions = ({ inModalState, modalState, duration }: { inModalState: boo
 			transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
 			transition-duration: ${duration}ms;
 			transition-property: top;
-			top: ${inModalState ? (modalState ? "0" : "100%") : "100%"};
+			top: ${compState ? (modalState ? "0" : "100%") : "100%"};
 		`,
 		flip: css`
 			width: 100%;
@@ -144,15 +171,15 @@ const transitions = ({ inModalState, modalState, duration }: { inModalState: boo
 			transition-property: top;
 			position: relative;
 			perspective: 500px;
-			top: ${inModalState ? (modalState ? "0" : "5%") : "5%"};
+			top: ${compState ? (modalState ? "0" : "5%") : "5%"};
 
 			& .inner-wrapper {
 				transition-duration: ${duration}ms;
 				transition-property: transform opacity;
 				backface-visibility: hidden;
 				/* transition: 1s; */
-				transform: ${inModalState ? (modalState ? "rotateX(0deg)" : "rotateX(60deg)") : "rotateX(60deg)"};
-				opacity: ${inModalState ? (modalState ? "100%" : "0%") : "0%"};
+				transform: ${compState ? (modalState ? "rotateX(0deg)" : "rotateX(60deg)") : "rotateX(60deg)"};
+				opacity: ${compState ? (modalState ? "100%" : "0%") : "0%"};
 			}
 		`,
 	}

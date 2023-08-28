@@ -62,8 +62,8 @@ const initLabelCSS = css`
 `;
 
 const initInputCSS = css`
-  width: 23px;
-		height: 23px;
+    width: 18px;
+		height: 18px;
 		cursor: pointer;
 		border-radius: 50%;
 		border: 1px solid #999;

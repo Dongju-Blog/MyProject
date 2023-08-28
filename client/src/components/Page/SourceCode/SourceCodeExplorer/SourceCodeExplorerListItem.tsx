@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { fileTreeType } from "../useGetExtractedDir";
 import { css } from "@emotion/react";
 import SourceCodeExplorerList from "./SourceCodeExplorerList";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorerListItemIcon";
 import { selectFileHandlerType } from "../SourceCodeIDE";
+import { useRouter } from "next/router";
+import { lastIndexOf } from "lodash";
+import useModal from "@/components/Interface/Modal/useModal";
+import SourceCodeExplorerContextMenu from "./SourceCodeExplorerContextMenu";
 
 type SourceCodeExplorerListItemPropsType = {
   name: string;
@@ -13,6 +17,7 @@ type SourceCodeExplorerListItemPropsType = {
   depth: number;
   selectFileHandler: selectFileHandlerType;
   selectedFilePathIncludeName: string;
+  initOpened?: boolean
 };
 
 function SourceCodeExplorerListItem({
@@ -23,15 +28,44 @@ function SourceCodeExplorerListItem({
   depth,
   selectFileHandler,
   selectedFilePathIncludeName,
+  initOpened
 }: SourceCodeExplorerListItemPropsType) {
-  const [isOpened, setIsOpened] = useState<boolean>(false);
+  const [isOpened, setIsOpened] = useState<boolean>(initOpened ? initOpened : false);
   const [specifiedFolder, setSpecifiedFolder] = useState<boolean>(false)
+  const contextMenuModal = useModal({transition: 'fadeIn', duration: 300, hasBackdrop: false})
+
+  const router = useRouter();
+  const { init } = router.query;
+  
+  useEffect(() => {
+    if (isDir) {
+      if (init && init.includes(dir)) {
+        setIsOpened(() => true)
+      }
+      if (init && init === dir) {
+        const params = router.query;
+        delete params["init"];
+        // router.push({ query: { ...params } }, undefined, { shallow: true });
+      }
+    } else {
+      if (dir + name === init) {
+        selectFileHandler({
+          file: fileTree[dir]["file"][name],
+          pathIncludeName: dir + name,
+        });
+        const params = router.query;
+        delete params["init"];
+        // router.push({ query: { ...params } }, undefined, { shallow: true });
+      }
+    }
+  }, [init])
 
   const onClickHandler = () => {
     if (isDir) {
       setIsOpened((prev) => !prev);
+
     } else {
-      const splitted = name.split(".");
+      
       selectFileHandler({
         file: fileTree[dir].file[name],
         pathIncludeName: dir + name,
@@ -46,24 +80,9 @@ function SourceCodeExplorerListItem({
     ? `/assets/ExplorerIcons/folder-${name}-open.svg`
     : `/assets/ExplorerIcons/folder-${name}.svg`;
 
-  return (
+  const icon = (
     <React.Fragment>
-      <div
-        css={itemWrapperCSS({
-          depth,
-          isSelected: selectedFilePathIncludeName === dir + name,
-        })}
-        onClick={onClickHandler}
-      >
-        {isDir ? (
-          <img
-            css={bracketImgCSS({ isOpened, bracketSize: "6px" })}
-            src={"/assets/bracket.png"}
-          />
-        ) : (
-          <div css={fileIconSpaceCSS} />
-        )}
-        {isDir ? (
+      {isDir ? (
           <React.Fragment>
             <img
               css={iconCSS({render: !specifiedFolder})}
@@ -81,6 +100,37 @@ function SourceCodeExplorerListItem({
         ) : (
           <SourceCodeExplorerListItemIcon css={iconCSS({render: true})} name={name} />
         )}
+    </React.Fragment>
+  )
+
+  const onContextMenuHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault()
+    contextMenuModal.open()
+  }
+
+
+  return (
+    <React.Fragment>
+      {contextMenuModal(
+        <SourceCodeExplorerContextMenu icon={icon} name={name} dir={dir} isDir={isDir} openHandler={onClickHandler} />
+      )}
+      <div
+        css={itemWrapperCSS({
+          depth,
+          isSelected: selectedFilePathIncludeName === dir + name,
+        })}
+        onClick={onClickHandler}
+        onContextMenu={onContextMenuHandler}
+      >
+        {isDir ? (
+          <img
+            css={bracketImgCSS({ isOpened, bracketSize: "6px" })}
+            src={"/assets/bracket.png"}
+          />
+        ) : (
+          <div css={fileIconSpaceCSS} />
+        )}
+        {icon}
         {name}
       </div>
       {isOpened && isDir && (
