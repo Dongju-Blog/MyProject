@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import { Highlight, themes } from "prism-react-renderer";
 import { css } from "@emotion/react";
 
@@ -26,16 +26,18 @@ import 'prismjs/components/prism-ignore.js';
 import 'prismjs/components/prism-kotlin';
 import 'prismjs/components/prism-cshtml';
 import 'prismjs/components/prism-rust';
+import { throttle } from 'lodash';
 
 
-type SourceCodeCodeBlockPropsType = {
+type SourceCodeIDEProcessCodeBlockPropsType = {
   content: string
   language: string
 }
 
-function SourceCodeCodeBlock({content, language}: SourceCodeCodeBlockPropsType) {
+function SourceCodeIDEProcessCodeBlock({content, language}: SourceCodeIDEProcessCodeBlockPropsType) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] = useAtom(codeBlockOption)
+  const [isTop, setIsTop] = useState<boolean>(true)
 
   useEffect(() => {
     if (wrapperRef.current) {
@@ -43,7 +45,16 @@ function SourceCodeCodeBlock({content, language}: SourceCodeCodeBlockPropsType) 
     }
   }, [content])
 
-  const [initialize, instance] = useOverlayScrollbars();
+  const onScrollHandler = throttle((i, e: any) => {
+    console.log(e)
+    if (e.target && e.target.scrollTop > 0) {
+      setIsTop(() => false)
+    } else {
+      setIsTop(() => true)
+    }
+  }, 500)
+
+  const [initialize, instance] = useOverlayScrollbars({events: {scroll: onScrollHandler}});
 
   useEffect(() => {
     if (wrapperRef.current) {
@@ -51,23 +62,40 @@ function SourceCodeCodeBlock({content, language}: SourceCodeCodeBlockPropsType) 
     }
   }, [initialize]);
 
+  
+
+
 
   return (
-    <div css={scrollWrapperCSS} ref={wrapperRef}>
+    <div css={scrollWrapperCSS({isTop})} ref={wrapperRef}>
       <div css={outerWrapperCSS({wrap: codeBlockOptionAtom.wrap})} >
       <div css={topDummyCSS}>
-        <div className='indicator' />
+        <div className='indicator' css={ideIndicatorCSS} />
       </div> 
       <Highlight prism={Prism} theme={themes.github} code={content} language={language}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre>
             {tokens.map((line, i) => (
               <div key={i} {...getLineProps({ line })}>
-                <div className="indicator">{i + 1}</div>
+                <div className="indicator" css={ideIndicatorCSS}>{i + 1}</div>
                 <div className="token-wrapper">
-                  {line.map((token, key) => (
-                    <span key={key} {...getTokenProps({ token })} />
-                  ))}
+                  {line.map((token, key) => {
+                    
+                    if (i > 0 && line.length === 1 && line[0].content.trim() === '' && tokens[i - 1]) {
+                      const text = tokens[i - 1][0].content
+                      let spaceCnt = 0
+                      for (var j = 0; j < text.length; j++) {
+                        if (text[j] !== ' ') {
+                          break
+                        }
+                      spaceCnt += 1
+                      }
+                      line[0].content = ' '.repeat(spaceCnt)
+
+                    }
+                    return (
+                    <span css={key === 0 && spaceCSS({text: token.content})} key={key} {...getTokenProps({ token })} />
+                  )})}
                 </div>
                 
               </div>
@@ -76,7 +104,7 @@ function SourceCodeCodeBlock({content, language}: SourceCodeCodeBlockPropsType) 
         )}
       </Highlight>
       <div css={bottomDummyCSS}>
-        <div className='indicator' />
+        <div className='indicator' css={ideIndicatorCSS} />
       </div>  
       
     </div>
@@ -86,15 +114,47 @@ function SourceCodeCodeBlock({content, language}: SourceCodeCodeBlockPropsType) 
   )
 }
 
-const scrollWrapperCSS = css`
+const spaceCSS = ({text}: {text: string}) => {
+  let spaceCnt = 0
+  for (var i = 0; i < text.length; i++) {
+    if (text[i] !== ' ') {
+      break
+    }
+    spaceCnt += 1
+  }
+
+  const lineCnt = Math.floor(spaceCnt / 2)
+
+  return css`
+  position: relative;
+  &::before {
+    content: '${'│ '.repeat(lineCnt)}';
+    left: -3px;
+    width: ${lineCnt * 15.5}px;
+    height: 100%;
+    position: absolute;
+    color: rgba(0, 0, 0, 0.15);
+  }
+`
+}
+
+const scrollWrapperCSS = ({isTop}: {isTop: boolean}) => {
+  return css`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.05);
-  
+  transition-property: box-shadow;
+  transition-duration: 0.5s;
+  box-shadow: ${!isTop && `inset 0px 10px 10px -10px rgba(0, 0, 0, 0.1)`};
+  /* z-index: 999; */
 `
+}
 
 const outerWrapperCSS = ({wrap}: {wrap: boolean}) => {
   return css`
+
+  
+
   width: 100%;
   height: 100%;
   /* display: flex;
@@ -127,8 +187,12 @@ const outerWrapperCSS = ({wrap}: {wrap: boolean}) => {
     
   }
 
-  & .indicator {
-    font-family: 'Consolas';
+
+`
+}
+
+export const ideIndicatorCSS = css`
+  font-family: 'Consolas';
     color: rgba(0, 0, 0, 0.4);
     background-color: rgba(250, 250, 250, 1);
     text-align: right;
@@ -141,12 +205,10 @@ const outerWrapperCSS = ({wrap}: {wrap: boolean}) => {
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     /* height: 100%; */
     user-select: none;
-
     position: sticky;
     left: 0;
-  }
+    z-index: 999;
 `
-}
 
 const topDummyCSS = css`
   height: 16px;
@@ -166,4 +228,4 @@ const bottomDummyCSS = css`
   
 `;
 
-export default SourceCodeCodeBlock
+export default SourceCodeIDEProcessCodeBlock

@@ -10,7 +10,7 @@ import { getActiveBoardAPI } from "@/api/board/getActiveBoardAPI";
 import { getAdminAllBoardAPI } from "@/api/admin/getAdminAllBoardAPI";
 import { postCommentAPI } from "@/api/comment/postCommentsAPI";
 import { getCommentsAPI } from "@/api/comment/getCommentsAPI";
-import useNewModal from "@/components/Interface/Modal/useNewModal";
+import useNewModal from "@/components/Interface/Modal/useModal";
 import SwipeableGallery from "@/components/Interface/SwipeableGallery/SwipeableGallery";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getRepresentativeArticlesAPI } from "@/api/board/getRepresentativeArticlesAPI";

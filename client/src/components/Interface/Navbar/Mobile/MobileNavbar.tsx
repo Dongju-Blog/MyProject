@@ -16,21 +16,26 @@ type DesktopNavbarPropsType = {
 function MobileNavbar({ categoryList, isTop }: DesktopNavbarPropsType) {
   const router = useRouter();
   const auth = useAuthority();
-  const [Modal, openModalHandler, modalState] = useModal("rightToLeft", 1000);
-
+  // const [Modal, openModalHandler, modalState] = useModal("rightToLeft", 1000);
+  const modal = useModal({transition: 'rightToLeft'})
 
   if (!mobileNavBarExclude.includes(router.pathname)) {
   return (
     <React.Fragment>
-      <Modal>
+      {/* <Modal>
         <MobileNavbarSide categoryList={categoryList} />
-      </Modal>
+      </Modal> */}
+      {modal(
+        <MobileNavbarSide categoryList={categoryList} />
+      )}
+        
+    
       <div css={navbarWrapperCSS({isTop})}>
         <div>
           <span css={css`font-size: 24px; font-style: italic;`}>dj.Blog</span>
         </div>
         <div>
-          <div css={menuButtonWrapperCSS} onClick={openModalHandler}>
+          <div css={menuButtonWrapperCSS} onClick={modal.open}>
             <div css={menuDecoCSS} />
             <div css={menuDecoCSS}/>
             <div css={menuDecoCSS}/>

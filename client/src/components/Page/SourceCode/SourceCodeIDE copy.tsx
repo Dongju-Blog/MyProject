@@ -11,7 +11,6 @@ import Loading from "@/components/Interface/Loading/Loading";
 import SourceCodeIDECodeBlock, { ideIndicatorCSS } from "./SourceCodeIDEProcessCodeBlock";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorer/SourceCodeExplorerListItemIcon";
 import SourceCodeIDEProcess from "./SourceCodeIDEProcess";
-import { useRouter } from "next/router";
 
 
 
@@ -29,30 +28,24 @@ function SourceCodeIDE({url, rootName}: SourceCodeIDEPropsType) {
   });
 
 
-  const router = useRouter()
+
   const [selectedFilePathIncludeName, setSelectedFilePathIncludeName] = useState<string>('')
 
 
-  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
+  const [selectedFiles, setSelectedFiles] = useState<Array<string>>([])
 
-  const [renderingIndex, setRenderingIndex] = useState<number>(-1)
+  const [renderingIndex, setRenderingIndex] = useState<number>(0)
   
   
   const selectFileHandler: selectFileHandlerType = ({file, pathIncludeName}: {file: Blob; pathIncludeName: string}) => {
     // setSelectedFilePathIncludeName(() => pathIncludeName)
-
-    let temp = new Set()
-    setSelectedFiles((prev) => {
-      const newSet = new Set(prev)
-      newSet.add(pathIncludeName)
-      temp = newSet
-      return newSet
-    })
-
-    setRenderingIndex(() => Array.from(temp).indexOf(pathIncludeName))
-
-
-    // setRenderingIndex(() => temp.indexOf(pathIncludeName))
+    const temp = selectedFiles
+    if (!selectedFiles.some((el) => el === pathIncludeName)) {
+      setSelectedFiles((prev) => {
+        return [...prev, pathIncludeName]
+      })
+    }
+    setRenderingIndex(() => temp.indexOf(pathIncludeName))
   }
 
   // useEffect(() => {
@@ -60,22 +53,11 @@ function SourceCodeIDE({url, rootName}: SourceCodeIDEPropsType) {
   // }, [selectedFilePathIncludeName])
 
   useEffect(() => {
-    if (renderingIndex !== -1) {
-      const pathIncludeName = Array.from(selectedFiles)[renderingIndex]
-      setSelectedFilePathIncludeName(pathIncludeName)
-    }
-    
+    setSelectedFilePathIncludeName(() => selectedFiles[renderingIndex])
   }, [renderingIndex])
 
-  useEffect(() => {
-    if (renderingIndex !== -1) {
-      const pathIncludeName = Array.from(selectedFiles)[renderingIndex]
-      router.push({ query: { ...router.query, init: pathIncludeName } }, undefined, { shallow: true });
-    }
-  }, [selectedFilePathIncludeName])
 
-
-  const renderCodeBlock = useMemo(() => Array.from(selectedFiles).map((pathIncludeName, idx) => {
+  const renderCodeBlock = useMemo(() => selectedFiles.map((pathIncludeName, idx) => {
     const splitIndex = pathIncludeName.lastIndexOf('/') + 1
     const path = pathIncludeName.substring(0, splitIndex)
 
@@ -93,34 +75,24 @@ function SourceCodeIDE({url, rootName}: SourceCodeIDEPropsType) {
 
 
   const closeTabHandler = (pathIncludeName: string) => {
-    const len = Array.from(selectedFiles).length
-    setSelectedFiles((prev) => {
-      const newSet = new Set(prev)
-      newSet.delete(pathIncludeName)
-      return newSet
-    })
     setRenderingIndex(() => 0)
-
+    setSelectedFiles((prev) => {
+      return [...prev.filter(el => el !== pathIncludeName)]
+    })
   }
 
-
-  const onClickTabHandler = (idx: number) => {
-    setRenderingIndex(() => idx)
-    
-  }
-
-  const renderTab = useMemo(() => Array.from(selectedFiles).map((pathIncludeName, idx) => {
+  const renderTab = useMemo(() => selectedFiles.map((pathIncludeName, idx) => {
     const splitIndex = pathIncludeName.lastIndexOf('/') + 1
     const filename = pathIncludeName.substring(splitIndex, pathIncludeName.length)
     return (
       
-      <div key={`tab-${pathIncludeName}`} css={tabItemWrapperCSS({renderingIndex, currentIndex: idx})} onClick={() => {onClickTabHandler(idx)}} >
+      <div key={`tab-${pathIncludeName}`} css={tabItemWrapperCSS({renderingIndex, currentIndex: idx})} onClick={() => {setRenderingIndex(() => idx)}} >
         <div css={tabItemNameWrapperCSS}>
           <SourceCodeExplorerListItemIcon name={filename} css={css`width: 18px; height: 18px;`}/>
           <span className="tab-name">{filename}</span>
         </div>
         
-        <div css={closeTabWrapperCSS} onClick={(e) => {e.stopPropagation(); closeTabHandler(pathIncludeName)}}>✕</div>
+        <div css={closeTabWrapperCSS} onClick={(e) => {closeTabHandler(pathIncludeName)}}>✕</div>
       </div>
     )
   }), [selectedFiles, renderingIndex])
@@ -161,7 +133,7 @@ const ideWrapperCSS = css`
 
 const ideItemWrapperCSS = ({renderingIndex, currentIndex}: {renderingIndex: number; currentIndex: number}) => {
   return css`
-    display: ${renderingIndex === currentIndex ? 'block' : 'none'};
+    display: ${renderingIndex !== currentIndex && 'none'};
     overflow: hidden;
   `
 }
@@ -169,14 +141,7 @@ const ideItemWrapperCSS = ({renderingIndex, currentIndex}: {renderingIndex: numb
 const tabWrapperCSS = css`
   display: flex;
   width: 100%;
-  overflow: scroll;
-  
-  
-  scrollbar-width: none; /* 파이어폭스 */
-  &::-webkit-scrollbar {
-    display: none; /* 크롬, 사파리, 오페라, 엣지 */
-  
-}
+  overflow: hidden;
 `
 
 const tabItemWrapperCSS = ({renderingIndex, currentIndex}: {renderingIndex: number; currentIndex: number}) => {
@@ -190,7 +155,7 @@ const tabItemWrapperCSS = ({renderingIndex, currentIndex}: {renderingIndex: numb
   transition-duration: 0.5s;
   min-width: 160px;
   width: 160px;
-  user-select: none;
+  
 
   cursor: pointer;
 
@@ -238,14 +203,13 @@ const closeTabWrapperCSS = css`
 
 const indicatorSpaceCSS = css`
   margin-right: 0px;
-  /* border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: white; */
+  z-index: 1;;
+
 `
 
 const tabLineCSS = css`
   flex: 1;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  
 `
 
 
