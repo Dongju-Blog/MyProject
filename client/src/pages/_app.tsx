@@ -10,6 +10,7 @@ import React, {useState, useEffect} from 'react'
 
 
 export default function App({ Component, pageProps }: AppProps) {
+  // t
   // const queryClient = new QueryClient()
   const [queryClient] = useState(() => new QueryClient());
   return (
