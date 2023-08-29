@@ -26,10 +26,19 @@ function SourceCodeIDETab({
     setSelectedFiles((prev) => {
       const newSet = new Set(prev);
       newSet.delete(pathIncludeName);
-      if (Array.from(newSet).length === 0) {
+      const newSetArray = Array.from(newSet)
+      if (newSetArray.length === 0) {
         setRenderingIndex(() => -1);
+        const params = router.query
+        delete params['init']
+        router.push({ query: { ...params } }, undefined, {
+          shallow: true,
+        });
       } else {
         setRenderingIndex(() => 0);
+        router.push({ query: { ...router.query, init: newSetArray[0] } }, undefined, {
+          shallow: true,
+        });
       }
       return newSet;
     });
