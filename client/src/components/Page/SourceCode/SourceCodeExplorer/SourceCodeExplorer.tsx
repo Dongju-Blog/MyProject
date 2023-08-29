@@ -46,8 +46,8 @@ function SourceCodeExplorer({
     const calc =
       explorerWidth + positionx > 600
         ? 600
-        : explorerWidth + positionx < 200
-        ? 200
+        : explorerWidth + positionx < 250
+        ? 250
         : explorerWidth + positionx;
     setExplorerWidth(() => calc);
     setPositionx(() => 0);
@@ -134,8 +134,8 @@ const explorerWrapperCSS = ({
   const calc =
     explorerWidth + positionx > 600
       ? 600
-      : explorerWidth + positionx < 200
-      ? 200
+      : explorerWidth + positionx < 250
+      ? 250
       : explorerWidth + positionx;
 
   return css`
@@ -151,6 +151,7 @@ const explorerWrapperCSS = ({
 
 const explorerInnerWrapperCSS = css`
   width: 100%;
+  flex: 1;
 `;
 
 const headerCSS = css`

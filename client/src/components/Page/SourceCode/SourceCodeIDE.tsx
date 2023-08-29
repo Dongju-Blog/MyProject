@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import SourceCodeIDETab from "./SourceCodeIDETab";
 import SourceCodeIDECodeBlocksItem from "./SourceCodeIDECodeBlocksItem";
 import SourceCodeIDECodeBlocks from "./SourceCodeIDECodeBlocks";
+import SourceCodeIDEEmpty from "./SourceCodeIDEEmpty";
 
 export type selectFileHandlerType = ({
   pathIncludeName,
@@ -79,7 +80,7 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
         <Loading label={"파일 트리를 구성하는 중입니다."} />
       )}
       <div css={ideWrapperCSS}>
-        {fileTree.fileTree && fileTree.fileIndexes && (
+        {fileTree.fileTree && fileTree.fileIndexes && selectedFilePathIncludeName && (
           <SourceCodeIDETab
             fileTree={fileTree.fileTree}
             selectedFiles={selectedFiles}
@@ -88,14 +89,14 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
             setRenderingIndex={setRenderingIndex}
           />
         )}
-        {fileTree.fileTree && fileTree.fileIndexes && (
+        {fileTree.fileTree && fileTree.fileIndexes && selectedFilePathIncludeName ? (
           <SourceCodeIDECodeBlocks
             fileTree={fileTree.fileTree}
             fileIndexes={fileTree.fileIndexes}
             selectedFiles={selectedFiles}
             renderingIndex={renderingIndex}
           />
-        )}
+        ) : <SourceCodeIDEEmpty/>}
       </div>
     </div>
   );

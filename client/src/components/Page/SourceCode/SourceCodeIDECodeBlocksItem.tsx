@@ -82,7 +82,7 @@ function SourceCodeIDECodeBlocksItem({file, language, fileIndexes}: SourceCodeID
 
   const findFileByToken = (e: any) => {
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
-    let target = e.target.innerText
+    let target = e.target.innerText.trim()
     target.replace(reg,'');
     // console.log(fileIndexes)
     if (target in fileIndexes) {
@@ -94,7 +94,7 @@ function SourceCodeIDECodeBlocksItem({file, language, fileIndexes}: SourceCodeID
 
   const findFileHighlighter = (e: any) => {
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
-    let target = e.target.innerText
+    let target = e.target.innerText.trim()
     target.replace(reg,'');
     // console.log(fileIndexes)
     if (target in fileIndexes) {
