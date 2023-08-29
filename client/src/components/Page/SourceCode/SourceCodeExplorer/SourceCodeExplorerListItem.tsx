@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fileTreeType } from "../useGetExtractedDir";
+import { fileTreeType } from "../useSourceCodeFileTree";
 import { css } from "@emotion/react";
 import SourceCodeExplorerList from "./SourceCodeExplorerList";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorerListItemIcon";
@@ -7,7 +7,11 @@ import { selectFileHandlerType } from "../SourceCodeIDE";
 import { useRouter } from "next/router";
 import { lastIndexOf } from "lodash";
 import useModal from "@/components/Interface/Modal/useModal";
-import SourceCodeExplorerContextMenu from "./SourceCodeExplorerContextMenu";
+import SourceCodeExplorerContextMenu from "./useSourceCodeExplorerContextMenu";
+import useContextMenu from "@/components/Interface/ContextMenu/useContextMenu";
+import useSourceCodeExplorerContextMenu from "./useSourceCodeExplorerContextMenu";
+import { useAtom } from "jotai";
+import { codeBlockExplorerOption } from "@/store/store";
 
 type SourceCodeExplorerListItemPropsType = {
   name: string;
@@ -17,7 +21,7 @@ type SourceCodeExplorerListItemPropsType = {
   depth: number;
   selectFileHandler: selectFileHandlerType;
   selectedFilePathIncludeName: string;
-  initOpened?: boolean
+  initOpened?: boolean;
 };
 
 function SourceCodeExplorerListItem({
@@ -28,47 +32,51 @@ function SourceCodeExplorerListItem({
   depth,
   selectFileHandler,
   selectedFilePathIncludeName,
-  initOpened
+  initOpened,
 }: SourceCodeExplorerListItemPropsType) {
-  const [isOpened, setIsOpened] = useState<boolean>(initOpened ? initOpened : false);
-  const [specifiedFolder, setSpecifiedFolder] = useState<boolean>(false)
-  const contextMenuModal = useModal({transition: 'fadeIn', duration: 300, hasBackdrop: false})
+  const [isOpened, setIsOpened] = useState<boolean>(
+    initOpened ? initOpened : false
+  );
+  const [specifiedFolder, setSpecifiedFolder] = useState<boolean>(false);
+  const contextMenu = useContextMenu()
+  const [codeBlockExplorerOptionAtom, setCodeBlockExplorerOptionAtom] = useAtom(codeBlockExplorerOption);
+  
+  // const contextMenuModal = useModal({
+  //   transition: "fadeIn",
+  //   duration: 300,
+  //   hasBackdrop: false,
+  // });
 
   const router = useRouter();
   const { init } = router.query;
-  
+
   useEffect(() => {
     if (isDir) {
-      if (init && init.includes(dir)) {
-        setIsOpened(() => true)
+      if (codeBlockExplorerOptionAtom.unfoldAuto) {
+        const splitted = dir.split('/')
+        const prevDir = splitted.slice(0, splitted.length - 2).join('/') + '/'
+        if (fileTree[prevDir] && Object.keys(fileTree[prevDir]['file']).length === 0 && fileTree[prevDir]['dir'].length === 1) {
+          setIsOpened(() => true);
+        }
       }
-      if (init && init === dir) {
-        const params = router.query;
-        delete params["init"];
-        // router.push({ query: { ...params } }, undefined, { shallow: true });
+      if (init && init.includes(dir)) {
+        setIsOpened(() => true);
       }
     } else {
       if (dir + name === init) {
         selectFileHandler({
-          file: fileTree[dir]["file"][name],
           pathIncludeName: dir + name,
         });
-        const params = router.query;
-        delete params["init"];
-        // router.push({ query: { ...params } }, undefined, { shallow: true });
       }
     }
-  }, [init])
+  }, [init]);
 
   const onClickHandler = () => {
     if (isDir) {
       setIsOpened((prev) => !prev);
-
     } else {
-      
-      selectFileHandler({
-        file: fileTree[dir].file[name],
-        pathIncludeName: dir + name,
+      router.push({ query: { ...router.query, init: dir + name } }, undefined, {
+        shallow: true,
       });
     }
   };
@@ -83,37 +91,39 @@ function SourceCodeExplorerListItem({
   const icon = (
     <React.Fragment>
       {isDir ? (
-          <React.Fragment>
-            <img
-              css={iconCSS({render: !specifiedFolder})}
-              src={defaultSrc}
-              
-            />
-            <img
-              css={iconCSS({render: specifiedFolder})}
-              src={specificSrc}
-              onLoad={() => {setSpecifiedFolder(() => true)}}
-              
-            />
-          </React.Fragment>
-          
-        ) : (
-          <SourceCodeExplorerListItemIcon css={iconCSS({render: true})} name={name} />
-        )}
+        <React.Fragment>
+          <img css={iconCSS({ render: !specifiedFolder })} src={defaultSrc} />
+          <img
+            css={iconCSS({ render: specifiedFolder })}
+            src={specificSrc}
+            onLoad={() => {
+              setSpecifiedFolder(() => true);
+            }}
+          />
+        </React.Fragment>
+      ) : (
+        <SourceCodeExplorerListItemIcon
+          css={iconCSS({ render: true })}
+          name={name}
+        />
+      )}
     </React.Fragment>
-  )
+  );
 
-  const onContextMenuHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault()
-    contextMenuModal.open()
-  }
+  const onContextMenuHandler = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    contextMenu.open()
+    // contextMenuModal.open();
+  };
 
+
+  const explorerContextMenu = useSourceCodeExplorerContextMenu({dir: dir, isDir: isDir, name: name, icon: icon, openHandler: onClickHandler})
 
   return (
     <React.Fragment>
-      {contextMenuModal(
-        <SourceCodeExplorerContextMenu icon={icon} name={name} dir={dir} isDir={isDir} openHandler={onClickHandler} />
-      )}
+      {contextMenu(explorerContextMenu)}
       <div
         css={itemWrapperCSS({
           depth,
@@ -154,7 +164,6 @@ const itemWrapperCSS = ({
   isSelected: boolean;
 }) => {
   return css`
-  
     /* min-width: 100%; */
     background-color: ${isSelected
       ? `rgba(230, 230, 230, 1)`
@@ -163,7 +172,6 @@ const itemWrapperCSS = ({
     padding-left: ${depth * 8}px;
     font-size: 13px;
 
-    
     display: flex;
     align-items: center;
     gap: 6px;
@@ -179,13 +187,13 @@ const itemWrapperCSS = ({
   `;
 };
 
-const iconCSS = ({render}: {render: boolean}) => {
+const iconCSS = ({ render }: { render: boolean }) => {
   return css`
-    display: ${render ? 'block': 'none'};
+    display: ${render ? "block" : "none"};
     width: 18px;
     height: 18px;
   `;
-} 
+};
 
 const bracketImgCSS = ({
   isOpened,

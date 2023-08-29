@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import JSZip from "jszip";
 import { getFileAPI } from "@/api/playground/getFileAPI";
 
-type useGetExtractedDirPropsType = {
+type useSourceCodeFileTreePropsType = {
   url: string;
   rootName: string
 };
@@ -11,11 +11,16 @@ export type fileTreeType = {
   [prop: string]: { file: { [prop: string]: Blob }; dir: string[] };
 }
 
-function useGetExtractedDir({ url, rootName }: useGetExtractedDirPropsType) {
+export type fileIndexesType = {
+  [prop: string]: string
+}
+
+function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType) {
   const [zip, setZip] = useState(new JSZip());
   const [file, setFile] = useState<Blob>();
   const [zipData, setZipData] = useState<any>();
   const [fileTree, setFileTree] = useState<fileTreeType>();
+  const [fileIndexes, setFileIndexes] = useState<fileIndexesType>()
 
   useEffect(() => {
     getFileAPI({
@@ -49,6 +54,8 @@ function useGetExtractedDir({ url, rootName }: useGetExtractedDirPropsType) {
         dir: []
       }
     };
+
+    const fileIndexes: fileIndexesType = {}
     
     zip.forEach(function (relativePath, entry) {
       // 가상으로 최상위 폴더 root를 생성했기 때문에 root를 붙여서 entry.name을 추가한다.
@@ -75,28 +82,25 @@ function useGetExtractedDir({ url, rootName }: useGetExtractedDirPropsType) {
 
       } else {
         const path = entry.name.substring(0, entry.name.lastIndexOf("/") + 1);
+        const name = entry.name.substring(entry.name.lastIndexOf("/") + 1, entry.name.length);
         
         if (root + path in fileTree) {
           entry.async("blob").then((res) => {
-            fileTree[root + path]["file"][
-              entry.name.substring(
-                entry.name.lastIndexOf("/") + 1,
-                entry.name.length
-              )
-            ] = res;
+            fileTree[root + path]["file"][name] = res;
           });
+          fileIndexes[name.split('.')[0]] = root + path + name
         }
 
 
 
-        console.log(path)
+
       }
     });
-
+    setFileIndexes(() => fileIndexes)
     setFileTree(() => fileTree);
   }, [zipData]);
 
-  return fileTree;
+  return {fileTree, fileIndexes};
 }
 
-export default useGetExtractedDir;
+export default useSourceCodeFileTree;

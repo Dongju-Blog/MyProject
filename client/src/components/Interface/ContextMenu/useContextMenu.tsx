@@ -3,26 +3,15 @@ import { css } from "@emotion/react";
 import { useRouter } from "next/router";
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
+import useModal from "../Modal/useModal";
 
-type SourceCodeExplorerContextMenuPropsType = {
+type ContextMenuRenderPropsType = {
   closeComp?: () => void;
-  icon: ReactNode;
-  name: string;
-  dir: string;
-  isDir: boolean
-  openHandler: () => void
+  contextMenu: { content: string | ReactNode; function: any }[];
 };
 
-function SourceCodeExplorerContextMenu({
-  closeComp,
-  icon,
-  name,
-  dir,
-  isDir,
-  openHandler
-}: SourceCodeExplorerContextMenuPropsType) {
+function ContextMenuRender({ closeComp, contextMenu }: ContextMenuRenderPropsType) {
   const [cursorOffset, setCursorOffset] = useState({ y: 0, x: 0 });
-  const noti = useNotification()
 
   const getCursorOffset = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (cursorOffset.x === 0 && cursorOffset.y === 0) {
@@ -37,51 +26,18 @@ function SourceCodeExplorerContextMenu({
     closeComp && closeComp();
   };
 
-  const copyPathHandler = (includeWebUrl = false) => {
-    let currentUrl = window.document.location.host + window.document.location.pathname
-    let clipboard = ''
-    if (isDir) {
-      if (includeWebUrl) {
-        clipboard = currentUrl + '?init=' + dir
-      } else {
-        clipboard = dir
-      }
-      
-    } else {
-      if (includeWebUrl) {
-        clipboard = currentUrl + '?init=' + dir + name
-      } else {
-        clipboard = dir + name
-      }
-      
-    }
-    navigator.clipboard.writeText(clipboard)
-        .then(() => {
-          if (includeWebUrl) {
-            noti({content: <NotiTemplate type={"ok"} content={"웹 주소를 복사하였습니다."}/>})
-          } else {
-            noti({content: <NotiTemplate type={"ok"} content={"경로를 복사하였습니다."}/>})
-          }
-        
-    })
-  }
-
-  const menu = [
-    {
-      content: (
-        <React.Fragment>
-          {icon}
-          {name}
-        </React.Fragment>
-      ),
-      function: openHandler,
-    },
-    { content: (<React.Fragment><img css={iconCSS} src={"/assets/ExplorerIcons/ContextMenu/link.svg"}/> 경로 복사</React.Fragment>), function: copyPathHandler },
-    { content: (<React.Fragment><img css={iconCSS} src={"/assets/ExplorerIcons/ContextMenu/copy.svg"}/> 웹 주소 복사</React.Fragment>), function: copyPathHandler.bind(null, true) },
-  ];
-
-  const renderMenu = menu.map((el) => {
-    return <div css={menuItemCSS} onClick={() => {el.function(); closeComp && closeComp();}}>{el.content}</div>;
+  const renderMenu = contextMenu.map((el) => {
+    return (
+      <div
+        css={menuItemCSS}
+        onClick={() => {
+          el.function();
+          closeComp && closeComp();
+        }}
+      >
+        {el.content}
+      </div>
+    );
   });
 
   return (
@@ -103,6 +59,25 @@ function SourceCodeExplorerContextMenu({
       </div>
     </div>
   );
+}
+
+function useContextMenu() {
+  const modal = useModal({
+    transition: "fadeIn",
+    duration: 300,
+    hasBackdrop: false,
+  });
+
+  const contextMenu = (contextMenu: { content: string | ReactNode; function: any }[]) => {
+    return (
+    <React.Fragment>{modal(<ContextMenuRender contextMenu={contextMenu} />)}</React.Fragment>
+    )
+  }
+
+  contextMenu.open = modal.open
+  contextMenu.close = modal.close
+  
+  return contextMenu
 }
 
 const backdropCSS = css`
@@ -149,5 +124,5 @@ const menuItemCSS = css`
 const iconCSS = css`
   width: 16px;
   height: 16px;
-`
-export default SourceCodeExplorerContextMenu;
+`;
+export default useContextMenu;

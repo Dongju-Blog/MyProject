@@ -1,12 +1,9 @@
-import SourceCodeCreate from '@/components/Page/SourceCode/SourceCodeCreate'
+import SourceCodeCreate from "@/components/Page/SourceCodeBoard/SourceCodeCreate";
 import { css } from "@emotion/react";
-import React from 'react'
+import React from "react";
 
 function index() {
-  return (
-    <SourceCodeCreate/>
-  )
+  return <SourceCodeCreate />;
 }
 
-
-export default index
+export default index;
