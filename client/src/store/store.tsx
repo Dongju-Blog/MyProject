@@ -25,10 +25,15 @@ const codeBlockOption = atom<{wrap: boolean}>({
 	wrap: true
 })
 
+const codeBlockExplorerOption = atom<{unfoldAuto: boolean}>({
+	unfoldAuto: true
+})
+
 export {
 	stackNotification,
 	storeUser,
 	category,
 	pauseAnimation,
-	codeBlockOption
+	codeBlockOption,
+	codeBlockExplorerOption
 }

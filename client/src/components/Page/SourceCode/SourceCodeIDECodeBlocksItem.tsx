@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState, useMemo} from 'react'
 import { Highlight, themes } from "prism-react-renderer";
 import { css } from "@emotion/react";
 
@@ -26,27 +26,44 @@ import 'prismjs/components/prism-ignore.js';
 import 'prismjs/components/prism-kotlin';
 import 'prismjs/components/prism-cshtml';
 import 'prismjs/components/prism-rust';
-import { throttle } from 'lodash';
+import { debounce, throttle } from 'lodash';
+import { fileIndexesType } from './useSourceCodeFileTree';
+import { useRouter } from "next/router";
 
 
-type SourceCodeIDEProcessCodeBlockPropsType = {
-  content: string
+type SourceCodeIDECodeBlocksItemPropsType = {
+  file: Blob
   language: string
+  fileIndexes: fileIndexesType
 }
 
-function SourceCodeIDEProcessCodeBlock({content, language}: SourceCodeIDEProcessCodeBlockPropsType) {
+function SourceCodeIDECodeBlocksItem({file, language, fileIndexes}: SourceCodeIDECodeBlocksItemPropsType) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] = useAtom(codeBlockOption)
   const [isTop, setIsTop] = useState<boolean>(true)
+  const [content, setContent] = useState<string>('')
+  const router = useRouter()
+
+  
+
 
   useEffect(() => {
-    if (wrapperRef.current) {
-      wrapperRef.current.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+    const reader = new FileReader()
+    reader.readAsText(file)
+    reader.onload = () => {
+      setContent(() => String(reader.result))
     }
-  }, [content])
+  }, [file])
+
+  
+
+  // useEffect(() => {
+  //   if (wrapperRef.current) {
+  //     wrapperRef.current.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+  //   }
+  // }, [content])
 
   const onScrollHandler = throttle((i, e: any) => {
-    console.log(e)
     if (e.target && e.target.scrollTop > 0) {
       setIsTop(() => false)
     } else {
@@ -54,27 +71,62 @@ function SourceCodeIDEProcessCodeBlock({content, language}: SourceCodeIDEProcess
     }
   }, 500)
 
-  const [initialize, instance] = useOverlayScrollbars({events: {scroll: onScrollHandler}});
+  // const [initialize, instance] = useOverlayScrollbars({events: {scroll: onScrollHandler}});
 
-  useEffect(() => {
-    if (wrapperRef.current) {
-      initialize(wrapperRef.current);
+  // useEffect(() => {
+  //   if (wrapperRef.current) {
+  //     initialize(wrapperRef.current);
+  //   }
+  // }, [initialize]);
+
+
+  const findFileByToken = (e: any) => {
+    const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+    let target = e.target.innerText
+    target.replace(reg,'');
+    // console.log(fileIndexes)
+    if (target in fileIndexes) {
+      router.push({ query: { ...router.query, init: fileIndexes[target] } }, undefined, {
+        shallow: true,
+      });
     }
-  }, [initialize]);
+  }
+
+  const findFileHighlighter = (e: any) => {
+    const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+    let target = e.target.innerText
+    target.replace(reg,'');
+    // console.log(fileIndexes)
+    if (target in fileIndexes) {
+      e.target.className = 'goto-file'
+    }
+  }
+
+  const call = useMemo(() => debounce((e: any) => {
+    findFileHighlighter(e)
+  }, 100), []);
 
   
 
+  if (!content) {
+    return
+  }
 
+  
+
+  
+  
 
   return (
-    <div css={scrollWrapperCSS({isTop})} ref={wrapperRef}>
+    <OverlayScrollbarsComponent css={scrollWrapperCSS({isTop})} events={{scroll: onScrollHandler}} defer>
       <div css={outerWrapperCSS({wrap: codeBlockOptionAtom.wrap})} >
       <div css={topDummyCSS}>
         <div className='indicator' css={ideIndicatorCSS} />
       </div> 
+   
       <Highlight prism={Prism} theme={themes.github} code={content} language={language}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre>
+          <pre onClick={findFileByToken} onMouseOver={call}>
             {tokens.map((line, i) => (
               <div key={i} {...getLineProps({ line })}>
                 <div className="indicator" css={ideIndicatorCSS}>{i + 1}</div>
@@ -94,7 +146,7 @@ function SourceCodeIDEProcessCodeBlock({content, language}: SourceCodeIDEProcess
 
                     }
                     return (
-                    <span css={key === 0 && spaceCSS({text: token.content})} key={key} {...getTokenProps({ token })} />
+                    <span css={[key === 0 && spaceCSS({text: token.content})]} key={key} {...getTokenProps({ token })} />
                   )})}
                 </div>
                 
@@ -103,12 +155,13 @@ function SourceCodeIDEProcessCodeBlock({content, language}: SourceCodeIDEProcess
           </pre>
         )}
       </Highlight>
+  
       <div css={bottomDummyCSS}>
         <div className='indicator' css={ideIndicatorCSS} />
       </div>  
       
     </div>
-    </div>
+    </OverlayScrollbarsComponent>
 
 
   )
@@ -137,6 +190,8 @@ const spaceCSS = ({text}: {text: string}) => {
   }
 `
 }
+
+
 
 const scrollWrapperCSS = ({isTop}: {isTop: boolean}) => {
   return css`
@@ -187,6 +242,16 @@ const outerWrapperCSS = ({wrap}: {wrap: boolean}) => {
     
   }
 
+  & .goto-file {
+    transition-property: background-color;
+    transition-duration: 0.5s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+
 
 `
 }
@@ -228,4 +293,4 @@ const bottomDummyCSS = css`
   
 `;
 
-export default SourceCodeIDEProcessCodeBlock
+export default SourceCodeIDECodeBlocksItem

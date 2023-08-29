@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { fileTreeType } from "../useGetExtractedDir";
+import { fileTreeType } from "../useSourceCodeFileTree";
 import SourceCodeExplorerListItem from "./SourceCodeExplorerListItem";
 import { selectFileHandlerType } from "../SourceCodeIDE";
 import { css } from "@emotion/react";
@@ -23,43 +23,26 @@ function SourceCodeExplorerList({
   const { init } = router.query;
 
   const renderDir =
-    fileTree[dir] && fileTree[dir]["dir"].map((el) => {
-          const splitted = el.split("/");
-          const name = splitted[splitted.length - 2];
-          // let initOpened = false;
-          // if (init && init.includes(el)) {
-          //   initOpened = true;
-          // }
-          // if (init && init === el) {
-          //   const params = router.query;
-          //   delete params["init"];
-          //   router.push({ query: { ...params } }, undefined, { shallow: true });
-          // }
-          return (
-            <SourceCodeExplorerListItem
-              name={name}
-              dir={el}
-              isDir={true}
-              fileTree={fileTree}
-              depth={depth}
-              selectFileHandler={selectFileHandler}
-              selectedFilePathIncludeName={selectedFilePathIncludeName}
-            />
-          );
-        })
+    fileTree[dir] &&
+    fileTree[dir]["dir"].map((el) => {
+      const splitted = el.split("/");
+      const name = splitted[splitted.length - 2];
+      return (
+        <SourceCodeExplorerListItem
+          name={name}
+          dir={el}
+          isDir={true}
+          fileTree={fileTree}
+          depth={depth}
+          selectFileHandler={selectFileHandler}
+          selectedFilePathIncludeName={selectedFilePathIncludeName}
+        />
+      );
+    });
 
   const renderFile =
     fileTree[dir] &&
-Object.keys(fileTree[dir]["file"]).map((el) => {
-      // if (dir + el === init) {
-      //   selectFileHandler({
-      //     file: fileTree[dir]["file"][el],
-      //     pathIncludeName: dir + el,
-      //   });
-      //   const params = router.query;
-      //   delete params["init"];
-      //   router.push({ query: { ...params } }, undefined, { shallow: true });
-      // }
+    Object.keys(fileTree[dir]["file"]).map((el) => {
       return (
         <SourceCodeExplorerListItem
           name={el}
@@ -71,7 +54,7 @@ Object.keys(fileTree[dir]["file"]).map((el) => {
           selectedFilePathIncludeName={selectedFilePathIncludeName}
         />
       );
-    })
+    });
 
   return (
     <div css={wrapperCSS}>
