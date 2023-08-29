@@ -85,7 +85,7 @@ function SourceCodeIDECodeBlocksItem({file, language, fileIndexes}: SourceCodeID
     let target = e.target.innerText.trim()
     target.replace(reg,'');
     // console.log(fileIndexes)
-    if (target in fileIndexes) {
+    if (target !== '' && target in fileIndexes) {
       router.push({ query: { ...router.query, init: fileIndexes[target] } }, undefined, {
         shallow: true,
       });
@@ -97,7 +97,7 @@ function SourceCodeIDECodeBlocksItem({file, language, fileIndexes}: SourceCodeID
     let target = e.target.innerText.trim()
     target.replace(reg,'');
     // console.log(fileIndexes)
-    if (target in fileIndexes) {
+    if (target !== '' && target in fileIndexes) {
       e.target.className = 'goto-file'
     }
   }

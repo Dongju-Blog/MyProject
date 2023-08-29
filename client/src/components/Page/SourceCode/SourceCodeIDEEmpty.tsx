@@ -9,9 +9,9 @@ function SourceCodeIDEEmpty() {
         <div css={textCSS}>1. 파일 사전 인덱싱으로 더욱 빠른 속도로 탐색 가능</div>
         <div css={textCSS}>2. 파일 트리 방식의 편리한 파일 탐색 제공</div>
         <div css={textCSS}>3. 파일 / 폴더가 유효한 경로 자동 탐색 기능 제공</div>
-        <div css={textCSS}>4. 파일 탐색기 및 코드 내 탭 인덱스 표시 표시</div>
+        <div css={textCSS}>4. 파일 탐색기 및 코드 내 탭 인덱스 표시 기능 제공</div>
         <div css={textCSS}>5. 파일 탐색기에서 경로/주소 복사 등의 컨텍스트 메뉴 제공</div>
-        <div css={textCSS}>6. 코드 내 파일 이름 클릭 시, 해당 파일로 이동</div>
+        <div css={textCSS}>6. 코드 내 파일 이름 클릭 시, 해당 파일로 이동하는 기능 제공</div>
         <div css={textCSS}>7. 코드 라인 인디케이터 / 코드 강제 줄 바꿈 옵션 제공</div>
         
       </div>
