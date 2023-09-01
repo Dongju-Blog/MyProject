@@ -41,7 +41,6 @@ function SourceCodeIDECodeBlocks() {
               <SourceCodeIDECodeBlocksItem
                 language={type}
                 file={fileContents[pathIncludeName]}
-                curIdx={idx}
               />
             </div>
           );
