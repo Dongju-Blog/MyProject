@@ -31,7 +31,7 @@ import "prismjs/components/prism-cshtml";
 import "prismjs/components/prism-rust";
 import { debounce, throttle } from "lodash";
 // import { fileIndexesType } from './useSourceCodeFileTree';
-import { fileIndexesType } from "./SourceCodeContext";
+import { fileIndexesType, useSourceCodeContext } from "./SourceCodeContext";
 import { useRouter } from "next/router";
 
 type SourceCodeIDECodeBlocksItemPropsType = {
@@ -51,6 +51,11 @@ function SourceCodeIDECodeBlocksItem({
   const [isTop, setIsTop] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
   const router = useRouter();
+
+  const {
+    selectedFilesTab,
+    selectedFileIndex,
+  } = useSourceCodeContext();
 
   useEffect(() => {
     const reader = new FileReader();
@@ -185,7 +190,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  ), [content, file]);
+  ), [content, selectedFilesTab, selectedFileIndex]);
 }
 
 const spaceCSS = ({ text }: { text: string }) => {

@@ -20,7 +20,9 @@ function SourceCodeIDECodeBlocks() {
   // const selectedFileNameIncludePath = useSourceCodeContext('selectedFileNameIncludePath')
   // const selectFileHandler = useSourceCodeContext('selectFileHandler')
 
-  const renderCodeBlock = Array.from(selectedFilesTab).map((pathIncludeName, idx) => {
+  const renderCodeBlock = useMemo(
+    () =>
+      Array.from(selectedFilesTab).map((pathIncludeName, idx) => {
         const splitIndex = pathIncludeName.lastIndexOf("/") + 1;
         const path = pathIncludeName.substring(0, splitIndex);
 
@@ -33,7 +35,7 @@ function SourceCodeIDECodeBlocks() {
           filename.length
         );
         
-        if (fileTree && fileContents) {
+        if (fileTree) {
           return (
             <div
               key={`ide-${pathIncludeName}`}
@@ -47,7 +49,9 @@ function SourceCodeIDECodeBlocks() {
             </div>
           );
         }
-      })
+      }),
+    [selectedFilesTab, selectedFileIndex]
+  );
 
   return <React.Fragment>{renderCodeBlock}</React.Fragment>;
 }
