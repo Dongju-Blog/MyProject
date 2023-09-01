@@ -84,11 +84,13 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
       )}
       <div css={ideWrapperCSS}>
         {fileTree &&
+        fileContents &&
           fileIndexes &&
           selectedFileNameIncludePath && (
             <SourceCodeIDETab/>
           )}
         {fileTree &&
+        fileContents &&
         fileIndexes &&
         selectedFileNameIncludePath ? (
           <SourceCodeIDECodeBlocks />

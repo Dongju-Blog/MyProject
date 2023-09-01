@@ -3,7 +3,7 @@
 // module.exports = nextConfig
 
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   swcMinify: true,
   compiler: {
     emotion: true,
@@ -12,8 +12,8 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        // destination: "http://localhost:8081/api/:path*"
-        destination: "https://server.dj-blog.com/api/:path*",
+        destination: "http://localhost:8081/api/:path*"
+        // destination: "https://server.dj-blog.com/api/:path*",
       },
     ];
   },
