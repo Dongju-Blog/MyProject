@@ -8,7 +8,6 @@ import { css } from "@emotion/react";
 function SourceCodeIDECodeBlocks() {
   const {
     fileTree,
-    fileIndexes,
     fileContents,
     selectedFilesTab,
     selectedFileIndex,
@@ -42,10 +41,8 @@ function SourceCodeIDECodeBlocks() {
               css={ideItemWrapperCSS({ selectedFileIndex, currentIndex: idx })}
             >
               <SourceCodeIDECodeBlocksItem
-                fileIndexes={fileIndexes}
                 language={type}
                 file={fileContents[pathIncludeName]}
-                curIdx={idx}
               />
             </div>
           );
