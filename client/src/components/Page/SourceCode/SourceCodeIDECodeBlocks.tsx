@@ -45,7 +45,7 @@ function SourceCodeIDECodeBlocks() {
             </div>
           );
         }
-      }), [fileContents, selectedFilesTab])
+      }), [fileContents, selectedFilesTab, selectedFileIndex])
 
   return <React.Fragment>{renderCodeBlock}</React.Fragment>;
 }
