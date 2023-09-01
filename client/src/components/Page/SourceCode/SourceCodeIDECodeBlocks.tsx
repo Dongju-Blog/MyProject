@@ -47,7 +47,10 @@ function SourceCodeIDECodeBlocks() {
         }
       })
 
-  return <React.Fragment>{renderCodeBlock}</React.Fragment>;
+  if (fileContents) {
+    return <React.Fragment>{renderCodeBlock}</React.Fragment>;
+  }
+  
 }
 
 const ideItemWrapperCSS = ({
