@@ -47,9 +47,9 @@ function SourceCodeIDECodeBlocks() {
         }
       })
 
-  if (fileContents) {
+
     return <React.Fragment>{renderCodeBlock}</React.Fragment>;
-  }
+
   
 }
 
