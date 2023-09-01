@@ -34,7 +34,7 @@ function SourceCodeIDECodeBlocks() {
           filename.lastIndexOf(".") + 1,
           filename.length
         );
-
+        
         if (fileTree) {
           return (
             <div
@@ -50,7 +50,7 @@ function SourceCodeIDECodeBlocks() {
           );
         }
       }),
-    [selectedFilesTab, selectedFileIndex]
+    [selectedFilesTab, selectedFileIndex, fileTree, fileContents, fileIndexes]
   );
 
   return <React.Fragment>{renderCodeBlock}</React.Fragment>;
