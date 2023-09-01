@@ -45,6 +45,7 @@ function SourceCodeIDECodeBlocks() {
                 fileIndexes={fileIndexes}
                 language={type}
                 file={fileContents[pathIncludeName]}
+                curIdx={idx}
               />
             </div>
           );
