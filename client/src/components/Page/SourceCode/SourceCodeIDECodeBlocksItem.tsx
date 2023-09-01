@@ -53,6 +53,7 @@ function SourceCodeIDECodeBlocksItem({
   const {
     fileIndexes,
     selectedFilesTab,
+    selectedFileIndex
   } = useSourceCodeContext();
 
   useEffect(() => {
@@ -188,7 +189,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  ), [content, selectedFilesTab]);
+  ), [content, selectedFilesTab, selectedFileIndex]);
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
