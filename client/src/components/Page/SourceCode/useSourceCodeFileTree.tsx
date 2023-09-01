@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import JSZip from "jszip";
 import { getFileAPI } from "@/api/playground/getFileAPI";
+import { useSourceCodeContext } from "./SourceCodeContext";
 
 type useSourceCodeFileTreePropsType = {
   url: string;
@@ -19,8 +20,10 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
   const [zip, setZip] = useState(new JSZip());
   const [file, setFile] = useState<Blob>();
   const [zipData, setZipData] = useState<any>();
-  const [fileTree, setFileTree] = useState<fileTreeType>();
+  // const [fileTree, setFileTree] = useState<fileTreeType>();
   const [fileIndexes, setFileIndexes] = useState<fileIndexesType>()
+
+  const {fileTree, setFileTree} = useSourceCodeContext()
 
   useEffect(() => {
     getFileAPI({

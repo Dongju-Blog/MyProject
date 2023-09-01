@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import JSZip from "jszip";
 import Wrapper from "@/components/Interface/Wrapper/Wrapper";
 import { getFileAPI } from "@/api/playground/getFileAPI";
@@ -15,6 +15,7 @@ import SourceCodeIDETab from "./SourceCodeIDETab";
 import SourceCodeIDECodeBlocksItem from "./SourceCodeIDECodeBlocksItem";
 import SourceCodeIDECodeBlocks from "./SourceCodeIDECodeBlocks";
 import SourceCodeIDEEmpty from "./SourceCodeIDEEmpty";
+import { SourceCodeContextProvider, useSourceCodeContext } from "./SourceCodeContext";
 
 export type selectFileHandlerType = ({
   pathIncludeName,
@@ -41,6 +42,11 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
 
   const [renderingIndex, setRenderingIndex] = useState<number>(-1);
+
+
+
+
+
 
   const selectFileHandler: selectFileHandlerType = ({
     pathIncludeName,
@@ -70,7 +76,7 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
 
   return (
     <div css={wrapperCSS}>
-      {fileTree.fileTree ? (
+      {fileTree.fileTree && fileTree.fileIndexes ? (
         <SourceCodeExplorer
           fileTree={fileTree.fileTree}
           selectFileHandler={selectFileHandler}

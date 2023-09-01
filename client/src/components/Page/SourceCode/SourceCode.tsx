@@ -6,6 +6,7 @@ import mediaQuery from "@/util/responsive";
 import Alert from "@/components/Interface/Loading/Alert";
 import useSourceCodeAPI from "./useSourceCodeAPI";
 import SourceCodeHeader from "./SourceCodeHeader";
+import { SourceCodeContextProvider } from "./SourceCodeContext";
 
 type SourceCodePropsType = {
   sourceCodeId: number;
@@ -27,10 +28,12 @@ function SourceCode({ sourceCodeId }: SourceCodePropsType) {
 
   return (
     <React.Fragment>
+      <SourceCodeContextProvider>
+      {sourceCodeQuery.data &&
       <SourceCodeHeader
         sourceCodeId={sourceCodeId}
         sourceCodeQuery={sourceCodeQuery}
-      />
+      />}
       {sourceCodeQuery.data ? (
         <SourceCodeIDE
           url={sourceCodeQuery.data.fileUrl}
@@ -39,6 +42,7 @@ function SourceCode({ sourceCodeId }: SourceCodePropsType) {
       ) : (
         <Loading label={"데이터를 받아오는 중입니다."} />
       )}
+      </SourceCodeContextProvider>
     </React.Fragment>
   );
 }
