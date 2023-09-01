@@ -1,19 +1,19 @@
-import React from 'react'
+import React from "react";
 import { css } from "@emotion/react";
 import UseAnimations from "react-useanimations";
-import loading from 'react-useanimations/lib/loading';
+import loading from "react-useanimations/lib/loading";
 
 type LoadingPropsType = {
-  label: string
-}
+  label: string;
+};
 
-function Loading({label}: LoadingPropsType) {
+function Loading({ label }: LoadingPropsType) {
   return (
     <div css={loadingWrapperCSS}>
       <UseAnimations animation={loading} size={56} />
       <span>{label}</span>
     </div>
-  )
+  );
 }
 
 const loadingWrapperCSS = css`
@@ -24,6 +24,6 @@ const loadingWrapperCSS = css`
   justify-content: center;
   align-items: center;
   gap: 16px;
-`
+`;
 
-export default Loading
+export default Loading;

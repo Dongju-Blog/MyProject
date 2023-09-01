@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { fileTreeType, useSourceCodeContext } from "../SourceCodeContext";
+import { useSourceCodeContext } from "../SourceCodeContext";
 import { css } from "@emotion/react";
 import SourceCodeExplorerList from "./SourceCodeExplorerList";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorerListItemIcon";
-import { selectFileHandlerType } from "../SourceCodeContext";
 import { useRouter } from "next/router";
-import { lastIndexOf } from "lodash";
-import useModal from "@/components/Interface/Modal/useModal";
-import SourceCodeExplorerContextMenu from "./useSourceCodeExplorerContextMenu";
 import useContextMenu from "@/components/Interface/ContextMenu/useContextMenu";
 import useSourceCodeExplorerContextMenu from "./useSourceCodeExplorerContextMenu";
 import { useAtom } from "jotai";
 import { codeBlockExplorerOption } from "@/store/store";
-import { isEmpty } from "lodash";
 
 type SourceCodeExplorerListItemPropsType = {
   name: string;
@@ -33,17 +28,17 @@ function SourceCodeExplorerListItem({
     fileTree,
     fileContents,
     selectedFileNameIncludePath,
-    selectFileHandler
+    selectFileHandler,
   } = useSourceCodeContext();
-
 
   const [isOpened, setIsOpened] = useState<boolean>(
     initOpened ? initOpened : false
   );
   const [specifiedFolder, setSpecifiedFolder] = useState<boolean>(false);
-  const contextMenu = useContextMenu()
-  const [codeBlockExplorerOptionAtom, setCodeBlockExplorerOptionAtom] = useAtom(codeBlockExplorerOption);
-  
+  const contextMenu = useContextMenu();
+  const [codeBlockExplorerOptionAtom, setCodeBlockExplorerOptionAtom] = useAtom(
+    codeBlockExplorerOption
+  );
 
   const router = useRouter();
   const { init } = router.query;
@@ -51,9 +46,13 @@ function SourceCodeExplorerListItem({
   useEffect(() => {
     if (isDir) {
       if (codeBlockExplorerOptionAtom.unfoldAuto) {
-        const splitted = dir.split('/')
-        const prevDir = splitted.slice(0, splitted.length - 2).join('/') + '/'
-        if (fileTree[prevDir] && fileTree[prevDir]['file'].length === 0 && fileTree[prevDir]['dir'].length === 1) {
+        const splitted = dir.split("/");
+        const prevDir = splitted.slice(0, splitted.length - 2).join("/") + "/";
+        if (
+          fileTree[prevDir] &&
+          fileTree[prevDir]["file"].length === 0 &&
+          fileTree[prevDir]["dir"].length === 1
+        ) {
           setIsOpened(() => true);
         }
       }
@@ -65,7 +64,6 @@ function SourceCodeExplorerListItem({
         selectFileHandler({
           pathIncludeName: dir + name,
         });
-
       }
     }
   }, [init]);
@@ -113,12 +111,17 @@ function SourceCodeExplorerListItem({
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.preventDefault();
-    contextMenu.open()
+    contextMenu.open();
     // contextMenuModal.open();
   };
 
-
-  const explorerContextMenu = useSourceCodeExplorerContextMenu({dir: dir, isDir: isDir, name: name, icon: icon, openHandler: onClickHandler})
+  const explorerContextMenu = useSourceCodeExplorerContextMenu({
+    dir: dir,
+    isDir: isDir,
+    name: name,
+    icon: icon,
+    openHandler: onClickHandler,
+  });
 
   return (
     <React.Fragment>
@@ -143,10 +146,7 @@ function SourceCodeExplorerListItem({
         {name}
       </div>
       {isOpened && isDir && (
-        <SourceCodeExplorerList
-          depth={depth + 1}
-          dir={dir}
-        />
+        <SourceCodeExplorerList depth={depth + 1} dir={dir} />
       )}
     </React.Fragment>
   );

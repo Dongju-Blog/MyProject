@@ -11,9 +11,6 @@ type contentPropsType = {
 };
 
 function CheckBox({ theme, children, ...props }: CheckBoxPropsType) {
-
-
-
   const childrenArray = Children.toArray(children) as Array<
     ReactElement<contentPropsType>
   >;
@@ -25,11 +22,7 @@ function CheckBox({ theme, children, ...props }: CheckBoxPropsType) {
       <label htmlFor={props.id} css={initLabelCSS}>
         {leftContent}
 
-        <input
-          {...props}
-          css={initInputCSS}
-          type="checkbox" 
-        />
+        <input {...props} css={initInputCSS} type="checkbox" />
         {rightContent}
       </label>
     </div>
@@ -62,18 +55,18 @@ const initLabelCSS = css`
 `;
 
 const initInputCSS = css`
-    width: 18px;
-		height: 18px;
-		cursor: pointer;
-		border-radius: 50%;
-		border: 1px solid #999;
-		appearance: none;
-		transition: background 0.2s;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid #999;
+  appearance: none;
+  transition: background 0.2s;
 
-		:checked {
-			background: black;
-			border: none;
-		}
+  :checked {
+    background: black;
+    border: none;
+  }
 `;
 
 type ThemeProviderKeys = "default";
@@ -81,11 +74,7 @@ type themeProviderType = { [prop: string]: SerializedStyles[] };
 
 const themeProvider = () => {
   const themes: themeProviderType = {
-    default: [
-      css`
-    
-      `,
-    ]
+    default: [css``],
   };
 
   return themes;

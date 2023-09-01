@@ -1,34 +1,33 @@
-import React from 'react'
-import { useRouter } from 'next/router'
+import React from "react";
+import { useRouter } from "next/router";
 
 function useNavbarUtil() {
-  const router = useRouter()
+  const router = useRouter();
 
   const Example1 = () => {
-    router.push('/#1')
-
-  }
+    router.push("/#1");
+  };
 
   const Example2 = () => {
-    router.push('/#2')
-  }
+    router.push("/#2");
+  };
 
   const Example3 = () => {
-    router.push('/#3')
-  }
+    router.push("/#3");
+  };
 
   const NAVIGATE_TO_PLAYGROUND = () => {
-    router.push('/playground')
-  }
+    router.push("/playground");
+  };
 
   const returnObject = {
     Example1,
     Example2,
     Example3,
-    NAVIGATE_TO_PLAYGROUND
-  }
+    NAVIGATE_TO_PLAYGROUND,
+  };
 
-  return returnObject
+  return returnObject;
 }
 
-export default useNavbarUtil
+export default useNavbarUtil;

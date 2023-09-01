@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { pageablePageArticlesResponseType, pageablePageSourceCodesResponseType } from "@/types/board";
+import {
+  pageablePageArticlesResponseType,
+  pageablePageSourceCodesResponseType,
+} from "@/types/board";
 import { getArticlesAPI } from "@/api/board/getArticlesAPI";
 import { useRouter } from "next/router";
 import Pagination from "@/components/Interface/Pagination/Pagination";
@@ -12,7 +15,10 @@ import SourceCodeBoardDesktopListLoading from "./SourceCodeBoardDesktopListLoadi
 import Alert from "@/components/Interface/Loading/Alert";
 
 type SourceCodeBoardPropsType = {
-  sourceCodesQuery: UseQueryResult<pageablePageSourceCodesResponseType, unknown>;
+  sourceCodesQuery: UseQueryResult<
+    pageablePageSourceCodesResponseType,
+    unknown
+  >;
   pageUrl: string;
   currentPage: number;
 };
@@ -28,13 +34,12 @@ function SourceCodeBoardDesktopList({
   // const {page} = router.query
 
   const renderArticles =
-  sourceCodesQuery.data &&
-  sourceCodesQuery.data.content.map((el) => {
+    sourceCodesQuery.data &&
+    sourceCodesQuery.data.content.map((el) => {
       return (
         <SourceCodeBoardDesktopListItem
           key={`board-desktop-list-item-${el.id}`}
           sourceCode={el}
-          
         />
       );
     });

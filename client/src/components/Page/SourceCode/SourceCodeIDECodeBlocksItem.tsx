@@ -1,17 +1,14 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { Highlight, themes } from "prism-react-renderer";
 import { css } from "@emotion/react";
-
-import "overlayscrollbars/overlayscrollbars.css";
-import {
-  OverlayScrollbarsComponent,
-  useOverlayScrollbars,
-} from "overlayscrollbars-react";
-
 import { useAtom } from "jotai";
 import { codeBlockOption } from "@/store/store";
-
+import { debounce, throttle } from "lodash";
+import { useSourceCodeContext } from "./SourceCodeContext";
+import { useRouter } from "next/router";
 import Prism from "prismjs";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import "overlayscrollbars/overlayscrollbars.css";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-docker";
 import "prismjs/components/prism-gradle";
@@ -29,10 +26,6 @@ import "prismjs/components/prism-ignore.js";
 import "prismjs/components/prism-kotlin";
 import "prismjs/components/prism-cshtml";
 import "prismjs/components/prism-rust";
-import { debounce, throttle } from "lodash";
-// import { fileIndexesType } from './useSourceCodeFileTree';
-import { fileIndexesType, useSourceCodeContext } from "./SourceCodeContext";
-import { useRouter } from "next/router";
 
 type SourceCodeIDECodeBlocksItemPropsType = {
   content: string;
@@ -50,26 +43,7 @@ function SourceCodeIDECodeBlocksItem({
   // const [content, setContent] = useState<string>("");
   const router = useRouter();
 
-  const {
-    fileIndexes,
-  } = useSourceCodeContext();
-
-  // useEffect(() => {
-  //   const reader = new FileReader();
-  //   if (file) {
-  //     reader.readAsText(file);
-  //     reader.onload = () => {
-  //       setContent(() => String(reader.result));
-  //     };
-  //   }
-    
-  // }, [file]);
-
-  // useEffect(() => {
-  //   if (wrapperRef.current) {
-  //     wrapperRef.current.scrollTo({ left: 0, top: 0, behavior: "smooth" });
-  //   }
-  // }, [content])
+  const { fileIndexes } = useSourceCodeContext();
 
   const onScrollHandler = throttle((i, e: any) => {
     if (e.target && e.target.scrollTop > 0) {
@@ -78,14 +52,6 @@ function SourceCodeIDECodeBlocksItem({
       setIsTop(() => true);
     }
   }, 500);
-
-  // const [initialize, instance] = useOverlayScrollbars({events: {scroll: onScrollHandler}});
-
-  // useEffect(() => {
-  //   if (wrapperRef.current) {
-  //     initialize(wrapperRef.current);
-  //   }
-  // }, [initialize]);
 
   const findFileByToken = (e: any) => {
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -121,71 +87,74 @@ function SourceCodeIDECodeBlocksItem({
     []
   );
 
+  return useMemo(
+    () => (
+      <OverlayScrollbarsComponent
+        css={scrollWrapperCSS({ isTop })}
+        events={{ scroll: onScrollHandler }}
+        defer
+      >
+        <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
+          <div css={topDummyCSS}>
+            <div className="indicator" css={ideIndicatorCSS} />
+          </div>
 
-
-  return useMemo(() => (
-    <OverlayScrollbarsComponent
-      css={scrollWrapperCSS({ isTop })}
-      events={{ scroll: onScrollHandler }}
-      defer
-    >
-      <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
-        <div css={topDummyCSS}>
-          <div className="indicator" css={ideIndicatorCSS} />
-        </div>
-
-        <Highlight
-          prism={Prism}
-          theme={themes.github}
-          code={content}
-          language={language}
-        >
-          {({ className, style, tokens, getLineProps, getTokenProps }) => (
-            <pre onClick={findFileByToken} onMouseOver={call}>
-              {tokens.map((line, i) => (
-                <div key={i} {...getLineProps({ line })}>
-                  <div className="indicator" css={ideIndicatorCSS}>
-                    {i + 1}
-                  </div>
-                  <div className="token-wrapper">
-                    {line.map((token, key) => {
-                      if (
-                        i > 0 &&
-                        line.length === 1 &&
-                        line[0].content.trim() === "" &&
-                        tokens[i - 1]
-                      ) {
-                        const text = tokens[i - 1][0].content;
-                        let spaceCnt = 0;
-                        for (var j = 0; j < text.length; j++) {
-                          if (text[j] !== " ") {
-                            break;
+          <Highlight
+            prism={Prism}
+            theme={themes.github}
+            code={content}
+            language={language}
+          >
+            {({ className, style, tokens, getLineProps, getTokenProps }) => (
+              <pre onClick={findFileByToken} onMouseOver={call}>
+                {tokens.map((line, i) => (
+                  <div key={i} {...getLineProps({ line })}>
+                    <div className="indicator" css={ideIndicatorCSS}>
+                      {i + 1}
+                    </div>
+                    <div className="token-wrapper">
+                      {line.map((token, key) => {
+                        if (
+                          i > 0 &&
+                          line.length === 1 &&
+                          line[0].content.trim() === "" &&
+                          tokens[i - 1]
+                        ) {
+                          const text = tokens[i - 1][0].content;
+                          let spaceCnt = 0;
+                          for (var j = 0; j < text.length; j++) {
+                            if (text[j] !== " ") {
+                              break;
+                            }
+                            spaceCnt += 1;
                           }
-                          spaceCnt += 1;
+                          line[0].content = " ".repeat(spaceCnt);
                         }
-                        line[0].content = " ".repeat(spaceCnt);
-                      }
-                      return (
-                        <span
-                          css={[key === 0 && spaceCSS({ text: token.content })]}
-                          key={key}
-                          {...getTokenProps({ token })}
-                        />
-                      );
-                    })}
+                        return (
+                          <span
+                            css={[
+                              key === 0 && spaceCSS({ text: token.content }),
+                            ]}
+                            key={key}
+                            {...getTokenProps({ token })}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </pre>
-          )}
-        </Highlight>
+                ))}
+              </pre>
+            )}
+          </Highlight>
 
-        <div css={bottomDummyCSS}>
-          <div className="indicator" css={ideIndicatorCSS} />
+          <div css={bottomDummyCSS}>
+            <div className="indicator" css={ideIndicatorCSS} />
+          </div>
         </div>
-      </div>
-    </OverlayScrollbarsComponent>
-  ), [content]);
+      </OverlayScrollbarsComponent>
+    ),
+    [content]
+  );
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
@@ -226,7 +195,6 @@ const scrollWrapperCSS = ({ isTop }: { isTop: boolean }) => {
 
 const outerWrapperCSS = ({ wrap }: { wrap: boolean }) => {
   return css`
-    
     width: 100%;
     height: 100%;
     /* display: flex;

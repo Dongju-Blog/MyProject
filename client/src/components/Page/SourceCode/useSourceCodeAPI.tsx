@@ -6,12 +6,7 @@ import {
   getSourceCodeResponseType,
   postSourceCodeBodyType,
 } from "@/types/board";
-import {
-  UseQueryResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { useRouter } from "next/router";
 import { postSourceCodeAPI } from "@/api/sourceCode/postSourceCodeAPI";
