@@ -18,6 +18,7 @@ import SourceCodeIDEEmpty from "./SourceCodeIDEEmpty";
 import {
   useSourceCodeContext,
 } from "./SourceCodeContext";
+import { isEmpty } from "lodash";
 
 // export type selectFileHandlerType = ({
 //   pathIncludeName,
@@ -47,24 +48,6 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
   } = useSourceCodeContext();
 
 
-  
-  // const selectFileHandler = useSourceCodeContext('selectFileHandler')
-
-  // const selectFileHandler: selectFileHandlerType = ({
-  //   pathIncludeName,
-  // }: {
-  //   pathIncludeName: string;
-  // }) => {
-  //   let temp = new Set();
-  //   setSelectedFilesTab((prev) => {
-  //     const newSet = new Set(prev);
-  //     newSet.add(pathIncludeName);
-  //     temp = newSet;
-  //     return newSet;
-  //   });
-  //   setSelectedFileIndex(() => Array.from(temp).indexOf(pathIncludeName));
-  // };
-
   // 탭 선택 시 (혹은 선택 인덱스가 변경되었을 때), 선택된 파일을 알리는 state 변경
   useEffect(() => {
     if (selectedFileIndex !== -1) {
@@ -75,31 +58,27 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
     }
   }, [selectedFileIndex]);
 
-  return (
-    <div css={wrapperCSS}>
-      {fileTree && fileIndexes ? (
-        <SourceCodeExplorer/>
-      ) : (
-        <Loading label={"파일 트리를 구성하는 중입니다."} />
-      )}
-      <div css={ideWrapperCSS}>
-        {selectedFilesTab &&
-        fileContents &&
-          fileIndexes &&
-          selectedFileNameIncludePath && (
-            <SourceCodeIDETab/>
+
+
+    return (
+      <div css={wrapperCSS}>
+        {initFile && <SourceCodeExplorer/>}
+        
+        {initFile &&
+        <div css={ideWrapperCSS}>
+          <SourceCodeIDETab/>
+          {selectedFilesTab ? (
+            <SourceCodeIDECodeBlocks />
+          ) : (
+            <SourceCodeIDEEmpty />
           )}
-        {selectedFilesTab && 
-        fileContents &&
-        fileIndexes &&
-        selectedFileNameIncludePath ? (
-          <SourceCodeIDECodeBlocks />
-        ) : (
-          <SourceCodeIDEEmpty />
-        )}
+        </div>}
       </div>
-    </div>
-  );
+    );
+  
+  
+  
+  
 }
 
 const wrapperCSS = css`

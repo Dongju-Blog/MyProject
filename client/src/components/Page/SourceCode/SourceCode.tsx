@@ -26,16 +26,6 @@ function SourceCode({ sourceCodeId }: SourceCodePropsType) {
     return <Alert label={"소스 코드를 불러오지 못했습니다!"} />;
   }
 
-
-
-
-
-
-
-
-
-
-
   return (
     <React.Fragment>
       <SourceCodeContextProvider>

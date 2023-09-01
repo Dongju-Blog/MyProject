@@ -12,6 +12,7 @@ import useContextMenu from "@/components/Interface/ContextMenu/useContextMenu";
 import useSourceCodeExplorerContextMenu from "./useSourceCodeExplorerContextMenu";
 import { useAtom } from "jotai";
 import { codeBlockExplorerOption } from "@/store/store";
+import { isEmpty } from "lodash";
 
 type SourceCodeExplorerListItemPropsType = {
   name: string;
@@ -30,6 +31,7 @@ function SourceCodeExplorerListItem({
 }: SourceCodeExplorerListItemPropsType) {
   const {
     fileTree,
+    fileContents,
     selectedFileNameIncludePath,
     selectFileHandler
   } = useSourceCodeContext();
@@ -63,6 +65,7 @@ function SourceCodeExplorerListItem({
         selectFileHandler({
           pathIncludeName: dir + name,
         });
+
       }
     }
   }, [init]);
