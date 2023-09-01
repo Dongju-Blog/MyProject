@@ -191,7 +191,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  ), [content, selectedFileIndex === curIdx]);
+  ), [content, selectedFileIndex !== curIdx]);
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
