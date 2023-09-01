@@ -18,6 +18,9 @@ function SourceCodeIDETab() {
     setSelectedFileIndex,
   } = useSourceCodeContext();
 
+
+
+
   const router = useRouter()
 
   const closeTabHandler = (pathIncludeName: string) => {

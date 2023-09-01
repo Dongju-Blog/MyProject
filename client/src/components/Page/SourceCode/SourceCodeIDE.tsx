@@ -16,7 +16,6 @@ import SourceCodeIDECodeBlocksItem from "./SourceCodeIDECodeBlocksItem";
 import SourceCodeIDECodeBlocks from "./SourceCodeIDECodeBlocks";
 import SourceCodeIDEEmpty from "./SourceCodeIDEEmpty";
 import {
-  SourceCodeContextProvider,
   useSourceCodeContext,
 } from "./SourceCodeContext";
 
@@ -32,7 +31,7 @@ type SourceCodeIDEPropsType = {
 };
 
 function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
-  useSourceCodeFileTree({
+  const initFile = useSourceCodeFileTree({
     url,
     rootName,
   });
@@ -40,11 +39,16 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
   const {
     fileTree,
     fileIndexes,
-    selectedFilesTab,
+    fileContents,
+    selectedFilesTab, 
     selectedFileIndex,
     selectedFileNameIncludePath,
     setSelectedFileNameIncludePath,
   } = useSourceCodeContext();
+
+
+  
+  // const selectFileHandler = useSourceCodeContext('selectFileHandler')
 
   // const selectFileHandler: selectFileHandlerType = ({
   //   pathIncludeName,
@@ -87,7 +91,7 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
         {fileTree &&
         fileIndexes &&
         selectedFileNameIncludePath ? (
-          <SourceCodeIDECodeBlocks/>
+          <SourceCodeIDECodeBlocks />
         ) : (
           <SourceCodeIDEEmpty />
         )}

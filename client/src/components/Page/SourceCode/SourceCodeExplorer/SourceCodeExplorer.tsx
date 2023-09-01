@@ -19,17 +19,6 @@ import { useSourceCodeContext } from "../SourceCodeContext";
 
 
 function SourceCodeExplorer() {
-  const {
-    fileTree,
-    fileIndexes,
-    selectedFilesTab,
-    setSelectedFilesTab,
-    selectedFileIndex,
-    setSelectedFileIndex,
-    selectedFileNameIncludePath,
-    setSelectedFileNameIncludePath,
-    selectFileHandler
-  } = useSourceCodeContext();
 
   const root = "root/";
   const [explorerWidth, setExplorerWidth] = useState<number>(300);

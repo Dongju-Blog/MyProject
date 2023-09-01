@@ -9,9 +9,16 @@ function SourceCodeIDECodeBlocks() {
   const {
     fileTree,
     fileIndexes,
+    fileContents,
     selectedFilesTab,
     selectedFileIndex,
   } = useSourceCodeContext();
+
+
+
+  // const setSelectedFileNameIncludePath = useSourceCodeContext('setSelectedFileNameIncludePath')
+  // const selectedFileNameIncludePath = useSourceCodeContext('selectedFileNameIncludePath')
+  // const selectFileHandler = useSourceCodeContext('selectFileHandler')
 
   const renderCodeBlock = useMemo(
     () =>
@@ -37,7 +44,7 @@ function SourceCodeIDECodeBlocks() {
               <SourceCodeIDECodeBlocksItem
                 fileIndexes={fileIndexes}
                 language={type}
-                file={fileTree[path]["file"][filename]}
+                file={fileContents[pathIncludeName]}
               />
             </div>
           );

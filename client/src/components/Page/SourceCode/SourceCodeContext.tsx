@@ -1,4 +1,4 @@
-import React, {useState, ReactNode, useContext} from 'react'
+import React, {useState, ReactNode, useContext, useMemo} from 'react'
 
 
 
@@ -14,8 +14,11 @@ export const useSourceCodeContext = () => {
   return context
 }
 
+
+
+
 export type fileTreeType = {
-  [prop: string]: { file: { [prop: string]: Blob }; dir: string[] };
+  [prop: string]: { file: string[]; dir: string[] };
 }
 
 export type fileIndexesType = {
@@ -23,7 +26,7 @@ export type fileIndexesType = {
 }
 
 export type fileContentsType = {
-  [prop: string]: string
+  [prop: string]: Blob
 }
 
 export type selectFileHandlerType = ({
@@ -47,6 +50,8 @@ type contextType = {
   setSelectedFileIndex: React.Dispatch<React.SetStateAction<number>>
   selectFileHandler: selectFileHandlerType
 }
+
+// export const SourceCodeContextProvider: React.Provider<contextType> = SourceCodeContext.Provider as any;
 
 export const SourceCodeContextProvider = ({children}: {children: ReactNode}) => {
   const [fileTree, setFileTree] = useState<fileTreeType>({})
@@ -93,3 +98,4 @@ export const SourceCodeContextProvider = ({children}: {children: ReactNode}) => 
     >{children}</SourceCodeContext.Provider>
   )
 }
+

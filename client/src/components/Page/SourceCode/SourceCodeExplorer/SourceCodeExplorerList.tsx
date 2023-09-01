@@ -5,6 +5,7 @@ import { selectFileHandlerType } from "../SourceCodeContext";
 import { css } from "@emotion/react";
 import { useRouter } from "next/router";
 
+
 type SourceCodeExplorerListPropsType = {
   depth: number;
   dir: string;
@@ -15,22 +16,16 @@ function SourceCodeExplorerList({
 }: SourceCodeExplorerListPropsType) {
   const {
     fileTree,
-    fileIndexes,
-    selectedFilesTab,
-    setSelectedFilesTab,
-    selectedFileIndex,
-    setSelectedFileIndex,
     selectedFileNameIncludePath,
-    setSelectedFileNameIncludePath,
-    selectFileHandler
   } = useSourceCodeContext();
+
 
   const router = useRouter();
   const { init } = router.query;
 
   const renderDir =
     fileTree[dir] &&
-    fileTree[dir]["dir"].map((el) => {
+    useMemo(() => fileTree[dir]["dir"].map((el) => {
       const splitted = el.split("/");
       const name = splitted[splitted.length - 2];
       return (
@@ -41,11 +36,11 @@ function SourceCodeExplorerList({
           depth={depth}
         />
       );
-    });
+    }), [fileTree, selectedFileNameIncludePath]);
 
   const renderFile =
     fileTree[dir] &&
-    Object.keys(fileTree[dir]["file"]).map((el) => {
+    useMemo(() => fileTree[dir]["file"].map((el) => {
       return (
         <SourceCodeExplorerListItem
           name={el}
@@ -54,7 +49,7 @@ function SourceCodeExplorerList({
           depth={depth}
         />
       );
-    });
+    }), [fileTree, selectedFileNameIncludePath]);
 
   return (
     <div css={wrapperCSS}>

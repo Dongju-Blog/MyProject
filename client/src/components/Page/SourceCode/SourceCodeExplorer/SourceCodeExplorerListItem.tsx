@@ -30,15 +30,10 @@ function SourceCodeExplorerListItem({
 }: SourceCodeExplorerListItemPropsType) {
   const {
     fileTree,
-    fileIndexes,
-    selectedFilesTab,
-    setSelectedFilesTab,
-    selectedFileIndex,
-    setSelectedFileIndex,
     selectedFileNameIncludePath,
-    setSelectedFileNameIncludePath,
     selectFileHandler
   } = useSourceCodeContext();
+
 
   const [isOpened, setIsOpened] = useState<boolean>(
     initOpened ? initOpened : false
@@ -47,11 +42,6 @@ function SourceCodeExplorerListItem({
   const contextMenu = useContextMenu()
   const [codeBlockExplorerOptionAtom, setCodeBlockExplorerOptionAtom] = useAtom(codeBlockExplorerOption);
   
-  // const contextMenuModal = useModal({
-  //   transition: "fadeIn",
-  //   duration: 300,
-  //   hasBackdrop: false,
-  // });
 
   const router = useRouter();
   const { init } = router.query;
@@ -61,7 +51,7 @@ function SourceCodeExplorerListItem({
       if (codeBlockExplorerOptionAtom.unfoldAuto) {
         const splitted = dir.split('/')
         const prevDir = splitted.slice(0, splitted.length - 2).join('/') + '/'
-        if (fileTree[prevDir] && Object.keys(fileTree[prevDir]['file']).length === 0 && fileTree[prevDir]['dir'].length === 1) {
+        if (fileTree[prevDir] && fileTree[prevDir]['file'].length === 0 && fileTree[prevDir]['dir'].length === 1) {
           setIsOpened(() => true);
         }
       }

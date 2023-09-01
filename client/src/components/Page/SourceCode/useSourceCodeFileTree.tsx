@@ -22,8 +22,10 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
   const [zipData, setZipData] = useState<any>();
   // const [fileTree, setFileTree] = useState<fileTreeType>();
   // const [fileIndexes, setFileIndexes] = useState<fileIndexesType>()
+  // const [fileContents, setFileContents] = useState<{[prop: string]: Blob}>({})
+  const {fileTree, setFileTree, fileIndexes, setFileIndexes, fileContents, setFileContents} = useSourceCodeContext()
 
-  const {fileTree, setFileTree, fileIndexes, setFileIndexes} = useSourceCodeContext()
+
 
   useEffect(() => {
     getFileAPI({
@@ -49,22 +51,23 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
     // root를 생성하지 않으면 원래 zip 파일에 존재하던 최상위 폴더 내의 파일, 폴더가 보이지 않음
     const fileTree: fileTreeType = {
       "root/": {
-        file: {},
+        file: [],
         dir: [root]
       },
       [root]: {
-        file: {},
+        file: [],
         dir: []
       }
     };
 
     const fileIndexes: fileIndexesType = {}
-    
+    const fileContents: {[prop: string]: Blob} = {}
+
     zip.forEach(function (relativePath, entry) {
       // 가상으로 최상위 폴더 root를 생성했기 때문에 root를 붙여서 entry.name을 추가한다.
       if (entry.dir) {
         fileTree[root + entry.name] = {
-          file: {},
+          file: [],
           dir: [],
         };
       }
@@ -89,8 +92,11 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
         
         if (root + path in fileTree) {
           entry.async("blob").then((res) => {
-            fileTree[root + path]["file"][name] = res;
+            // fileTree[root + path]["file"][name] = res;
+            fileContents[root + entry.name] = res
+            
           });
+          fileTree[root + path]["file"].push(name);
           fileIndexes[name.split('.')[0]] = root + path + name
         }
 
@@ -99,11 +105,14 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
 
       }
     });
+
+    console.log(fileContents)
     setFileIndexes(() => fileIndexes)
     setFileTree(() => fileTree);
+    setFileContents(() => fileContents)
   }, [zipData]);
 
-  return {fileTree, fileIndexes};
+  return;
 }
 
 export default useSourceCodeFileTree;
