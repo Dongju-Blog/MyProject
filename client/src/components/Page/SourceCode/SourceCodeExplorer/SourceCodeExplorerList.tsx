@@ -1,24 +1,30 @@
 import React, { useMemo } from "react";
-import { fileTreeType } from "../useSourceCodeFileTree";
+import { fileTreeType, useSourceCodeContext } from "../SourceCodeContext";
 import SourceCodeExplorerListItem from "./SourceCodeExplorerListItem";
-import { selectFileHandlerType } from "../SourceCodeIDE";
+import { selectFileHandlerType } from "../SourceCodeContext";
 import { css } from "@emotion/react";
 import { useRouter } from "next/router";
 
 type SourceCodeExplorerListPropsType = {
   depth: number;
   dir: string;
-  fileTree: fileTreeType;
-  selectFileHandler: selectFileHandlerType;
-  selectedFilePathIncludeName: string;
 };
 function SourceCodeExplorerList({
   depth,
   dir,
-  fileTree,
-  selectFileHandler,
-  selectedFilePathIncludeName,
 }: SourceCodeExplorerListPropsType) {
+  const {
+    fileTree,
+    fileIndexes,
+    selectedFilesTab,
+    setSelectedFilesTab,
+    selectedFileIndex,
+    setSelectedFileIndex,
+    selectedFileNameIncludePath,
+    setSelectedFileNameIncludePath,
+    selectFileHandler
+  } = useSourceCodeContext();
+
   const router = useRouter();
   const { init } = router.query;
 
@@ -32,10 +38,7 @@ function SourceCodeExplorerList({
           name={name}
           dir={el}
           isDir={true}
-          fileTree={fileTree}
           depth={depth}
-          selectFileHandler={selectFileHandler}
-          selectedFilePathIncludeName={selectedFilePathIncludeName}
         />
       );
     });
@@ -48,10 +51,7 @@ function SourceCodeExplorerList({
           name={el}
           dir={dir}
           isDir={false}
-          fileTree={fileTree}
           depth={depth}
-          selectFileHandler={selectFileHandler}
-          selectedFilePathIncludeName={selectedFilePathIncludeName}
         />
       );
     });

@@ -27,7 +27,8 @@ import 'prismjs/components/prism-kotlin';
 import 'prismjs/components/prism-cshtml';
 import 'prismjs/components/prism-rust';
 import { debounce, throttle } from 'lodash';
-import { fileIndexesType } from './useSourceCodeFileTree';
+// import { fileIndexesType } from './useSourceCodeFileTree';
+import { fileIndexesType } from './SourceCodeContext';
 import { useRouter } from "next/router";
 
 

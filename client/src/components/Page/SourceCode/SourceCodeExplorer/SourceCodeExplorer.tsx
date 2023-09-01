@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import SourceCodeExplorerList from "./SourceCodeExplorerList";
-import { fileTreeType } from "../useSourceCodeFileTree";
+import { fileTreeType } from "../SourceCodeContext";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorerListItemIcon";
 import { css } from "@emotion/react";
 import { useAtom } from "jotai";
 import { codeBlockExplorerOption } from "@/store/store";
-
-import { selectFileHandlerType } from "../SourceCodeIDE";
+import { selectFileHandlerType } from "../SourceCodeContext";
 
 import "overlayscrollbars/overlayscrollbars.css";
 import {
@@ -15,20 +14,24 @@ import {
 } from "overlayscrollbars-react";
 import Swipe from "react-easy-swipe";
 import CheckBox from "@/components/Interface/CheckBox/CheckBox";
+import { useSourceCodeContext } from "../SourceCodeContext";
 
-type SourceCodeExplorerPropsType = {
-  fileTree: fileTreeType;
-  selectFileHandler: selectFileHandlerType;
-  selectedFilePathIncludeName: string;
-};
 
-function SourceCodeExplorer({
-  fileTree,
-  selectFileHandler,
-  selectedFilePathIncludeName,
-}: SourceCodeExplorerPropsType) {
+
+function SourceCodeExplorer() {
+  const {
+    fileTree,
+    fileIndexes,
+    selectedFilesTab,
+    setSelectedFilesTab,
+    selectedFileIndex,
+    setSelectedFileIndex,
+    selectedFileNameIncludePath,
+    setSelectedFileNameIncludePath,
+    selectFileHandler
+  } = useSourceCodeContext();
+
   const root = "root/";
-
   const [explorerWidth, setExplorerWidth] = useState<number>(300);
   const [positionx, setPositionx] = useState<number>(0);
   const [endSwipe, setEndSwipe] = useState(true);
@@ -86,9 +89,6 @@ function SourceCodeExplorer({
           <SourceCodeExplorerList
             depth={1}
             dir={root}
-            fileTree={fileTree}
-            selectFileHandler={selectFileHandler}
-            selectedFilePathIncludeName={selectedFilePathIncludeName}
           />
         </OverlayScrollbarsComponent>
       </div>

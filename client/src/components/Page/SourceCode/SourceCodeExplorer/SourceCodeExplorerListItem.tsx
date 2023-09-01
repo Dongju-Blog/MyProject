@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fileTreeType } from "../useSourceCodeFileTree";
+import { fileTreeType, useSourceCodeContext } from "../SourceCodeContext";
 import { css } from "@emotion/react";
 import SourceCodeExplorerList from "./SourceCodeExplorerList";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorerListItemIcon";
-import { selectFileHandlerType } from "../SourceCodeIDE";
+import { selectFileHandlerType } from "../SourceCodeContext";
 import { useRouter } from "next/router";
 import { lastIndexOf } from "lodash";
 import useModal from "@/components/Interface/Modal/useModal";
@@ -17,10 +17,7 @@ type SourceCodeExplorerListItemPropsType = {
   name: string;
   dir: string;
   isDir: boolean;
-  fileTree: fileTreeType;
   depth: number;
-  selectFileHandler: selectFileHandlerType;
-  selectedFilePathIncludeName: string;
   initOpened?: boolean;
 };
 
@@ -28,12 +25,21 @@ function SourceCodeExplorerListItem({
   name,
   dir,
   isDir,
-  fileTree,
   depth,
-  selectFileHandler,
-  selectedFilePathIncludeName,
   initOpened,
 }: SourceCodeExplorerListItemPropsType) {
+  const {
+    fileTree,
+    fileIndexes,
+    selectedFilesTab,
+    setSelectedFilesTab,
+    selectedFileIndex,
+    setSelectedFileIndex,
+    selectedFileNameIncludePath,
+    setSelectedFileNameIncludePath,
+    selectFileHandler
+  } = useSourceCodeContext();
+
   const [isOpened, setIsOpened] = useState<boolean>(
     initOpened ? initOpened : false
   );
@@ -127,7 +133,7 @@ function SourceCodeExplorerListItem({
       <div
         css={itemWrapperCSS({
           depth,
-          isSelected: selectedFilePathIncludeName === dir + name,
+          isSelected: selectedFileNameIncludePath === dir + name,
         })}
         onClick={onClickHandler}
         onContextMenu={onContextMenuHandler}
@@ -147,9 +153,6 @@ function SourceCodeExplorerListItem({
         <SourceCodeExplorerList
           depth={depth + 1}
           dir={dir}
-          fileTree={fileTree}
-          selectFileHandler={selectFileHandler}
-          selectedFilePathIncludeName={selectedFilePathIncludeName}
         />
       )}
     </React.Fragment>

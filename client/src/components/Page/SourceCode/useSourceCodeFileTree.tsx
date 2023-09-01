@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
 import JSZip from "jszip";
 import { getFileAPI } from "@/api/playground/getFileAPI";
-import { useSourceCodeContext } from "./SourceCodeContext";
+import { fileIndexesType, fileTreeType, useSourceCodeContext } from "./SourceCodeContext";
 
 type useSourceCodeFileTreePropsType = {
   url: string;
   rootName: string
 };
 
-export type fileTreeType = {
-  [prop: string]: { file: { [prop: string]: Blob }; dir: string[] };
-}
+// export type fileTreeType = {
+//   [prop: string]: { file: { [prop: string]: Blob }; dir: string[] };
+// }
 
-export type fileIndexesType = {
-  [prop: string]: string
-}
+// export type fileIndexesType = {
+//   [prop: string]: string
+// }
 
 function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType) {
   const [zip, setZip] = useState(new JSZip());
   const [file, setFile] = useState<Blob>();
   const [zipData, setZipData] = useState<any>();
   // const [fileTree, setFileTree] = useState<fileTreeType>();
-  const [fileIndexes, setFileIndexes] = useState<fileIndexesType>()
+  // const [fileIndexes, setFileIndexes] = useState<fileIndexesType>()
 
-  const {fileTree, setFileTree} = useSourceCodeContext()
+  const {fileTree, setFileTree, fileIndexes, setFileIndexes} = useSourceCodeContext()
 
   useEffect(() => {
     getFileAPI({

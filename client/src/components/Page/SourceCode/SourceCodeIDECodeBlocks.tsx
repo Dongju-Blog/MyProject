@@ -1,24 +1,21 @@
 import React, { useMemo } from "react";
-import { fileIndexesType, fileTreeType } from "./useSourceCodeFileTree";
+import { fileIndexesType, fileTreeType, useSourceCodeContext } from "./SourceCodeContext";
 import SourceCodeIDECodeBlocksItem from "./SourceCodeIDECodeBlocksItem";
 import { css } from "@emotion/react";
 
-type SourceCodeIDECodeBlocksPropsType = {
-  fileTree: fileTreeType;
-  fileIndexes: fileIndexesType
-  selectedFiles: Set<string>;
-  renderingIndex: number;
-};
 
-function SourceCodeIDECodeBlocks({
-  fileTree,
-  fileIndexes,
-  selectedFiles,
-  renderingIndex,
-}: SourceCodeIDECodeBlocksPropsType) {
+
+function SourceCodeIDECodeBlocks() {
+  const {
+    fileTree,
+    fileIndexes,
+    selectedFilesTab,
+    selectedFileIndex,
+  } = useSourceCodeContext();
+
   const renderCodeBlock = useMemo(
     () =>
-      Array.from(selectedFiles).map((pathIncludeName, idx) => {
+      Array.from(selectedFilesTab).map((pathIncludeName, idx) => {
         const splitIndex = pathIncludeName.lastIndexOf("/") + 1;
         const path = pathIncludeName.substring(0, splitIndex);
 
@@ -35,7 +32,7 @@ function SourceCodeIDECodeBlocks({
           return (
             <div
               key={`ide-${pathIncludeName}`}
-              css={ideItemWrapperCSS({ renderingIndex, currentIndex: idx })}
+              css={ideItemWrapperCSS({ selectedFileIndex, currentIndex: idx })}
             >
               <SourceCodeIDECodeBlocksItem
                 fileIndexes={fileIndexes}
@@ -46,21 +43,21 @@ function SourceCodeIDECodeBlocks({
           );
         }
       }),
-    [selectedFiles, renderingIndex]
+    [selectedFilesTab, selectedFileIndex]
   );
 
   return <React.Fragment>{renderCodeBlock}</React.Fragment>;
 }
 
 const ideItemWrapperCSS = ({
-  renderingIndex,
+  selectedFileIndex,
   currentIndex,
 }: {
-  renderingIndex: number;
+  selectedFileIndex: number;
   currentIndex: number;
 }) => {
   return css`
-    display: ${renderingIndex === currentIndex ? "block" : "none"};
+    display: ${selectedFileIndex === currentIndex ? "block" : "none"};
     overflow: hidden;
   `;
 };
