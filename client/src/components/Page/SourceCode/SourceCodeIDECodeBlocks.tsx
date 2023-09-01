@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { fileIndexesType, fileTreeType, useSourceCodeContext } from "./SourceCodeContext";
 import SourceCodeIDECodeBlocksItem from "./SourceCodeIDECodeBlocksItem";
 import { css } from "@emotion/react";
@@ -7,17 +7,12 @@ import { css } from "@emotion/react";
 
 function SourceCodeIDECodeBlocks() {
   const {
-    fileTree,
     fileContents,
     selectedFilesTab,
     selectedFileIndex,
   } = useSourceCodeContext();
 
 
-
-  // const setSelectedFileNameIncludePath = useSourceCodeContext('setSelectedFileNameIncludePath')
-  // const selectedFileNameIncludePath = useSourceCodeContext('selectedFileNameIncludePath')
-  // const selectFileHandler = useSourceCodeContext('selectFileHandler')
 
   const renderCodeBlock = Array.from(selectedFilesTab).map((pathIncludeName, idx) => {
         const splitIndex = pathIncludeName.lastIndexOf("/") + 1;
@@ -32,19 +27,19 @@ function SourceCodeIDECodeBlocks() {
           filename.length
         );
         
-        if (fileContents) {
-          return (
-            <div
-              key={`ide-${pathIncludeName}`}
-              css={ideItemWrapperCSS({ selectedFileIndex, currentIndex: idx })}
-            >
-              <SourceCodeIDECodeBlocksItem
-                language={type}
-                file={fileContents[pathIncludeName]}
-              />
-            </div>
-          );
-        }
+
+        return (
+          <div
+            key={`ide-${pathIncludeName}`}
+            css={ideItemWrapperCSS({ selectedFileIndex, currentIndex: idx })}
+          >
+            <SourceCodeIDECodeBlocksItem
+              language={type}
+              file={fileContents[pathIncludeName]}
+            />
+          </div>
+        );
+        
       })
 
 

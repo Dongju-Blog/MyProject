@@ -47,24 +47,6 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
   } = useSourceCodeContext();
 
 
-  
-  // const selectFileHandler = useSourceCodeContext('selectFileHandler')
-
-  // const selectFileHandler: selectFileHandlerType = ({
-  //   pathIncludeName,
-  // }: {
-  //   pathIncludeName: string;
-  // }) => {
-  //   let temp = new Set();
-  //   setSelectedFilesTab((prev) => {
-  //     const newSet = new Set(prev);
-  //     newSet.add(pathIncludeName);
-  //     temp = newSet;
-  //     return newSet;
-  //   });
-  //   setSelectedFileIndex(() => Array.from(temp).indexOf(pathIncludeName));
-  // };
-
   // 탭 선택 시 (혹은 선택 인덱스가 변경되었을 때), 선택된 파일을 알리는 state 변경
   useEffect(() => {
     if (selectedFileIndex !== -1) {
@@ -74,6 +56,10 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
       setSelectedFileNameIncludePath("");
     }
   }, [selectedFileIndex]);
+
+  if (!fileContents) {
+    return
+  }
 
   return (
     <div css={wrapperCSS}>
