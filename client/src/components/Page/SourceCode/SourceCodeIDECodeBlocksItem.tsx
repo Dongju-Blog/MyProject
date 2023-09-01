@@ -37,13 +37,11 @@ import { useRouter } from "next/router";
 type SourceCodeIDECodeBlocksItemPropsType = {
   file: Blob;
   language: string;
-  curIdx: number
 };
 
 function SourceCodeIDECodeBlocksItem({
   file,
   language,
-  curIdx
 }: SourceCodeIDECodeBlocksItemPropsType) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] =
@@ -54,7 +52,8 @@ function SourceCodeIDECodeBlocksItem({
 
   const {
     fileIndexes,
-    selectedFileIndex
+    selectedFileIndex,
+    selectedFilesTab
   } = useSourceCodeContext();
 
   useEffect(() => {
@@ -190,7 +189,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  ), [content, selectedFileIndex === curIdx]);
+  ), [content, selectedFileIndex, selectedFilesTab]);
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
