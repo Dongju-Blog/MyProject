@@ -189,7 +189,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  ), [content, selectedFileIndex, selectedFilesTab]);
+  ), [content, file, selectedFileIndex, selectedFilesTab]);
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
