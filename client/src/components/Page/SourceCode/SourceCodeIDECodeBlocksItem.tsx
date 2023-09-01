@@ -185,7 +185,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  ), [content]);
+  ), [content, file]);
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
