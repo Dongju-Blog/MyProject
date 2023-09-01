@@ -32,7 +32,7 @@ function SourceCodeIDECodeBlocks() {
           filename.length
         );
         
-        if (fileTree) {
+        if (fileTree && fileContents[pathIncludeName]) {
           return (
             <div
               key={`ide-${pathIncludeName}`}
