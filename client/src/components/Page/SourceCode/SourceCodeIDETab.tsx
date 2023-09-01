@@ -1,41 +1,42 @@
 import React, { useMemo } from "react";
-import { fileTreeType } from "./useSourceCodeFileTree";
+// import { fileTreeType } from "./useSourceCodeFileTree";
+import { fileTreeType, useSourceCodeContext } from "./SourceCodeContext";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorer/SourceCodeExplorerListItemIcon";
 import { css } from "@emotion/react";
 import { ideIndicatorCSS } from "./SourceCodeIDECodeBlocksItem";
 import { useRouter } from "next/router";
 
-type SourceCodeIDETabPropsType = {
-  fileTree: fileTreeType;
-  selectedFiles: Set<string>;
-  renderingIndex: number;
-  setSelectedFiles: React.Dispatch<React.SetStateAction<Set<string>>>;
-  setRenderingIndex: React.Dispatch<React.SetStateAction<number>>;
-};
 
-function SourceCodeIDETab({
-  fileTree,
-  selectedFiles,
-  renderingIndex,
-  setSelectedFiles,
-  setRenderingIndex,
-}: SourceCodeIDETabPropsType) {
+
+function SourceCodeIDETab() {
+
+  const {
+    fileTree,
+    selectedFilesTab,
+    setSelectedFilesTab,
+    selectedFileIndex,
+    setSelectedFileIndex,
+  } = useSourceCodeContext();
+
+
+
+
   const router = useRouter()
 
   const closeTabHandler = (pathIncludeName: string) => {
-    setSelectedFiles((prev) => {
+    setSelectedFilesTab((prev) => {
       const newSet = new Set(prev);
       newSet.delete(pathIncludeName);
       const newSetArray = Array.from(newSet)
       if (newSetArray.length === 0) {
-        setRenderingIndex(() => -1);
+        setSelectedFileIndex(() => -1);
         const params = router.query
         delete params['init']
         router.push({ query: { ...params } }, undefined, {
           shallow: true,
         });
       } else {
-        setRenderingIndex(() => 0);
+        setSelectedFileIndex(() => 0);
         router.push({ query: { ...router.query, init: newSetArray[0] } }, undefined, {
           shallow: true,
         });
@@ -47,7 +48,7 @@ function SourceCodeIDETab({
   };
 
   const onClickTabHandler = (idx: number, pathIncludeName: string) => {
-    // setRenderingIndex(() => idx);
+    // setSelectedFileIndex(() => idx);
     router.push({ query: { ...router.query, init: pathIncludeName } }, undefined, {
       shallow: true,
     });
@@ -55,7 +56,7 @@ function SourceCodeIDETab({
 
   const renderTab = useMemo(
     () =>
-      Array.from(selectedFiles).map((pathIncludeName, idx) => {
+      Array.from(selectedFilesTab).map((pathIncludeName, idx) => {
         const splitIndex = pathIncludeName.lastIndexOf("/") + 1;
         const filename = pathIncludeName.substring(
           splitIndex,
@@ -66,7 +67,7 @@ function SourceCodeIDETab({
           return (
             <div
               key={`tab-${pathIncludeName}`}
-              css={tabItemWrapperCSS({ renderingIndex, currentIndex: idx })}
+              css={tabItemWrapperCSS({ selectedFileIndex, currentIndex: idx })}
               onClick={() => {
                 onClickTabHandler(idx, pathIncludeName);
               }}
@@ -97,7 +98,7 @@ function SourceCodeIDETab({
           );
         }
       }),
-    [selectedFiles, renderingIndex]
+    [selectedFilesTab, selectedFileIndex]
   );
 
   return (
@@ -121,10 +122,10 @@ const tabWrapperCSS = css`
 `;
 
 const tabItemWrapperCSS = ({
-  renderingIndex,
+  selectedFileIndex,
   currentIndex,
 }: {
-  renderingIndex: number;
+  selectedFileIndex: number;
   currentIndex: number;
 }) => {
   return css`
@@ -141,10 +142,10 @@ const tabItemWrapperCSS = ({
 
     cursor: pointer;
 
-    border-bottom: ${renderingIndex === currentIndex
+    border-bottom: ${selectedFileIndex === currentIndex
       ? `1px solid rgba(0, 0, 0, 0)`
       : `1px solid rgba(0, 0, 0, 0.1)`};
-    background-color: ${renderingIndex === currentIndex
+    background-color: ${selectedFileIndex === currentIndex
       ? `rgba(0, 0, 0, 0.05)`
       : `rgba(0, 0, 0, 0)`};
 

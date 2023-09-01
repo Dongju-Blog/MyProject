@@ -1,11 +1,12 @@
 import SourceCodeIDE from "./SourceCodeIDE";
-import React from "react";
+import React, {useState} from "react";
 import Loading from "@/components/Interface/Loading/Loading";
 import useResponsive from "@/hooks/useResponsive";
 import mediaQuery from "@/util/responsive";
 import Alert from "@/components/Interface/Loading/Alert";
 import useSourceCodeAPI from "./useSourceCodeAPI";
 import SourceCodeHeader from "./SourceCodeHeader";
+import {SourceCodeContextProvider, fileIndexesType, fileTreeType, selectFileHandlerType} from "./SourceCodeContext";
 
 type SourceCodePropsType = {
   sourceCodeId: number;
@@ -25,12 +26,24 @@ function SourceCode({ sourceCodeId }: SourceCodePropsType) {
     return <Alert label={"소스 코드를 불러오지 못했습니다!"} />;
   }
 
+
+
+
+
+
+
+
+
+
+
   return (
     <React.Fragment>
+      <SourceCodeContextProvider>
+      {sourceCodeQuery.data &&
       <SourceCodeHeader
         sourceCodeId={sourceCodeId}
         sourceCodeQuery={sourceCodeQuery}
-      />
+      />}
       {sourceCodeQuery.data ? (
         <SourceCodeIDE
           url={sourceCodeQuery.data.fileUrl}
@@ -39,6 +52,7 @@ function SourceCode({ sourceCodeId }: SourceCodePropsType) {
       ) : (
         <Loading label={"데이터를 받아오는 중입니다."} />
       )}
+      </SourceCodeContextProvider>
     </React.Fragment>
   );
 }
