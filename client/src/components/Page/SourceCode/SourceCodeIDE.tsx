@@ -18,6 +18,7 @@ import SourceCodeIDEEmpty from "./SourceCodeIDEEmpty";
 import {
   useSourceCodeContext,
 } from "./SourceCodeContext";
+import { isEmpty } from "lodash";
 
 // export type selectFileHandlerType = ({
 //   pathIncludeName,
@@ -57,35 +58,27 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
     }
   }, [selectedFileIndex]);
 
-  if (!fileContents) {
-    return
-  }
 
-  return (
-    <div css={wrapperCSS}>
-      {fileTree && fileIndexes ? (
-        <SourceCodeExplorer/>
-      ) : (
-        <Loading label={"파일 트리를 구성하는 중입니다."} />
-      )}
-      <div css={ideWrapperCSS}>
-        {selectedFilesTab &&
-        fileContents &&
-          fileIndexes &&
-          selectedFileNameIncludePath && (
-            <SourceCodeIDETab/>
+
+    return (
+      <div css={wrapperCSS}>
+        {initFile && <SourceCodeExplorer/>}
+        
+        {initFile &&
+        <div css={ideWrapperCSS}>
+          <SourceCodeIDETab/>
+          {selectedFilesTab ? (
+            <SourceCodeIDECodeBlocks />
+          ) : (
+            <SourceCodeIDEEmpty />
           )}
-        {selectedFilesTab && 
-        fileContents &&
-        fileIndexes &&
-        selectedFileNameIncludePath ? (
-          <SourceCodeIDECodeBlocks />
-        ) : (
-          <SourceCodeIDEEmpty />
-        )}
+        </div>}
       </div>
-    </div>
-  );
+    );
+  
+  
+  
+  
 }
 
 const wrapperCSS = css`

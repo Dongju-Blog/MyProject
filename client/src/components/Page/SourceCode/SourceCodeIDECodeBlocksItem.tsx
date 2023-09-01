@@ -35,35 +35,35 @@ import { fileIndexesType, useSourceCodeContext } from "./SourceCodeContext";
 import { useRouter } from "next/router";
 
 type SourceCodeIDECodeBlocksItemPropsType = {
-  file: Blob;
+  content: string;
   language: string;
 };
 
 function SourceCodeIDECodeBlocksItem({
-  file,
+  content,
   language,
 }: SourceCodeIDECodeBlocksItemPropsType) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] =
     useAtom(codeBlockOption);
   const [isTop, setIsTop] = useState<boolean>(true);
-  const [content, setContent] = useState<string>("");
+  // const [content, setContent] = useState<string>("");
   const router = useRouter();
 
   const {
     fileIndexes,
   } = useSourceCodeContext();
 
-  useEffect(() => {
-    const reader = new FileReader();
-    if (file) {
-      reader.readAsText(file);
-      reader.onload = () => {
-        setContent(() => String(reader.result));
-      };
-    }
+  // useEffect(() => {
+  //   const reader = new FileReader();
+  //   if (file) {
+  //     reader.readAsText(file);
+  //     reader.onload = () => {
+  //       setContent(() => String(reader.result));
+  //     };
+  //   }
     
-  }, [file]);
+  // }, [file]);
 
   // useEffect(() => {
   //   if (wrapperRef.current) {
@@ -121,11 +121,9 @@ function SourceCodeIDECodeBlocksItem({
     []
   );
 
-  if (!content) {
-    return;
-  }
 
-  return (
+
+  return useMemo(() => (
     <OverlayScrollbarsComponent
       css={scrollWrapperCSS({ isTop })}
       events={{ scroll: onScrollHandler }}
@@ -187,7 +185,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  );
+  ), [content]);
 }
 
 const spaceCSS = ({ text }: { text: string }) => {

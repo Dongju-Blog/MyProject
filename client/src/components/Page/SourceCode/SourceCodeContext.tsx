@@ -25,9 +25,7 @@ export type fileIndexesType = {
   [prop: string]: string
 }
 
-export type fileContentsType = {
-  [prop: string]: Blob
-}
+export type fileContentsType = Map<string, string>
 
 export type selectFileHandlerType = ({
   pathIncludeName,
@@ -56,7 +54,7 @@ type contextType = {
 export const SourceCodeContextProvider = ({children}: {children: ReactNode}) => {
   const [fileTree, setFileTree] = useState<fileTreeType>({})
   const [fileIndexes, setFileIndexes] = useState<fileIndexesType>({})
-  const [fileContents, setFileContents] = useState<fileContentsType>({})
+  const [fileContents, setFileContents] = useState<fileContentsType>(new Map())
   const [selectedFilesTab, setSelectedFilesTab] = useState<Set<string>>(new Set());
   const [selectedFileNameIncludePath, setSelectedFileNameIncludePath] = useState<string>("");
   const [selectedFileIndex, setSelectedFileIndex] = useState<number>(-1);

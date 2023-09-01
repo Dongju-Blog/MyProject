@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import JSZip from "jszip";
 import { getFileAPI } from "@/api/playground/getFileAPI";
-import { fileIndexesType, fileTreeType, useSourceCodeContext } from "./SourceCodeContext";
+import { fileContentsType, fileIndexesType, fileTreeType, useSourceCodeContext } from "./SourceCodeContext";
+import { isEmpty } from "lodash";
 
 type useSourceCodeFileTreePropsType = {
   url: string;
@@ -24,6 +25,7 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
   // const [fileIndexes, setFileIndexes] = useState<fileIndexesType>()
   // const [fileContents, setFileContents] = useState<{[prop: string]: Blob}>({})
   const {fileTree, setFileTree, fileIndexes, setFileIndexes, fileContents, setFileContents} = useSourceCodeContext()
+  const [initialized, setInitialized] = useState<boolean>(false)
 
 
 
@@ -61,7 +63,7 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
     };
 
     const fileIndexes: fileIndexesType = {}
-    const fileContents: {[prop: string]: Blob} = {}
+    // const fileContents: fileContentsType = new Map()
 
     zip.forEach(function (relativePath, entry) {
       // 가상으로 최상위 폴더 root를 생성했기 때문에 root를 붙여서 entry.name을 추가한다.
@@ -73,6 +75,7 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
       }
 
     });
+    
     zip.forEach(function (relativePath, entry) {
       if (entry.dir) {
         const splitted = entry.name.split("/");
@@ -93,26 +96,35 @@ function useSourceCodeFileTree({ url, rootName }: useSourceCodeFileTreePropsType
         if (root + path in fileTree) {
           entry.async("blob").then((res) => {
             // fileTree[root + path]["file"][name] = res;
-            fileContents[root + entry.name] = res
+            // fileContents[root + entry.name] = res
+
+            const reader = new FileReader();
+     
+            reader.readAsText(res);
+            reader.onload = () => {
+              setFileContents((prev) => {
+                const newMap = new Map(prev)
+                newMap.set(root + entry.name, String(reader.result))
+                return newMap
+              })
+              // fileContents.set(root + entry.name, String(reader.result))
+              // setContent(() => String(reader.result));
+            };
+    
+            
             
           });
           fileTree[root + path]["file"].push(name);
           fileIndexes[name.split('.')[0]] = root + path + name
         }
-
-
-
-
       }
     });
-
-    console.log(fileContents)
     setFileIndexes(() => fileIndexes)
     setFileTree(() => fileTree);
-    setFileContents(() => fileContents)
+    setInitialized(() => true)
   }, [zipData]);
 
-  return;
+  return initialized;
 }
 
 export default useSourceCodeFileTree;
