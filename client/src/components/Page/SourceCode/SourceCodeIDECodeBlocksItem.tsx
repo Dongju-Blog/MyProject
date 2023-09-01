@@ -36,22 +36,12 @@ function SourceCodeIDECodeBlocksItem({
   content,
   language,
 }: SourceCodeIDECodeBlocksItemPropsType) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] =
     useAtom(codeBlockOption);
-  const [isTop, setIsTop] = useState<boolean>(true);
-  // const [content, setContent] = useState<string>("");
   const router = useRouter();
 
   const { fileIndexes } = useSourceCodeContext();
 
-  const onScrollHandler = throttle((i, e: any) => {
-    if (e.target && e.target.scrollTop > 0) {
-      setIsTop(() => false);
-    } else {
-      setIsTop(() => true);
-    }
-  }, 500);
 
   const findFileByToken = (e: any) => {
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -87,11 +77,9 @@ function SourceCodeIDECodeBlocksItem({
     []
   );
 
-  return useMemo(
-    () => (
+  return useMemo(() => (
       <OverlayScrollbarsComponent
-        css={scrollWrapperCSS({ isTop })}
-        events={{ scroll: onScrollHandler }}
+        css={scrollWrapperCSS}
         defer
       >
         <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
@@ -152,9 +140,7 @@ function SourceCodeIDECodeBlocksItem({
           </div>
         </div>
       </OverlayScrollbarsComponent>
-    ),
-    [content]
-  );
+    ), [content, codeBlockOptionAtom.wrap])
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
@@ -181,20 +167,18 @@ const spaceCSS = ({ text }: { text: string }) => {
   `;
 };
 
-const scrollWrapperCSS = ({ isTop }: { isTop: boolean }) => {
-  return css`
+const scrollWrapperCSS = css`
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.05);
     transition-property: box-shadow;
     transition-duration: 0.5s;
-    box-shadow: ${!isTop && `inset 0px 10px 10px -10px rgba(0, 0, 0, 0.1)`};
-    /* z-index: 999; */
+    content-visibility: auto;
   `;
-};
 
 const outerWrapperCSS = ({ wrap }: { wrap: boolean }) => {
   return css`
+
     width: 100%;
     height: 100%;
     /* display: flex;
