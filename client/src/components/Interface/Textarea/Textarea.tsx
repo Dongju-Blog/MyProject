@@ -1,5 +1,12 @@
 import { css, SerializedStyles } from "@emotion/react";
-import React, { Children, ReactElement, ReactNode, useState, useEffect, useRef } from "react";
+import React, {
+  Children,
+  ReactElement,
+  ReactNode,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 
 type TextareaPropsType = {
   theme: ThemeProviderKeys;
@@ -14,8 +21,6 @@ type contentPropsType = {
 function Textarea({ theme, customCss, children, ...props }: TextareaPropsType) {
   const [isFocusing, setIsFocusing] = useState<boolean>(false);
   const [inputState, setInputState] = useState("");
-
-
 
   const childrenArray = Children.toArray(children) as Array<
     ReactElement<contentPropsType>
@@ -57,7 +62,6 @@ function Textarea({ theme, customCss, children, ...props }: TextareaPropsType) {
             props.onBlur && props.onBlur(e);
             setIsFocusing(() => false);
           }}
-        
         />
       </label>
 
@@ -100,7 +104,7 @@ const initInputCSS = css`
   /* margin: 0px 8px 0px 8px; */
   flex: 1;
   resize: none;
-  font-family: 'Pretendard';
+  font-family: "Pretendard";
   height: 100%;
   width: 100%;
   border: none;

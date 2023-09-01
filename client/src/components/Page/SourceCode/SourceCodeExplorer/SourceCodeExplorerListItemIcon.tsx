@@ -4,16 +4,16 @@ import { css, SerializedStyles } from "@emotion/react";
 
 type SourceCodeExplorerListItemIcon = {
   name: string;
-  css: SerializedStyles
+  css: SerializedStyles;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-function SourceCodeExplorerListItemIcon({ name, ...props }: SourceCodeExplorerListItemIcon) {
+function SourceCodeExplorerListItemIcon({
+  name,
+  ...props
+}: SourceCodeExplorerListItemIcon) {
   return (
     <React.Fragment>
-      <div
-        {...props}
-        dangerouslySetInnerHTML={{ __html: getIcon(name).svg }}
-      />
+      <div {...props} dangerouslySetInnerHTML={{ __html: getIcon(name).svg }} />
     </React.Fragment>
   );
 }

@@ -1,10 +1,8 @@
 import React, { useMemo } from "react";
-import { fileTreeType, useSourceCodeContext } from "../SourceCodeContext";
+import { useSourceCodeContext } from "../SourceCodeContext";
 import SourceCodeExplorerListItem from "./SourceCodeExplorerListItem";
-import { selectFileHandlerType } from "../SourceCodeContext";
 import { css } from "@emotion/react";
 import { useRouter } from "next/router";
-
 
 type SourceCodeExplorerListPropsType = {
   depth: number;
@@ -14,42 +12,46 @@ function SourceCodeExplorerList({
   depth,
   dir,
 }: SourceCodeExplorerListPropsType) {
-  const {
-    fileTree,
-    selectedFileNameIncludePath,
-  } = useSourceCodeContext();
-
+  const { fileTree, selectedFileNameIncludePath } = useSourceCodeContext();
 
   const router = useRouter();
   const { init } = router.query;
 
   const renderDir =
     fileTree[dir] &&
-    useMemo(() => fileTree[dir]["dir"].map((el) => {
-      const splitted = el.split("/");
-      const name = splitted[splitted.length - 2];
-      return (
-        <SourceCodeExplorerListItem
-          name={name}
-          dir={el}
-          isDir={true}
-          depth={depth}
-        />
-      );
-    }), [fileTree, selectedFileNameIncludePath]);
+    useMemo(
+      () =>
+        fileTree[dir]["dir"].map((el) => {
+          const splitted = el.split("/");
+          const name = splitted[splitted.length - 2];
+          return (
+            <SourceCodeExplorerListItem
+              name={name}
+              dir={el}
+              isDir={true}
+              depth={depth}
+            />
+          );
+        }),
+      [fileTree, selectedFileNameIncludePath]
+    );
 
   const renderFile =
     fileTree[dir] &&
-    useMemo(() => fileTree[dir]["file"].map((el) => {
-      return (
-        <SourceCodeExplorerListItem
-          name={el}
-          dir={dir}
-          isDir={false}
-          depth={depth}
-        />
-      );
-    }), [fileTree, selectedFileNameIncludePath]);
+    useMemo(
+      () =>
+        fileTree[dir]["file"].map((el) => {
+          return (
+            <SourceCodeExplorerListItem
+              name={el}
+              dir={dir}
+              isDir={false}
+              depth={depth}
+            />
+          );
+        }),
+      [fileTree, selectedFileNameIncludePath]
+    );
 
   return (
     <div css={wrapperCSS}>

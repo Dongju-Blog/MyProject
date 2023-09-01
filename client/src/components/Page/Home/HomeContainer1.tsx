@@ -1,23 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { css } from "@emotion/react";
 import ContainerContent from "../../Interface/Container/ContainerContent";
-import Animator from "../../Interface/Animator/useAnimator";
 import { setConditionType } from "../../Interface/Container/useContainer";
-
 import useAnimator from "../../Interface/Animator/useAnimator";
-import useModal from "@/components/Interface/Modal/useModal";
-import { getActiveBoardAPI } from "@/api/board/getActiveBoardAPI";
-import { getAdminAllBoardAPI } from "@/api/admin/getAdminAllBoardAPI";
-import { postCommentAPI } from "@/api/comment/postCommentsAPI";
-import { getCommentsAPI } from "@/api/comment/getCommentsAPI";
-import useNewModal from "@/components/Interface/Modal/useModal";
-import SwipeableGallery from "@/components/Interface/SwipeableGallery/SwipeableGallery";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getRepresentativeArticlesAPI } from "@/api/board/getRepresentativeArticlesAPI";
-import { mobileArticlesResponseType, pageablePageArticlesResponseType } from "@/types/board";
-import RepresentativeArticles from "./RepresentativeArticles";
-import useResponsive from "@/hooks/useResponsive";
-import mediaQuery from "@/util/responsive";
 
 type HomeContainer1Type = {
   setCondition: setConditionType;
@@ -33,9 +18,6 @@ function HomeContainer1({
   const condition = setCondition(currentStep);
   const testRef = useRef<HTMLDivElement>(null);
   const { Animator, render } = useAnimator(condition.immediate);
-
-
-  
 
   const parellelogram = (
     <div
@@ -64,10 +46,15 @@ function HomeContainer1({
 
   return (
     <ContainerContent customCss={containerWrapperCSS}>
-
       {render && parellelogram}
       <ContainerContent.Inner customCss={innerContentWrapperCSS}>
-        <div css={css`display:flex; flex-direction:column; justify-content:center;`}>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          `}
+        >
           <div
             css={[
               Animator.Translate({
@@ -98,9 +85,16 @@ function HomeContainer1({
               `,
             ]}
           >
-            I'm Junior Frontend <span css={css`font-weight: 700;`}>Developer!</span>
+            I'm Junior Frontend{" "}
+            <span
+              css={css`
+                font-weight: 700;
+              `}
+            >
+              Developer!
+            </span>
           </div>
-          
+
           <div
             css={[
               Animator.Translate({
@@ -118,7 +112,6 @@ function HomeContainer1({
             ]}
           >
             항상 노력하고, 다양한 경험을 하고자 합니다.
-            
           </div>
           <div
             css={[
@@ -136,30 +129,25 @@ function HomeContainer1({
               `,
             ]}
           >
-            JavaScript | TypeScript | Java | React.js | Next.js | Spring Boot | CI/CD
+            JavaScript | TypeScript | Java | React.js | Next.js | Spring Boot |
+            CI/CD
           </div>
-
-          
-
-              
-          
         </div>
-        
-        <div css={[
-              Animator.Translate({
-                id: "profile-animation",
-                trigger: condition.maintain,
-                duration: 1000,
-                delay: 700,
-                offset: ["100px", "0px"],
-  
-              }),
-              profileWrapperCSS
-            ]}>
-          <img src={"/assets/Profile.png"}/>
+
+        <div
+          css={[
+            Animator.Translate({
+              id: "profile-animation",
+              trigger: condition.maintain,
+              duration: 1000,
+              delay: 700,
+              offset: ["100px", "0px"],
+            }),
+            profileWrapperCSS,
+          ]}
+        >
+          <img src={"/assets/Profile.png"} />
         </div>
-        
-        
       </ContainerContent.Inner>
     </ContainerContent>
   );
@@ -172,15 +160,11 @@ const containerWrapperCSS = css`
 
 const innerContentWrapperCSS = css`
   display: flex;
-  
 `;
-
-
-
 
 const profileWrapperCSS = css`
   position: absolute;
-  right: 16%;;
+  right: 16%;
   top: 10%;
   height: 90vh;
   width: 20vw;
@@ -188,7 +172,6 @@ const profileWrapperCSS = css`
   & img {
     height: 100%;
     width: auto;
-
   }
-`
+`;
 export default HomeContainer1;

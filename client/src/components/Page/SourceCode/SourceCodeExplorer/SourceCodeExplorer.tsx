@@ -1,30 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import SourceCodeExplorerList from "./SourceCodeExplorerList";
-import { fileTreeType } from "../SourceCodeContext";
-import SourceCodeExplorerListItemIcon from "./SourceCodeExplorerListItemIcon";
 import { css } from "@emotion/react";
 import { useAtom } from "jotai";
 import { codeBlockExplorerOption } from "@/store/store";
-import { selectFileHandlerType } from "../SourceCodeContext";
 
 import "overlayscrollbars/overlayscrollbars.css";
-import {
-  OverlayScrollbarsComponent,
-  useOverlayScrollbars,
-} from "overlayscrollbars-react";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import Swipe from "react-easy-swipe";
 import CheckBox from "@/components/Interface/CheckBox/CheckBox";
-import { useSourceCodeContext } from "../SourceCodeContext";
-
-
 
 function SourceCodeExplorer() {
-
   const root = "root/";
   const [explorerWidth, setExplorerWidth] = useState<number>(300);
   const [positionx, setPositionx] = useState<number>(0);
   const [endSwipe, setEndSwipe] = useState(true);
-  const [codeBlockExplorerOptionAtom, setCodeBlockExplorerOptionAtom] = useAtom(codeBlockExplorerOption);
+  const [codeBlockExplorerOptionAtom, setCodeBlockExplorerOptionAtom] = useAtom(
+    codeBlockExplorerOption
+  );
 
   const onSwipeMove = (position = { x: 0 }) => {
     setEndSwipe(false);
@@ -61,24 +53,30 @@ function SourceCodeExplorer() {
   return (
     <div css={moveableWrapperCSS}>
       <div css={explorerWrapperCSS({ explorerWidth, positionx, endSwipe })}>
-        <div css={headerCSS}>
-            EXPLORER
-        </div>
-        <div css={rootCSS}><span>{root}</span> <CheckBox checked={codeBlockExplorerOptionAtom.unfoldAuto} onChange={optionCheckHandler} theme={"default"}>
+        <div css={headerCSS}>EXPLORER</div>
+        <div css={rootCSS}>
+          <span>{root}</span>{" "}
+          <CheckBox
+            checked={codeBlockExplorerOptionAtom.unfoldAuto}
+            onChange={optionCheckHandler}
+            theme={"default"}
+          >
             <CheckBox.Left>
-              <span css={css`margin-right: 8px;
-              font-size: 14px; font-weight: 500;`}>
+              <span
+                css={css`
+                  margin-right: 8px;
+                  font-size: 14px;
+                  font-weight: 500;
+                `}
+              >
                 유효한 경로 자동 탐색
               </span>
-              
             </CheckBox.Left>
-          </CheckBox></div>
+          </CheckBox>
+        </div>
         {/* {JSON.stringify(Object.keys(fileTree)[0])} */}
         <OverlayScrollbarsComponent css={explorerInnerWrapperCSS} defer>
-          <SourceCodeExplorerList
-            depth={1}
-            dir={root}
-          />
+          <SourceCodeExplorerList depth={1} dir={root} />
         </OverlayScrollbarsComponent>
       </div>
       <Swipe

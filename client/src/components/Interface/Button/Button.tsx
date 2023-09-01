@@ -31,7 +31,13 @@ const initButtonCSS = css`
   justify-content: center;
 `;
 
-type ThemeProviderKeys = "default" | "grey" | "outline" | "text" | "dark" | "normalText";
+type ThemeProviderKeys =
+  | "default"
+  | "grey"
+  | "outline"
+  | "text"
+  | "dark"
+  | "normalText";
 
 type themeProviderType = { [prop: string]: SerializedStyles[] };
 const themeProvider = () => {

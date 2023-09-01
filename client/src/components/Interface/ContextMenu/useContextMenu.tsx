@@ -1,8 +1,5 @@
 import React, { useEffect, useState, ReactNode } from "react";
 import { css } from "@emotion/react";
-import { useRouter } from "next/router";
-import useNotification from "@/components/Interface/StackNotification/useNotification";
-import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
 import useModal from "../Modal/useModal";
 
 type ContextMenuRenderPropsType = {
@@ -10,7 +7,10 @@ type ContextMenuRenderPropsType = {
   contextMenu: { content: string | ReactNode; function: any }[];
 };
 
-function ContextMenuRender({ closeComp, contextMenu }: ContextMenuRenderPropsType) {
+function ContextMenuRender({
+  closeComp,
+  contextMenu,
+}: ContextMenuRenderPropsType) {
   const [cursorOffset, setCursorOffset] = useState({ y: 0, x: 0 });
 
   const getCursorOffset = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -68,16 +68,20 @@ function useContextMenu() {
     hasBackdrop: false,
   });
 
-  const contextMenu = (contextMenu: { content: string | ReactNode; function: any }[]) => {
+  const contextMenu = (
+    contextMenu: { content: string | ReactNode; function: any }[]
+  ) => {
     return (
-    <React.Fragment>{modal(<ContextMenuRender contextMenu={contextMenu} />)}</React.Fragment>
-    )
-  }
+      <React.Fragment>
+        {modal(<ContextMenuRender contextMenu={contextMenu} />)}
+      </React.Fragment>
+    );
+  };
 
-  contextMenu.open = modal.open
-  contextMenu.close = modal.close
-  
-  return contextMenu
+  contextMenu.open = modal.open;
+  contextMenu.close = modal.close;
+
+  return contextMenu;
 }
 
 const backdropCSS = css`

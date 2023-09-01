@@ -1,15 +1,11 @@
 import React, { useMemo } from "react";
-// import { fileTreeType } from "./useSourceCodeFileTree";
-import { fileTreeType, useSourceCodeContext } from "./SourceCodeContext";
+import { useSourceCodeContext } from "./SourceCodeContext";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorer/SourceCodeExplorerListItemIcon";
 import { css } from "@emotion/react";
 import { ideIndicatorCSS } from "./SourceCodeIDECodeBlocksItem";
 import { useRouter } from "next/router";
 
-
-
 function SourceCodeIDETab() {
-
   const {
     fileTree,
     selectedFilesTab,
@@ -18,40 +14,43 @@ function SourceCodeIDETab() {
     setSelectedFileIndex,
   } = useSourceCodeContext();
 
-
-
-
-  const router = useRouter()
+  const router = useRouter();
 
   const closeTabHandler = (pathIncludeName: string) => {
     setSelectedFilesTab((prev) => {
       const newSet = new Set(prev);
       newSet.delete(pathIncludeName);
-      const newSetArray = Array.from(newSet)
+      const newSetArray = Array.from(newSet);
       if (newSetArray.length === 0) {
         setSelectedFileIndex(() => -1);
-        const params = router.query
-        delete params['init']
+        const params = router.query;
+        delete params["init"];
         router.push({ query: { ...params } }, undefined, {
           shallow: true,
         });
       } else {
         setSelectedFileIndex(() => 0);
-        router.push({ query: { ...router.query, init: newSetArray[0] } }, undefined, {
-          shallow: true,
-        });
+        router.push(
+          { query: { ...router.query, init: newSetArray[0] } },
+          undefined,
+          {
+            shallow: true,
+          }
+        );
       }
       return newSet;
     });
-    
-    
   };
 
   const onClickTabHandler = (idx: number, pathIncludeName: string) => {
     // setSelectedFileIndex(() => idx);
-    router.push({ query: { ...router.query, init: pathIncludeName } }, undefined, {
-      shallow: true,
-    });
+    router.push(
+      { query: { ...router.query, init: pathIncludeName } },
+      undefined,
+      {
+        shallow: true,
+      }
+    );
   };
 
   const renderTab = useMemo(

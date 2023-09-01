@@ -15,8 +15,6 @@ function Layout({ children }: LayoutPropsType) {
   const auth = useAuthority.Init();
   const getCategory = useGetCategory.Init();
 
-
-  
   if (auth.isValidPage) {
     return (
       <React.Fragment>
@@ -25,7 +23,11 @@ function Layout({ children }: LayoutPropsType) {
       </React.Fragment>
     );
   } else {
-    return <React.Fragment><RefreshingToken/></React.Fragment>;
+    return (
+      <React.Fragment>
+        <RefreshingToken />
+      </React.Fragment>
+    );
   }
 }
 

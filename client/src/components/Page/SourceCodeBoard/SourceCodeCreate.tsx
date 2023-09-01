@@ -1,14 +1,9 @@
-import Wrapper from "@/components/Interface/Wrapper/Wrapper";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { css } from "@emotion/react";
 import Input from "@/components/Interface/Input/Input";
 import Textarea from "@/components/Interface/Textarea/Textarea";
 import Button from "@/components/Interface/Button/Button";
 import imageCompression from "browser-image-compression";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postSourceCodeAPI } from "@/api/sourceCode/postSourceCodeAPI";
-import { postSourceCodeBodyType } from "@/types/board";
-import { putSourceCodeAPI } from "@/api/sourceCode/putSourceCodeAPI";
 import { useRouter } from "next/dist/client/router";
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
@@ -132,128 +127,6 @@ function SourceCodeCreate({ updateData }: SourceCodeCreatePropsType) {
       sourceCodeAPI.postSourceCodeHandler({ formData });
     }
   };
-
-  // const queryClient = useQueryClient();
-
-  // const postSourceCodeMutation = useMutation(
-  //   ({ body }: { body: postSourceCodeBodyType }) => postSourceCodeAPI({ body })
-  // );
-
-  // const putSourceCodeMutation = useMutation(
-  //   ({ id, body }: { id: number; body: postSourceCodeBodyType }) =>
-  //     putSourceCodeAPI({ id, body })
-  // );
-
-  // const postMutateHandler = async ({ formData }: { formData: FormData }) => {
-  //   await postSourceCodeMutation.mutate(
-  //     { body: formData },
-  //     {
-  //       onSuccess: (res) => {
-  //         // queryClient.invalidateQueries(["admin", "boards"]);
-  //         noti({
-  //           content: (
-  //             <NotiTemplate
-  //               type={"ok"}
-  //               content={"소스 코드를 등록하였습니다."}
-  //             />
-  //           ),
-  //           duration: 3000,
-  //         });
-  //         router.replace("/playground" + res.url);
-  //       },
-  //       onError: (err: any) => {
-  //         if (err?.response?.data?.message) {
-  //           noti({
-  //             content: (
-  //               <NotiTemplate
-  //                 type={"alert"}
-  //                 content={err.response.data.message}
-  //               />
-  //             ),
-  //             duration: 3000,
-  //           });
-  //         } else if (err?.response?.data) {
-  //           noti({
-  //             content: (
-  //               <NotiTemplate
-  //                 type={"alert"}
-  //                 content={err.response.data[Object.keys(err.response.data)[0]]}
-  //               />
-  //             ),
-  //             duration: 3000,
-  //           });
-  //         } else {
-  //           noti({
-  //             content: (
-  //               <NotiTemplate
-  //                 type={"alert"}
-  //                 content="알 수 없는 오류가 발생하였습니다."
-  //               />
-  //             ),
-  //             duration: 3000,
-  //           });
-  //         }
-  //       },
-  //     }
-  //   );
-  // };
-
-  // const putMutateHandler = async ({ formData }: { formData: FormData }) => {
-  //   if (!updateData) {
-  //     return;
-  //   }
-  //   await putSourceCodeMutation.mutate(
-  //     { id: updateData.id, body: formData },
-  //     {
-  //       onSuccess: (res) => {
-  //         queryClient.invalidateQueries([`sourceCode`, `${updateData.id}`]);
-  //         noti({
-  //           content: (
-  //             <NotiTemplate
-  //               type={"ok"}
-  //               content={"소스 코드를 수정하였습니다."}
-  //             />
-  //           ),
-  //           duration: 3000,
-  //         });
-  //         router.replace("/playground" + res.url);
-  //       },
-  //       onError: (err: any) => {
-  //         if (err?.response?.data?.message) {
-  //           noti({
-  //             content: (
-  //               <NotiTemplate
-  //                 type={"alert"}
-  //                 content={err.response.data.message}
-  //               />
-  //             ),
-  //             duration: 3000,
-  //           });
-  //         } else if (err?.response?.data) {
-  //           noti({
-  //             content: (
-  //               <NotiTemplate
-  //                 type={"alert"}
-  //                 content={err.response.data[Object.keys(err.response.data)[0]]}
-  //               />
-  //             ),
-  //             duration: 3000,
-  //           });
-  //         } else {
-  //           noti({
-  //             content: (
-  //               <NotiTemplate
-  //                 type={"alert"}
-  //                 content="알 수 없는 오류가 발생하였습니다."
-  //               />
-  //             ),
-  //             duration: 3000,
-  //           });
-  //         }
-  //       },
-  //     }
-  //   );
-  // };
 
   if (isMobile) {
     return <Alert label={"모바일에서는 지원되지 않습니다."} />;

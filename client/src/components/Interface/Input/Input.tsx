@@ -11,12 +11,7 @@ type contentPropsType = {
   children: ReactNode;
 };
 
-function Input({
-  theme,
-  customCss,
-  children,
-  ...props
-}: InputPropsType) {
+function Input({ theme, customCss, children, ...props }: InputPropsType) {
   const [isFocusing, setIsFocusing] = useState<boolean>(false);
   const [inputState, setInputState] = useState("");
 
@@ -27,22 +22,22 @@ function Input({
   const rightContent = childrenArray.filter((el) => el.type === RightContent);
 
   return (
-      <div
-        css={
-          Array.isArray(customCss)
-            ? [
-                initInputWrapperCSS,
-                ...themeProvider({ isFocusing })[theme],
-                ...customCss,
-              ]
-            : [
-                initInputWrapperCSS,
-                ...themeProvider({ isFocusing })[theme],
-                customCss,
-              ]
-        }
-      >
-        <label htmlFor={props.id} css={initLabelCSS}>
+    <div
+      css={
+        Array.isArray(customCss)
+          ? [
+              initInputWrapperCSS,
+              ...themeProvider({ isFocusing })[theme],
+              ...customCss,
+            ]
+          : [
+              initInputWrapperCSS,
+              ...themeProvider({ isFocusing })[theme],
+              customCss,
+            ]
+      }
+    >
+      <label htmlFor={props.id} css={initLabelCSS}>
         {leftContent}
 
         <input
@@ -61,12 +56,10 @@ function Input({
             setIsFocusing(() => false);
           }}
         />
-        </label>
-  
-        {rightContent}
-        
-      </div>
-    
+      </label>
+
+      {rightContent}
+    </div>
   );
 }
 
@@ -93,12 +86,12 @@ const initLabelCSS = css`
   /* gap: 8px; */
   min-width: 0px;
   flex: 1;
-`
+`;
 
 const initInputCSS = css`
   /* margin: 0px 8px 0px 8px; */
   flex: 1;
-  
+
   height: 100%;
   /* width: 100%; */
   border: none;
@@ -122,30 +115,34 @@ type themeProviderType = { [prop: string]: SerializedStyles[] };
 
 const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
   const themes: themeProviderType = {
-    default: [css`
-    /* border: 1px solid rgba(0, 0, 0, 0.1); */
-    border-radius: 20px;
-    transition: box-shadow 1s;
-    box-shadow: ${isFocusing
-      ? "0px 0px 1px 4px #789cff85"
-      : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
+    default: [
+      css`
+        /* border: 1px solid rgba(0, 0, 0, 0.1); */
+        border-radius: 20px;
+        transition: box-shadow 1s;
+        box-shadow: ${isFocusing
+          ? "0px 0px 1px 4px #789cff85"
+          : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
+      `,
+    ],
+    navBar: [
+      css`
+        /* border: 1px solid rgba(0, 0, 0, 0.1); */
+        background-color: ${isFocusing
+          ? `rgba(0, 0, 0, 0.07)`
+          : `rgba(0, 0, 0, 0.03)`};
+        border-radius: 20px;
+        transition: box-shadow 1s, background-color 1s;
 
-    `],
-    navBar: [css`
-    /* border: 1px solid rgba(0, 0, 0, 0.1); */
-    background-color: ${isFocusing ? `rgba(0, 0, 0, 0.07)` : `rgba(0, 0, 0, 0.03)`};
-    border-radius: 20px;
-    transition: box-shadow 1s, background-color 1s;
-      
-    box-shadow: ${isFocusing
-      ? "0px 0px 1px 4px rgba(0, 0, 0, 0.2)"
-      : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
-    & input::placeholder {
-      color: rgba(0, 0, 0, 0.5);
-      font-style: italic;
-    }
-
-    `],
+        box-shadow: ${isFocusing
+          ? "0px 0px 1px 4px rgba(0, 0, 0, 0.2)"
+          : "0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
+        & input::placeholder {
+          color: rgba(0, 0, 0, 0.5);
+          font-style: italic;
+        }
+      `,
+    ],
     restraint: [
       css`
         border-radius: 2px;
@@ -155,23 +152,19 @@ const themeProvider = ({ isFocusing }: { isFocusing: boolean }) => {
           : "inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1)"};
       `,
     ],
-    dark: [css`
-    /* border: 1px solid rgba(0, 0, 0, 0.1); */
-    border-radius: 20px;
-    background-color: #151515;
-    transition: box-shadow 1s;
-
-    & input {
-      color: white;
-    }
-    
-
-    `],
-    none: [
+    dark: [
       css`
-        
-      `
-    ]
+        /* border: 1px solid rgba(0, 0, 0, 0.1); */
+        border-radius: 20px;
+        background-color: #151515;
+        transition: box-shadow 1s;
+
+        & input {
+          color: white;
+        }
+      `,
+    ],
+    none: [css``],
   };
 
   return themes;

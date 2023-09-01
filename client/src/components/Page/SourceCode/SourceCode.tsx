@@ -1,12 +1,12 @@
 import SourceCodeIDE from "./SourceCodeIDE";
-import React, {useState} from "react";
+import React from "react";
 import Loading from "@/components/Interface/Loading/Loading";
 import useResponsive from "@/hooks/useResponsive";
 import mediaQuery from "@/util/responsive";
 import Alert from "@/components/Interface/Loading/Alert";
 import useSourceCodeAPI from "./useSourceCodeAPI";
 import SourceCodeHeader from "./SourceCodeHeader";
-import {SourceCodeContextProvider, fileIndexesType, fileTreeType, selectFileHandlerType} from "./SourceCodeContext";
+import { SourceCodeContextProvider } from "./SourceCodeContext";
 
 type SourceCodePropsType = {
   sourceCodeId: number;
@@ -29,19 +29,20 @@ function SourceCode({ sourceCodeId }: SourceCodePropsType) {
   return (
     <React.Fragment>
       <SourceCodeContextProvider>
-      {sourceCodeQuery.data &&
-      <SourceCodeHeader
-        sourceCodeId={sourceCodeId}
-        sourceCodeQuery={sourceCodeQuery}
-      />}
-      {sourceCodeQuery.data ? (
-        <SourceCodeIDE
-          url={sourceCodeQuery.data.fileUrl}
-          rootName={sourceCodeQuery.data.rootName}
-        />
-      ) : (
-        <Loading label={"데이터를 받아오는 중입니다."} />
-      )}
+        {sourceCodeQuery.data && (
+          <SourceCodeHeader
+            sourceCodeId={sourceCodeId}
+            sourceCodeQuery={sourceCodeQuery}
+          />
+        )}
+        {sourceCodeQuery.data ? (
+          <SourceCodeIDE
+            url={sourceCodeQuery.data.fileUrl}
+            rootName={sourceCodeQuery.data.rootName}
+          />
+        ) : (
+          <Loading label={"데이터를 받아오는 중입니다."} />
+        )}
       </SourceCodeContextProvider>
     </React.Fragment>
   );

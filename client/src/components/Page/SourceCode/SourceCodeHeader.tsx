@@ -1,25 +1,28 @@
-import React from 'react'
+import React from "react";
 import { css } from "@emotion/react";
-import { UseQueryResult } from '@tanstack/react-query';
-import { getSourceCodeResponseType } from '@/types/board';
-import Button from '@/components/Interface/Button/Button';
-import CheckBox from '@/components/Interface/CheckBox/CheckBox';
-import useAuthority from '@/hooks/useAuthority';
+import { UseQueryResult } from "@tanstack/react-query";
+import { getSourceCodeResponseType } from "@/types/board";
+import Button from "@/components/Interface/Button/Button";
+import CheckBox from "@/components/Interface/CheckBox/CheckBox";
+import useAuthority from "@/hooks/useAuthority";
 import { useAtom } from "jotai";
 import { codeBlockOption } from "@/store/store";
 import { useRouter } from "next/router";
-import useSourceCodeAPI from './useSourceCodeAPI';
+import useSourceCodeAPI from "./useSourceCodeAPI";
 
 type SourceCodeHeaderPropsType = {
-  sourceCodeId: number
-  sourceCodeQuery: UseQueryResult<getSourceCodeResponseType, unknown>
+  sourceCodeId: number;
+  sourceCodeQuery: UseQueryResult<getSourceCodeResponseType, unknown>;
+};
 
-}
-
-function SourceCodeHeader({sourceCodeId, sourceCodeQuery}: SourceCodeHeaderPropsType) {
+function SourceCodeHeader({
+  sourceCodeId,
+  sourceCodeQuery,
+}: SourceCodeHeaderPropsType) {
   const auth = useAuthority();
-  const router = useRouter()
-  const [codeBlockOptionAtom, setCodeBlockOptionAtom] = useAtom(codeBlockOption);
+  const router = useRouter();
+  const [codeBlockOptionAtom, setCodeBlockOptionAtom] =
+    useAtom(codeBlockOption);
   const sourceCodeAPI = useSourceCodeAPI();
 
   const optionCheckHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,41 +39,55 @@ function SourceCodeHeader({sourceCodeId, sourceCodeQuery}: SourceCodeHeaderProps
 
   return (
     <div css={headerCSS}>
-   
-    <div css={headerLeftCSS}>
-      {sourceCodeQuery.data &&<div css={iconWrapperCSS}>{sourceCodeQuery.data.updatedAt} /&nbsp;</div>}
-      {sourceCodeQuery.data && sourceCodeQuery.data.title}
+      <div css={headerLeftCSS}>
+        {sourceCodeQuery.data && (
+          <div css={iconWrapperCSS}>
+            {sourceCodeQuery.data.updatedAt} /&nbsp;
+          </div>
+        )}
+        {sourceCodeQuery.data && sourceCodeQuery.data.title}
+      </div>
+      <div css={headerRightCSS}>
+        {auth.currentUser.role === "ADMIN" && (
+          <React.Fragment>
+            <Button
+              onClick={sourceCodeAPI.deleteSourceCodeHandler.bind(
+                null,
+                sourceCodeId
+              )}
+              theme={"normalText"}
+            >
+              삭제
+            </Button>
+            <Button
+              theme={"normalText"}
+              onClick={() => {
+                router.push(`/playground/${sourceCodeId}/update`);
+              }}
+            >
+              수정
+            </Button>
+          </React.Fragment>
+        )}
+        <CheckBox
+          theme={"default"}
+          checked={codeBlockOptionAtom.wrap}
+          onChange={optionCheckHandler}
+        >
+          <CheckBox.Left>
+            <span
+              css={css`
+                margin-right: 8px;
+                font-size: 14px;
+              `}
+            >
+              강제 줄바꿈
+            </span>
+          </CheckBox.Left>
+        </CheckBox>
+      </div>
     </div>
-    <div css={headerRightCSS}>
-      {auth.currentUser.role === "ADMIN" && 
-      <React.Fragment>
-        <Button onClick={sourceCodeAPI.deleteSourceCodeHandler.bind(null, sourceCodeId)} theme={'normalText'}>
-          삭제
-        </Button>
-        <Button theme={'normalText'} onClick={() => {router.push(`/playground/${sourceCodeId}/update`)}}>
-          수정
-        </Button>
-      </React.Fragment>
-      }
-      <CheckBox
-        theme={"default"}
-        checked={codeBlockOptionAtom.wrap}
-        onChange={optionCheckHandler}
-      >
-        <CheckBox.Left>
-          <span
-            css={css`
-              margin-right: 8px;
-              font-size: 14px;
-            `}
-          >
-            강제 줄바꿈
-          </span>
-        </CheckBox.Left>
-      </CheckBox>
-    </div>
-  </div>
-  )
+  );
 }
 
 const wrapperCSS = css`
@@ -114,4 +131,4 @@ const iconWrapperCSS = css`
   /* font-weight: 500; */
 `;
 
-export default SourceCodeHeader
+export default SourceCodeHeader;

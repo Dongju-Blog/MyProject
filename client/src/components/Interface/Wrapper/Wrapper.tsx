@@ -1,23 +1,21 @@
-import React, {ReactNode} from 'react'
+import React, { ReactNode } from "react";
 import { css, SerializedStyles } from "@emotion/react";
-import mediaQuery from '@/util/responsive';
+import mediaQuery from "@/util/responsive";
 
 type WrapperPropsType = {
-  children: ReactNode
+  children: ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>;
-function Wrapper({children, ...props}: WrapperPropsType) {
-
+function Wrapper({ children, ...props }: WrapperPropsType) {
   return (
-    <div className={"wrapper-component"}  css={wrapperCSS} {...props}>
+    <div className={"wrapper-component"} css={wrapperCSS} {...props}>
       {children}
     </div>
-  )
+  );
 }
 
 const wrapperCSS = css`
   width: 100%;
   height: 100%;
-  
 
   @media ${mediaQuery.overTablet} {
     padding-top: var(--desktop-navbar-height);
@@ -26,6 +24,6 @@ const wrapperCSS = css`
   @media ${mediaQuery.tablet} {
     padding-top: var(--mobile-navbar-height);
   }
-`
+`;
 
-export default Wrapper
+export default Wrapper;

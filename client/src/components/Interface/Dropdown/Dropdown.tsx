@@ -33,32 +33,31 @@ function Dropdown({
   const [triggerState, setTriggerState] = useState(false);
 
   useEffect(() => {
-
-    const throttleHandler = throttle(() => {
+    const throttleHandler = throttle(
+      () => {
         if (triggerState === false) {
-          setIsVisible(() => false)
+          setIsVisible(() => false);
         }
-    }, 1000, {leading: false, trailing: true});
+      },
+      1000,
+      { leading: false, trailing: true }
+    );
 
     const triggerHandler = () => {
       if (triggerState) {
         if (triggerState === true) {
           setIsVisible(() => true);
         }
-        
       } else {
-        throttleHandler()
+        throttleHandler();
       }
-    }
+    };
 
-    triggerHandler()
+    triggerHandler();
 
     return () => {
       throttleHandler.cancel();
     };
-
-
-    
   }, [triggerState]);
 
   const selectHandler = (id: number) => {
@@ -72,14 +71,20 @@ function Dropdown({
 
   const renderItem = itemArray.map((el, idx) => {
     return (
-      <div key={`dropdown-${el.props.id}-${idx}`} className={"item"} onClick={() => selectHandler(el.props.id)}>
+      <div
+        key={`dropdown-${el.props.id}-${idx}`}
+        className={"item"}
+        onClick={() => selectHandler(el.props.id)}
+      >
         {el}
       </div>
     );
   });
 
   const renderItemsWrapper = isVisible && (
-    <div className={"items-wrapper"} css={itemsWrapperCSS}>{renderItem}</div>
+    <div className={"items-wrapper"} css={itemsWrapperCSS}>
+      {renderItem}
+    </div>
   );
 
   return (
@@ -98,11 +103,12 @@ function Dropdown({
             ]
       }
     >
-      <div className={"selected"} onClick={() => setTriggerState((prev) => !prev)}>
+      <div
+        className={"selected"}
+        onClick={() => setTriggerState((prev) => !prev)}
+      >
         {itemArray.filter((el) => el.props.id === state)}
-        <div className={"arrow-wrapper"}>
-          {ARROW_ICON}
-        </div>
+        <div className={"arrow-wrapper"}>{ARROW_ICON}</div>
       </div>
       {renderItemsWrapper}
     </div>
@@ -144,8 +150,9 @@ const initDropdownCSS = ({ triggerState }: { triggerState: boolean }) => {
     }
 
     & .items-wrapper {
-      animation: ${triggerState ? `show 1000ms ease forwards` : `hide 1000ms ease forwards`};
-
+      animation: ${triggerState
+        ? `show 1000ms ease forwards`
+        : `hide 1000ms ease forwards`};
 
       @keyframes show {
         from {
@@ -178,13 +185,12 @@ const itemsWrapperCSS = css`
   width: 100%;
   position: absolute;
   z-index: 999;
-`
+`;
 
 const themeProvider = ({ triggerState }: { triggerState: boolean }) => {
   const themes: themeProviderType = {
     default: [
       css`
-        
         & .selected {
           /* border-radius: 2px; */
           transition: box-shadow 0.5s;
@@ -200,7 +206,6 @@ const themeProvider = ({ triggerState }: { triggerState: boolean }) => {
           transition: box-shadow 0.5s;
           background-color: white;
           box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
-          
         }
 
         & .item {
@@ -211,7 +216,6 @@ const themeProvider = ({ triggerState }: { triggerState: boolean }) => {
           &:hover {
             background-color: rgba(0, 0, 0, 0.1);
           }
-          
         }
       `,
     ],
