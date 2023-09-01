@@ -123,11 +123,11 @@ function SourceCodeIDECodeBlocksItem({
     []
   );
 
-  // if (!content) {
-  //   return;
-  // }
+  if (!content) {
+    return;
+  }
 
-  return useMemo(() => (
+  return (
     <OverlayScrollbarsComponent
       css={scrollWrapperCSS({ isTop })}
       events={{ scroll: onScrollHandler }}
@@ -189,7 +189,7 @@ function SourceCodeIDECodeBlocksItem({
         </div>
       </div>
     </OverlayScrollbarsComponent>
-  ), [content, file, selectedFileIndex, selectedFilesTab]);
+  );
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
