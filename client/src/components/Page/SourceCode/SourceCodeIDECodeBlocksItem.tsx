@@ -52,8 +52,6 @@ function SourceCodeIDECodeBlocksItem({
 
   const {
     fileIndexes,
-    selectedFileIndex,
-    selectedFilesTab,
   } = useSourceCodeContext();
 
   useEffect(() => {

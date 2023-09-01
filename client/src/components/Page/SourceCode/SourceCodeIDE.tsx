@@ -83,14 +83,12 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
         <Loading label={"파일 트리를 구성하는 중입니다."} />
       )}
       <div css={ideWrapperCSS}>
-        {fileTree &&
-        fileContents &&
+        {fileContents &&
           fileIndexes &&
           selectedFileNameIncludePath && (
             <SourceCodeIDETab/>
           )}
-        {fileTree &&
-        fileContents &&
+        {fileContents &&
         fileIndexes &&
         selectedFileNameIncludePath ? (
           <SourceCodeIDECodeBlocks />
