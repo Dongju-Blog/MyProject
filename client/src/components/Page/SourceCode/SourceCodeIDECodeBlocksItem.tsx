@@ -42,7 +42,6 @@ function SourceCodeIDECodeBlocksItem({
 
   const { fileIndexes } = useSourceCodeContext();
 
-
   const findFileByToken = (e: any) => {
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
     let target = e.target.innerText.trim();
@@ -77,11 +76,9 @@ function SourceCodeIDECodeBlocksItem({
     []
   );
 
-  return useMemo(() => (
-      <OverlayScrollbarsComponent
-        css={scrollWrapperCSS}
-        defer
-      >
+  return useMemo(
+    () => (
+      <OverlayScrollbarsComponent css={scrollWrapperCSS} defer>
         <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
           <div css={topDummyCSS}>
             <div className="indicator" css={ideIndicatorCSS} />
@@ -140,7 +137,9 @@ function SourceCodeIDECodeBlocksItem({
           </div>
         </div>
       </OverlayScrollbarsComponent>
-    ), [content, codeBlockOptionAtom.wrap])
+    ),
+    [content, codeBlockOptionAtom.wrap]
+  );
 }
 
 const spaceCSS = ({ text }: { text: string }) => {
@@ -168,17 +167,16 @@ const spaceCSS = ({ text }: { text: string }) => {
 };
 
 const scrollWrapperCSS = css`
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.05);
-    transition-property: box-shadow;
-    transition-duration: 0.5s;
-    content-visibility: auto;
-  `;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.05);
+  transition-property: box-shadow;
+  transition-duration: 0.5s;
+  content-visibility: auto;
+`;
 
 const outerWrapperCSS = ({ wrap }: { wrap: boolean }) => {
   return css`
-
     width: 100%;
     height: 100%;
     /* display: flex;
