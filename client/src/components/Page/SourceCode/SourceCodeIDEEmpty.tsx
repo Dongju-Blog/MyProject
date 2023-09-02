@@ -35,7 +35,7 @@ const wrapperCSS = css`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   gap: 36px;
 `;

@@ -1,3 +1,4 @@
+import { getSourceCodeResponseType } from "@/types/board";
 import React, { useState, ReactNode, useContext } from "react";
 
 const SourceCodeContext = React.createContext<contextType | null>(null);
@@ -42,6 +43,8 @@ type contextType = {
   selectedFileIndex: number;
   setSelectedFileIndex: React.Dispatch<React.SetStateAction<number>>;
   selectFileHandler: selectFileHandlerType;
+  sourceCodeQueryData: getSourceCodeResponseType | undefined
+  setSourceCodeQueryData: React.Dispatch<React.SetStateAction<getSourceCodeResponseType | undefined>>
 };
 
 // export const SourceCodeContextProvider: React.Provider<contextType> = SourceCodeContext.Provider as any;
@@ -60,6 +63,7 @@ export const SourceCodeContextProvider = ({
   const [selectedFileNameIncludePath, setSelectedFileNameIncludePath] =
     useState<string>("");
   const [selectedFileIndex, setSelectedFileIndex] = useState<number>(-1);
+  const [sourceCodeQueryData, setSourceCodeQueryData] = useState<getSourceCodeResponseType>()
 
   const selectFileHandler: selectFileHandlerType = ({
     pathIncludeName,
@@ -92,6 +96,8 @@ export const SourceCodeContextProvider = ({
         selectedFileIndex,
         setSelectedFileIndex,
         selectFileHandler,
+        sourceCodeQueryData,
+        setSourceCodeQueryData
       }}
     >
       {children}

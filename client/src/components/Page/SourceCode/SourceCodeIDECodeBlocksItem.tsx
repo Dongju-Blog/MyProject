@@ -26,6 +26,7 @@ import "prismjs/components/prism-ignore.js";
 import "prismjs/components/prism-kotlin";
 import "prismjs/components/prism-cshtml";
 import "prismjs/components/prism-rust";
+import SourceCodeHeader from "./SourceCodeHeader";
 
 type SourceCodeIDECodeBlocksItemPropsType = {
   content: string;
@@ -79,6 +80,8 @@ function SourceCodeIDECodeBlocksItem({
   return useMemo(
     () => (
       <OverlayScrollbarsComponent css={scrollWrapperCSS} defer>
+        
+
         <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
           <div css={topDummyCSS}>
             <div className="indicator" css={ideIndicatorCSS} />

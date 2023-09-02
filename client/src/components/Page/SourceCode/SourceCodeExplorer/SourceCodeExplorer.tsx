@@ -96,6 +96,7 @@ function SourceCodeExplorer() {
 const moveableWrapperCSS = css`
   display: flex;
   position: relative;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
 const dragHandlerCSS = css`
@@ -142,7 +143,7 @@ const explorerInnerWrapperCSS = css`
 `;
 
 const headerCSS = css`
-  padding: 16px 24px 16px 24px;
+  padding: 12px 16px 12px 16px;
   color: rgba(0, 0, 0, 0.6);
 
   /* display: flex;

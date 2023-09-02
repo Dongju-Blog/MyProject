@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { getSourceCodeResponseType } from "@/types/board";
 import { getSourceCodeAPI } from "@/api/sourceCode/getSourceCodeAPI";
+import { SourceCodeContextProvider } from "@/components/Page/SourceCode/SourceCodeContext";
 
 function index() {
   const router = useRouter();
@@ -20,8 +21,9 @@ function index() {
 
   return (
     <Wrapper css={wrapperCSS}>
-      
+      <SourceCodeContextProvider>
       {sourceCodeId && <SourceCode sourceCodeId={Number(sourceCodeId)}/>}
+      </SourceCodeContextProvider>
     </Wrapper>
   );
 }

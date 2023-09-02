@@ -4,9 +4,11 @@ import SourceCodeExplorerListItemIcon from "./SourceCodeExplorer/SourceCodeExplo
 import { css } from "@emotion/react";
 import { ideIndicatorCSS } from "./SourceCodeIDECodeBlocksItem";
 import { useRouter } from "next/router";
+import SourceCodeHeader from "./SourceCodeHeader";
 
 function SourceCodeIDETab() {
   const {
+    sourceCodeQueryData,
     fileTree,
     selectedFilesTab,
     setSelectedFilesTab,
@@ -101,15 +103,34 @@ function SourceCodeIDETab() {
   );
 
   return (
-    <div css={tabWrapperCSS}>
-      <div css={[ideIndicatorCSS, indicatorSpaceCSS]} />
-      {renderTab}
-      <div css={tabLineCSS} />
+    <div css={outerWrapperCSS}>
+      <div css={innerWrapperCSS}>
+        <div css={tabWrapperCSS}>
+          {/* {selectedFileIndex !== -1 && <div css={[ideIndicatorCSS, indicatorSpaceCSS]} />} */}
+          {renderTab}
+          <div css={tabLineCSS} />
+        </div>
+      </div>
+      
+      {sourceCodeQueryData && (
+        <SourceCodeHeader/>
+      )}
     </div>
   );
 }
 
+const outerWrapperCSS = css`
+  width: 100%;
+  /* display: grid; */
+`;
+
+const innerWrapperCSS = css`
+  width: 100%;
+  display: grid;
+`
+
 const tabWrapperCSS = css`
+  flex: 1;
   display: flex;
   width: 100%;
   overflow: scroll;
@@ -140,7 +161,7 @@ const tabItemWrapperCSS = ({
     user-select: none;
 
     cursor: pointer;
-
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     border-bottom: ${selectedFileIndex === currentIndex
       ? `1px solid rgba(0, 0, 0, 0)`
       : `1px solid rgba(0, 0, 0, 0.1)`};
@@ -185,8 +206,9 @@ const closeTabWrapperCSS = css`
 
 const indicatorSpaceCSS = css`
   margin-right: 0px;
-  /* border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: white; */
+  /* border-top: 1px solid rgba(0, 0, 0, 0.1); */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
 `;
 
 const tabLineCSS = css`
