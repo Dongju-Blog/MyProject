@@ -6,6 +6,9 @@ import SourceCodeIDETab from "./SourceCodeIDETab";
 import SourceCodeIDECodeBlocks from "./SourceCodeIDECodeBlocks";
 import SourceCodeIDEEmpty from "./SourceCodeIDEEmpty";
 import { useSourceCodeContext } from "./SourceCodeContext";
+import SourceCodeHeader from "./SourceCodeHeader";
+import { UseQueryResult } from "@tanstack/react-query";
+import { getSourceCodeResponseType } from "@/types/board";
 
 type SourceCodeIDEPropsType = {
   url: string;
@@ -42,16 +45,16 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
     <div css={wrapperCSS}>
       {initFile && <SourceCodeExplorer />}
 
-      {initFile && (
-        <div css={ideWrapperCSS}>
-          <SourceCodeIDETab />
-          {selectedFilesTab ? (
-            <SourceCodeIDECodeBlocks />
-          ) : (
-            <SourceCodeIDEEmpty />
-          )}
-        </div>
-      )}
+
+      <div css={ideWrapperCSS}>
+        <SourceCodeIDETab />
+        {selectedFileNameIncludePath ? (
+          <SourceCodeIDECodeBlocks />
+        ) : (
+          <SourceCodeIDEEmpty />
+        )}
+      </div>
+   
     </div>
   );
 }

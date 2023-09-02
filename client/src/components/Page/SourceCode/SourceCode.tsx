@@ -1,12 +1,12 @@
 import SourceCodeIDE from "./SourceCodeIDE";
-import React from "react";
+import React, {useEffect} from "react";
 import Loading from "@/components/Interface/Loading/Loading";
 import useResponsive from "@/hooks/useResponsive";
 import mediaQuery from "@/util/responsive";
 import Alert from "@/components/Interface/Loading/Alert";
 import useSourceCodeAPI from "./useSourceCodeAPI";
 import SourceCodeHeader from "./SourceCodeHeader";
-import { SourceCodeContextProvider } from "./SourceCodeContext";
+import { SourceCodeContextProvider, useSourceCodeContext } from "./SourceCodeContext";
 
 type SourceCodePropsType = {
   sourceCodeId: number;
@@ -14,9 +14,19 @@ type SourceCodePropsType = {
 
 function SourceCode({ sourceCodeId }: SourceCodePropsType) {
   const isMobile = useResponsive(mediaQuery.tablet);
-  const sourceCodeAPI = useSourceCodeAPI();
+  const {
+    sourceCodeQueryData,
+    setSourceCodeQueryData
+  } = useSourceCodeContext();
 
+  const sourceCodeAPI = useSourceCodeAPI();
   const sourceCodeQuery = sourceCodeAPI.sourceCodeQueryHandler(sourceCodeId);
+
+  useEffect(() => {
+    if (sourceCodeQuery.data) {
+      setSourceCodeQueryData(() => sourceCodeQuery.data)
+    }
+  }, [sourceCodeQuery.data])
 
   if (isMobile) {
     return <Alert label={"모바일에서는 지원되지 않습니다."} />;
@@ -28,22 +38,22 @@ function SourceCode({ sourceCodeId }: SourceCodePropsType) {
 
   return (
     <React.Fragment>
-      <SourceCodeContextProvider>
-        {sourceCodeQuery.data && (
+      
+        {/* {sourceCodeQuery.data && (
           <SourceCodeHeader
             sourceCodeId={sourceCodeId}
             sourceCodeQuery={sourceCodeQuery}
           />
-        )}
-        {sourceCodeQuery.data ? (
+        )} */}
+        {sourceCodeQueryData ? (
           <SourceCodeIDE
-            url={sourceCodeQuery.data.fileUrl}
-            rootName={sourceCodeQuery.data.rootName}
+            url={sourceCodeQueryData.fileUrl}
+            rootName={sourceCodeQueryData.rootName}
           />
         ) : (
           <Loading label={"데이터를 받아오는 중입니다."} />
         )}
-      </SourceCodeContextProvider>
+      
     </React.Fragment>
   );
 }
