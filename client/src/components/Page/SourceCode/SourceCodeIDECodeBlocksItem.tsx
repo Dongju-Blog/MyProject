@@ -175,7 +175,6 @@ const scrollWrapperCSS = css`
   background-color: rgba(0, 0, 0, 0.05);
   transition-property: box-shadow;
   transition-duration: 0.5s;
-  content-visibility: auto;
 `;
 
 const outerWrapperCSS = ({ wrap }: { wrap: boolean }) => {
