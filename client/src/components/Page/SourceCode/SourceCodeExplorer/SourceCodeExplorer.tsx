@@ -53,7 +53,8 @@ function SourceCodeExplorer() {
   return (
     <div css={moveableWrapperCSS}>
       <div css={explorerWrapperCSS({ explorerWidth, positionx, endSwipe })}>
-        <div css={headerCSS}>EXPLORER</div>
+        <div css={headerCSS}>
+        <div css={headerTitleCSS}>EXPLORER</div>
         <div css={rootCSS}>
           <span>{root}</span>{" "}
           <CheckBox
@@ -74,6 +75,8 @@ function SourceCodeExplorer() {
             </CheckBox.Left>
           </CheckBox>
         </div>
+        </div>
+        
         {/* {JSON.stringify(Object.keys(fileTree)[0])} */}
         <OverlayScrollbarsComponent css={explorerInnerWrapperCSS} defer>
           <SourceCodeExplorerList depth={1} dir={root} />
@@ -96,7 +99,9 @@ function SourceCodeExplorer() {
 const moveableWrapperCSS = css`
   display: flex;
   position: relative;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  
+  
 `;
 
 const dragHandlerCSS = css`
@@ -143,7 +148,20 @@ const explorerInnerWrapperCSS = css`
 `;
 
 const headerCSS = css`
-  padding: 12px 16px 12px 16px;
+  height: var(--source-code-header-height);
+  max-height: var(--source-code-header-height);
+  /* background-color: red; */
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  overflow:hidden;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
+const headerTitleCSS = css`
+  /* padding: 12px 16px 12px 16px; */
   color: rgba(0, 0, 0, 0.6);
 
   /* display: flex;
@@ -152,9 +170,9 @@ const headerCSS = css`
 
 const rootCSS = css`
   font-weight: 700;
-  padding: 0px 8px 6px 16px;
+  /* padding: 0px 8px 6px 16px; */
   color: rgba(0, 0, 0, 0.6);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  
   display: flex;
   justify-content: space-between;
 `;
