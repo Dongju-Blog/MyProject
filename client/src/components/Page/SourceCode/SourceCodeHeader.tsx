@@ -114,9 +114,10 @@ const headerCSS = ({ onTab }: { onTab: boolean }) => {
   return css`
     /* border-top: 1px solid rgba(0, 0, 0, 0.1); */
     flex: 1;
-    /* height: 35px; */
+    max-height: 32px;
     /* box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2); */
-    
+    border-top: ${!onTab && `1px solid rgba(0, 0, 0, 0.1)`};
+    border-bottom: ${onTab && `1px solid rgba(0, 0, 0, 0.1)`};
     z-index: 10;
     padding: 4px 8px;
     display: flex;
