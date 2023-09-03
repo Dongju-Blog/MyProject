@@ -18,6 +18,8 @@ const nextConfig = {
     ];
   },
 
+
+
 };
 
 // const removeImports = require('next-remove-imports')({
