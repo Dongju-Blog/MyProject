@@ -104,13 +104,14 @@ function SourceCodeIDETab() {
 
   return (
     <div css={outerWrapperCSS}>
+      {selectedFileIndex !== -1 &&
       <div css={innerWrapperCSS}>
         <div css={tabWrapperCSS}>
           {/* {selectedFileIndex !== -1 && <div css={[ideIndicatorCSS, indicatorSpaceCSS]} />} */}
           {renderTab}
           <div css={tabLineCSS} />
         </div>
-      </div>
+      </div>}
       
       {sourceCodeQueryData && (
         <SourceCodeHeader/>
@@ -124,7 +125,7 @@ const outerWrapperCSS = css`
   height: var(--source-code-header-height);
   max-height: var(--source-code-header-height);
   /* display: grid; */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
   
   display: flex;
   flex-direction: column;
