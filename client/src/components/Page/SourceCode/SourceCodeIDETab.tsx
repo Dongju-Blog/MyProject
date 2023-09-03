@@ -14,6 +14,7 @@ function SourceCodeIDETab() {
     setSelectedFilesTab,
     selectedFileIndex,
     setSelectedFileIndex,
+    setSelectedFileNameIncludePath
   } = useSourceCodeContext();
 
   const router = useRouter();
@@ -32,6 +33,7 @@ function SourceCodeIDETab() {
         });
       } else {
         setSelectedFileIndex(() => 0);
+        setSelectedFileNameIncludePath(() => newSetArray[0])
         router.push(
           { query: { ...router.query, init: newSetArray[0] } },
           undefined,
