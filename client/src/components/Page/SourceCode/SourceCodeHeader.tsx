@@ -113,11 +113,12 @@ const filePathWrapperCSS = css`
 const headerCSS = ({ onTab }: { onTab: boolean }) => {
   return css`
     /* border-top: 1px solid rgba(0, 0, 0, 0.1); */
-    height: 35px;
+    flex: 1;
+    /* height: 35px; */
     /* box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2); */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    
     z-index: 10;
-    padding: 8px;
+    padding: 4px 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;

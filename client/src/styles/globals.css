@@ -1,6 +1,7 @@
 :root {
   --mobile-navbar-height: 64px;
   --desktop-navbar-height: 64px;
+  --source-code-header-height: 64px;
 }
 
 * {

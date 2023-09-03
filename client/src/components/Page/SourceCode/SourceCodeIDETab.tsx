@@ -121,20 +121,27 @@ function SourceCodeIDETab() {
 
 const outerWrapperCSS = css`
   width: 100%;
+  height: var(--source-code-header-height);
+  max-height: var(--source-code-header-height);
   /* display: grid; */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  
+  display: flex;
+  flex-direction: column;
 `;
 
 const innerWrapperCSS = css`
+  flex: 1;
   width: 100%;
   display: grid;
 `
 
 const tabWrapperCSS = css`
-  flex: 1;
+  height: 100%;
   display: flex;
   width: 100%;
   overflow: scroll;
-  max-height: 35px;
+  /* max-height: 35px; */
   scrollbar-width: none; /* 파이어폭스 */
   &::-webkit-scrollbar {
     display: none; /* 크롬, 사파리, 오페라, 엣지 */
