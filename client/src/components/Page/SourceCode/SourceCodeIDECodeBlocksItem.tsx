@@ -1,5 +1,13 @@
-import React, { useRef, useState, useMemo } from "react";
-import { Highlight, themes } from "prism-react-renderer";
+import React, { useRef, useState, useMemo, useEffect, Suspense, lazy } from "react";
+import {
+  Highlight,
+  LineInputProps,
+  LineOutputProps,
+  Token,
+  TokenInputProps,
+  TokenOutputProps,
+  themes,
+} from "prism-react-renderer";
 import { css } from "@emotion/react";
 import { useAtom } from "jotai";
 import { codeBlockOption } from "@/store/store";
@@ -27,6 +35,16 @@ import "prismjs/components/prism-kotlin";
 import "prismjs/components/prism-cshtml";
 import "prismjs/components/prism-rust";
 import SourceCodeHeader from "./SourceCodeHeader";
+import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+// import SourceCodeIDECodeBlocksItemDiv from "./SourceCodeIDECodeBlocksItemDiv";
+import dynamic from "next/dynamic";
+
+// const SourceCodeIDECodeBlocksItemDiv = dynamic(
+//   () => import("@/components/Page/SourceCode/SourceCodeIDECodeBlocksItemDiv"),
+//   { ssr: false }
+// );
+
+const SourceCodeIDECodeBlocksItemDiv = lazy(() => import("@/components/Page/SourceCode/SourceCodeIDECodeBlocksItemDiv"))
 
 type SourceCodeIDECodeBlocksItemPropsType = {
   content: string;
@@ -40,6 +58,7 @@ function SourceCodeIDECodeBlocksItem({
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] =
     useAtom(codeBlockOption);
   const router = useRouter();
+  const [renderRange, setRenderRange] = useState(0);
 
   const { fileIndexes } = useSourceCodeContext();
 
@@ -77,11 +96,131 @@ function SourceCodeIDECodeBlocksItem({
     []
   );
 
+  type dividedTokenType = {
+    tokens: Token[][];
+  };
+
+  const dividedTokensArr = ({
+    tokens
+  }: dividedTokenType) => {
+    const tokensQuantity = tokens.length / 100;
+    const dividedTokensArr: Token[][][] = [];
+    for (var i = 0; i < tokensQuantity; i++) {
+      dividedTokensArr.push(tokens.slice(i * 100, i * 100 + 100));
+    }
+
+    return dividedTokensArr as Token[][][]
+  };
+
+  type renderTokenType = {
+    dividedTokensArr: Token[][][];
+    getLineProps: (input: LineInputProps) => LineOutputProps;
+    getTokenProps: (input: TokenInputProps) => TokenOutputProps;
+  };
+
+  const renderDividedToken = ({
+    dividedTokensArr,
+    getLineProps,
+    getTokenProps,
+  }: renderTokenType) => {
+    return useMemo(
+      () =>
+        dividedTokensArr.map((el, idx) => {
+          // if (renderRange >= idx) {
+          //   return (<div css={dividedTokensWrapperCSS}>{renderTokens({tokens: el, getLineProps, getTokenProps})}</div>)
+          // } else {
+          //   return <div id={`${idx}`} css={dummyTokenCSS}></div>
+          // }
+          // return renderTokens({ tokens: el, getLineProps, getTokenProps })
+          return (
+            <Suspense>
+              <SourceCodeIDECodeBlocksItemDiv
+              tokens={el}
+              getLineProps={getLineProps}
+              getTokenProps={getTokenProps}
+              curIdx={idx}
+              renderRange={renderRange}
+              setRenderRange={setRenderRange}
+            />
+            </Suspense>
+          )
+        }),
+      [renderRange]
+    );
+  };
+
+  type renderTokensType = {
+    tokens: Token[][];
+    getLineProps: (input: LineInputProps) => LineOutputProps;
+    getTokenProps: (input: TokenInputProps) => TokenOutputProps;
+  };
+
+  // const renderTokens = ({
+  //   tokens,
+  //   getLineProps,
+  //   getTokenProps,
+  // }: renderTokensType) => {
+  //   return tokens.map((line, i) => (
+  //     <div key={i} {...getLineProps({ line })}>
+  //       <div className="indicator" css={ideIndicatorCSS}>
+  //         {i + 1}
+  //       </div>
+  //       <div className="token-wrapper">
+  //         {line.map((token, key) => {
+  //           if (
+  //             i > 0 &&
+  //             line.length === 1 &&
+  //             line[0].content.trim() === "" &&
+  //             tokens[i - 1]
+  //           ) {
+  //             const text = tokens[i - 1][0].content;
+  //             let spaceCnt = 0;
+  //             for (var j = 0; j < text.length; j++) {
+  //               if (text[j] !== " ") {
+  //                 break;
+  //               }
+  //               spaceCnt += 1;
+  //             }
+  //             line[0].content = " ".repeat(spaceCnt);
+  //           }
+  //           return (
+  //             <span
+  //               css={[
+  //                 key === 0 && spaceCSS({ text: token.content }),
+  //               ]}
+  //               key={key}
+  //               {...getTokenProps({ token })}
+  //             />
+  //           );
+  //         })}
+  //       </div>
+  //     </div>
+  //   ))
+  // };
+
+  // const renderTokens = ({
+  //   tokens,
+  //   getLineProps,
+  //   getTokenProps,
+  // }: renderTokensType) => {
+  //   return (
+  //     <Suspense>
+  //       <SourceCodeIDECodeBlocksItemDiv
+  //       tokens={tokens}
+  //       getLineProps={getLineProps}
+  //       getTokenProps={getTokenProps}
+  //     />
+  //     </Suspense>
+      
+  //   );
+  // };
+
   return useMemo(
     () => (
-      <OverlayScrollbarsComponent css={scrollWrapperCSS} defer>
-        
-
+      <OverlayScrollbarsComponent
+        css={scrollWrapperCSS}
+        defer
+      >
         <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
           <div css={topDummyCSS}>
             <div className="indicator" css={ideIndicatorCSS} />
@@ -95,7 +234,8 @@ function SourceCodeIDECodeBlocksItem({
           >
             {({ className, style, tokens, getLineProps, getTokenProps }) => (
               <pre onClick={findFileByToken} onMouseOver={call}>
-                {tokens.map((line, i) => (
+                {renderDividedToken({ dividedTokensArr: dividedTokensArr({tokens}), getLineProps, getTokenProps })}
+                {/* {tokens.map((line, i) => (
                   <div key={i} {...getLineProps({ line })}>
                     <div className="indicator" css={ideIndicatorCSS}>
                       {i + 1}
@@ -130,7 +270,7 @@ function SourceCodeIDECodeBlocksItem({
                       })}
                     </div>
                   </div>
-                ))}
+                ))} */}
               </pre>
             )}
           </Highlight>
@@ -192,10 +332,13 @@ const outerWrapperCSS = ({ wrap }: { wrap: boolean }) => {
 
     /* overflow:hidden; */
 
+
+
     & .token-line {
       font-family: "Consolas";
       padding: 0px;
       display: flex;
+      /* height: 16px; */
     }
 
     & .token-wrapper {
@@ -253,6 +396,15 @@ const bottomDummyCSS = css`
   & .indicator {
     height: 100%;
   }
+`;
+
+
+
+const dummyTokenCSS = css`
+  height: 100%;
+  width: 100%;
+  background-color: red;
+  border: 1px solid black;
 `;
 
 export default SourceCodeIDECodeBlocksItem;

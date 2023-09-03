@@ -1,12 +1,15 @@
 import React, {useRef} from 'react'
 
-export default function useIntersectionObserver(callback: () => any) {
+export default function useIntersectionObserver(callback: (entry: IntersectionObserverEntry) => any) {
+
+
   const observer = useRef(
     new IntersectionObserver(
       (entries, observer) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            callback();
+            callback(entry);
+            
           }
         });
       },
@@ -21,6 +24,8 @@ export default function useIntersectionObserver(callback: () => any) {
   const unobserve = (element: Element) => {
     observer.current.unobserve(element);
   };
+
+
 
   return [observe, unobserve];
 }
