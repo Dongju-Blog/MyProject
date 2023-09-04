@@ -1,13 +1,5 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
-import {
-  Highlight,
-  LineInputProps,
-  LineOutputProps,
-  Token,
-  TokenInputProps,
-  TokenOutputProps,
-  themes,
-} from "prism-react-renderer";
+
 import { css } from "@emotion/react";
 import { useAtom } from "jotai";
 import { codeBlockOption } from "@/store/store";
@@ -34,6 +26,16 @@ import "prismjs/components/prism-ignore.js";
 import "prismjs/components/prism-kotlin";
 import "prismjs/components/prism-cshtml";
 import "prismjs/components/prism-rust";
+
+import {
+  Highlight,
+  LineInputProps,
+  LineOutputProps,
+  Token,
+  TokenInputProps,
+  TokenOutputProps,
+  themes,
+} from "prism-react-renderer";
 import SourceCodeIDECodeBlocksItemDiv from "./SourceCodeIDECodeBlocksItemDiv";
 
 type SourceCodeIDECodeBlocksItemPropsType = {
