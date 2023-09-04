@@ -186,7 +186,11 @@ const headerWrapperCSS = css`
 `;
 
 const viewerWrapperCSS = css`
-  content-visibility: auto;
+  & div p span h1 h2 h3 h4 h5 ul li video {
+    content-visibility: auto;
+    min-height: 16px;
+  }
+  
   margin-top: 16px;
   /* display: flex;
   flex-direction: column; */

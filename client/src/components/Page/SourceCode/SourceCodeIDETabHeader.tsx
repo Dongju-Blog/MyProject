@@ -12,7 +12,7 @@ import useSourceCodeAPI from "./useSourceCodeAPI";
 import { useSourceCodeContext } from "./SourceCodeContext";
 import SourceCodeExplorerListItemIcon from "./SourceCodeExplorer/SourceCodeExplorerListItemIcon";
 
-function SourceCodeHeader() {
+function SourceCodeIDETabHeader() {
   const { sourceCodeQueryData, selectedFileNameIncludePath } =
     useSourceCodeContext();
 
@@ -39,20 +39,24 @@ function SourceCodeHeader() {
       <div
         css={headerCSS({ onTab: selectedFileNameIncludePath ? true : false })}
       >
-        <div css={headerLeftCSS}>
+        <div className="header-left" css={headerLeftCSS}>
           {selectedFileNameIncludePath ? (
-            <div css={filePathWrapperCSS}>
-              {selectedFileNameIncludePath}
-              <span css={iconWrapperCSS}>
-                @ {sourceCodeQueryData.updatedAt}
+            <React.Fragment>
+              <span css={filePathWrapperCSS}>
+                {selectedFileNameIncludePath}
+                <span css={iconWrapperCSS}>
+                  &nbsp;@ {sourceCodeQueryData.updatedAt}
+                </span>
               </span>
-            </div>
+            </React.Fragment>
           ) : (
             <div>
-              <span css={iconWrapperCSS}>
-                {sourceCodeQueryData.updatedAt}&nbsp;/&nbsp;
+              <span css={filePathWrapperCSS}>
+                <span css={iconWrapperCSS}>
+                  {sourceCodeQueryData.updatedAt}&nbsp;/&nbsp;
+                </span>
+                {sourceCodeQueryData.title}
               </span>
-              {sourceCodeQueryData.title}
             </div>
           )}
         </div>
@@ -100,22 +104,16 @@ function SourceCodeHeader() {
   }
 }
 
-const wrapperCSS = css`
-  display: flex;
-  flex-direction: column;
-`;
-
 const filePathWrapperCSS = css`
-  display: flex;
-  gap: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const headerCSS = ({ onTab }: { onTab: boolean }) => {
   return css`
-    /* border-top: 1px solid rgba(0, 0, 0, 0.1); */
     flex: 1;
     max-height: 32px;
-    /* box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2); */
     border-top: ${!onTab && `1px solid rgba(0, 0, 0, 0.1)`};
     border-bottom: ${onTab && `1px solid rgba(0, 0, 0, 0.1)`};
     z-index: 10;
@@ -123,15 +121,21 @@ const headerCSS = ({ onTab }: { onTab: boolean }) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
+
     font-size: 14px;
     background-color: ${onTab && `rgba(0, 0, 0, 0.05)`};
+    white-space: nowrap;
   `;
 };
 
 const headerLeftCSS = css`
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0px, 100%);
+  max-width: 80%;
+  width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const headerRightCSS = css`
@@ -142,13 +146,11 @@ const headerRightCSS = css`
 `;
 
 const iconWrapperCSS = css`
-  /* background-color: rgba(0, 0, 0, 0.05); */
-  /* border-radius: 20px; */
-  /* padding: 2px 12px 2px 12px; */
   color: rgba(0, 0, 0, 0.5);
-  /* margin-right: 4px; */
   font-size: 14px;
-  /* font-weight: 500; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
-export default SourceCodeHeader;
+export default SourceCodeIDETabHeader;

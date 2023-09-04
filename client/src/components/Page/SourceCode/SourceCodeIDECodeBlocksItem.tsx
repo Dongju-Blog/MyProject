@@ -34,8 +34,6 @@ import "prismjs/components/prism-ignore.js";
 import "prismjs/components/prism-kotlin";
 import "prismjs/components/prism-cshtml";
 import "prismjs/components/prism-rust";
-import SourceCodeHeader from "./SourceCodeHeader";
-import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import SourceCodeIDECodeBlocksItemDiv from "./SourceCodeIDECodeBlocksItemDiv";
 
 type SourceCodeIDECodeBlocksItemPropsType = {
@@ -58,7 +56,6 @@ function SourceCodeIDECodeBlocksItem({
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
     let target = e.target.innerText.trim();
     target.replace(reg, "");
-    // console.log(fileIndexes)
     if (target !== "" && target in fileIndexes) {
       router.push(
         { query: { ...router.query, init: fileIndexes[target] } },
@@ -74,7 +71,6 @@ function SourceCodeIDECodeBlocksItem({
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
     let target = e.target.innerText.trim();
     target.replace(reg, "");
-    // console.log(fileIndexes)
     if (target !== "" && target in fileIndexes) {
       e.target.className = "goto-file";
     }
@@ -178,28 +174,20 @@ const outerWrapperCSS = ({ wrap }: { wrap: boolean }) => {
   return css`
     width: 100%;
     height: 100%;
-    /* display: flex;
-  flex-direction: column; */
     display: grid;
-    /* grid-template-columns: auto auto; */
     grid-template-rows: auto auto minmax(0px, 100vh);
     font-size: 14px;
     position: relative;
-    /* overflow: scroll; */
-
-    /* overflow:hidden; */
 
     & .token-line {
       font-family: "Consolas";
       padding: 0px;
       display: flex;
-      /* height: 16px; */
     }
 
     & .token-wrapper {
       display: flex;
       flex-wrap: ${wrap && `wrap`};
-      /* display: inline-block; */
     }
 
     & .token {
@@ -230,9 +218,7 @@ export const ideIndicatorCSS = css`
   min-width: 64px;
   margin-right: 24px;
   display: inline-block;
-  /* border-left: 1px solid rgba(0, 0, 0, 0.1); */
   border-right: 1px solid rgba(0, 0, 0, 0.1);
-  /* height: 100%; */
   user-select: none;
   position: sticky;
   left: 0;

@@ -6,9 +6,6 @@ import SourceCodeIDETab from "./SourceCodeIDETab";
 import SourceCodeIDECodeBlocks from "./SourceCodeIDECodeBlocks";
 import SourceCodeIDEEmpty from "./SourceCodeIDEEmpty";
 import { useSourceCodeContext } from "./SourceCodeContext";
-import SourceCodeHeader from "./SourceCodeHeader";
-import { UseQueryResult } from "@tanstack/react-query";
-import { getSourceCodeResponseType } from "@/types/board";
 
 type SourceCodeIDEPropsType = {
   url: string;
@@ -45,7 +42,6 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
     <div css={wrapperCSS}>
       {initFile && <SourceCodeExplorer />}
 
-
       <div css={ideWrapperCSS}>
         <SourceCodeIDETab />
         {selectedFileNameIncludePath ? (
@@ -54,7 +50,6 @@ function SourceCodeIDE({ url, rootName }: SourceCodeIDEPropsType) {
           <SourceCodeIDEEmpty />
         )}
       </div>
-   
     </div>
   );
 }
@@ -67,6 +62,7 @@ const wrapperCSS = css`
 `;
 
 const ideWrapperCSS = css`
+  
   flex: 1;
   display: grid;
 `;

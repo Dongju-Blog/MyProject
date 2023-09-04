@@ -1,5 +1,11 @@
-import { LineInputProps, LineOutputProps, Token, TokenInputProps, TokenOutputProps } from 'prism-react-renderer';
-import React from 'react'
+import {
+  LineInputProps,
+  LineOutputProps,
+  Token,
+  TokenInputProps,
+  TokenOutputProps,
+} from "prism-react-renderer";
+import React from "react";
 import { css } from "@emotion/react";
 
 type SourceCodeIDECodeBlocksItemDivPropsType = {
@@ -9,54 +15,69 @@ type SourceCodeIDECodeBlocksItemDivPropsType = {
   curIdx: number;
   renderRange: number;
   setRenderRange: React.Dispatch<React.SetStateAction<number>>;
-}
+};
 
-function SourceCodeIDECodeBlocksItemDiv({tokens, getLineProps, getTokenProps, curIdx, renderRange, setRenderRange}: SourceCodeIDECodeBlocksItemDivPropsType) {
+function SourceCodeIDECodeBlocksItemDiv({
+  tokens,
+  getLineProps,
+  getTokenProps,
+  curIdx,
+  renderRange,
+  setRenderRange,
+}: SourceCodeIDECodeBlocksItemDivPropsType) {
+
+  const renderLines = ({ line, i }: { line: Token[]; i: number }) => {
+    return line.map((token, key) => {
+      if (
+        i > 0 &&
+        line.length === 1 &&
+        line[0].content.trim() === "" &&
+        tokens[i - 1]
+      ) {
+        const text = tokens[i - 1][0].content;
+        let spaceCnt = 0;
+        for (var j = 0; j < text.length; j++) {
+          if (text[j] !== " ") {
+            break;
+          }
+          spaceCnt += 1;
+        }
+        line[0].content = " ".repeat(spaceCnt);
+      }
+      return (
+        <span
+          css={[key === 0 && spaceCSS({ text: token.content })]}
+          key={key}
+          {...getTokenProps({ token })}
+        />
+      );
+    });
+  };
+
   const renderTokens = tokens.map((line, i) => {
     return (
-    <div key={(curIdx * 100) + i} {...getLineProps({ line })}>
-      <div className="indicator" css={ideIndicatorCSS}>
-        {(curIdx * 100) + i + 1}
+      <div key={curIdx * 100 + i} {...getLineProps({ line })}>
+        <div className="indicator" css={ideIndicatorCSS}>
+          {curIdx * 100 + i + 1}
+        </div>
+        <div className="token-wrapper">{renderLines({ line, i })}</div>
       </div>
-      <div className="token-wrapper">
-        {line.map((token, key) => {
-          if (
-            i > 0 &&
-            line.length === 1 &&
-            line[0].content.trim() === "" &&
-            tokens[i - 1]
-          ) {
-            const text = tokens[i - 1][0].content;
-            let spaceCnt = 0;
-            for (var j = 0; j < text.length; j++) {
-              if (text[j] !== " ") {
-                break;
-              }
-              spaceCnt += 1;
-            }
-            line[0].content = " ".repeat(spaceCnt);
-          }
-          return (
-            <span
-              css={[
-                key === 0 && spaceCSS({ text: token.content }),
-              ]}
-              key={key}
-              {...getTokenProps({ token })}
-            />
-          );
-        })}
-      </div>
-    </div>
-  )})
+    );
+  });
+
   
+
   return (
-    <div id={`${curIdx}`} css={css`content-visibility: auto; min-height: ${tokens.length * 16}px;`}>
+    <div
+      id={`${curIdx}`}
+      css={css`
+        content-visibility: auto;
+        min-height: ${tokens.length * 16}px;
+      `}
+    >
       {renderTokens}
     </div>
-  )
-
-
+  );
 }
 
 export const ideIndicatorCSS = css`
@@ -69,9 +90,7 @@ export const ideIndicatorCSS = css`
   min-width: 64px;
   margin-right: 24px;
   display: inline-block;
-  /* border-left: 1px solid rgba(0, 0, 0, 0.1); */
   border-right: 1px solid rgba(0, 0, 0, 0.1);
-  /* height: 100%; */
   user-select: none;
   position: sticky;
   left: 0;
@@ -102,5 +121,4 @@ const spaceCSS = ({ text }: { text: string }) => {
   `;
 };
 
-
-export default SourceCodeIDECodeBlocksItemDiv
+export default SourceCodeIDECodeBlocksItemDiv;
