@@ -2,11 +2,11 @@ import React, { useMemo } from "react";
 import { useSourceCodeContext } from "./SourceCodeContext";
 import { css } from "@emotion/react";
 import dynamic from "next/dynamic";
-
-const SourceCodeIDECodeBlocksItem = dynamic(
-  () => import("@/components/Page/SourceCode/SourceCodeIDECodeBlocksItem"),
-  { ssr: false }
-);
+import SourceCodeIDECodeBlocksItem from "@/components/Page/SourceCode/SourceCodeIDECodeBlocksItem";
+// const SourceCodeIDECodeBlocksItem = dynamic(
+//   () => import("@/components/Page/SourceCode/SourceCodeIDECodeBlocksItem"),
+//   { ssr: false }
+// );
 
 function SourceCodeIDECodeBlocks() {
   const { fileContents, selectedFilesTab, selectedFileIndex } =
