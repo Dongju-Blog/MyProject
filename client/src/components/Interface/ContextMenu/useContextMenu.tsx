@@ -116,6 +116,13 @@ const menuItemCSS = css`
   display: flex;
   gap: 6px;
 
+  & * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+
   cursor: pointer;
   transition-property: background-color;
   transition-duration: 0.5s;

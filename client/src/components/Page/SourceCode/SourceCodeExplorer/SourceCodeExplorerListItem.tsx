@@ -188,6 +188,8 @@ const iconCSS = ({ render }: { render: boolean }) => {
     display: ${render ? "block" : "none"};
     width: 18px;
     height: 18px;
+    min-width: 18px;
+    min-height: 18px;
   `;
 };
 
