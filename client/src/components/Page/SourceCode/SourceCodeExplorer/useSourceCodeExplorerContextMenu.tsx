@@ -61,7 +61,7 @@ function useSourceCodeExplorerContextMenu({
       content: (
         <React.Fragment>
           {icon}
-          {name}
+          <span>{name}</span>
         </React.Fragment>
       ),
       function: openHandler,
@@ -73,7 +73,7 @@ function useSourceCodeExplorerContextMenu({
             css={iconCSS}
             src={"/assets/ExplorerIcons/ContextMenu/link.svg"}
           />{" "}
-          경로 복사
+          <span>경로 복사</span>
         </React.Fragment>
       ),
       function: copyPathHandler,
@@ -85,7 +85,7 @@ function useSourceCodeExplorerContextMenu({
             css={iconCSS}
             src={"/assets/ExplorerIcons/ContextMenu/copy.svg"}
           />{" "}
-          웹 주소 복사
+          <span>웹 주소 복사</span>
         </React.Fragment>
       ),
       function: copyPathHandler.bind(null, true),
