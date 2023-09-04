@@ -60,9 +60,7 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
   )
 
   return (
-    //onClick={() => router.push(`/board/${article.boardName}/${article.id}`)}
     <div ref={itemRef} css={carouselArticleitemWrapperCSS} onClick={onClickHandler}>
-      {/* <div  css={css`width: 100%; height: 100%; position: absolute; background-color: blue;`}/> */}
       {isModalOn && <ModalArticle parentRef={itemRef} setIsModalOn={setIsModalOn} article={article} thumbnail={render} />}
       {render}
     </div>
@@ -89,7 +87,6 @@ export const carouselArticleitemWrapperCSS = css`
 `
 
 const imageWrapperCSS = css`
-  /* flex: 3; */
   height: 70%;
   position: relative;
   display: flex;
@@ -97,17 +94,14 @@ const imageWrapperCSS = css`
   align-items: center;
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.05);
-  /* height: 200px; */
 `;
 
 const contentWrapperCSS = css`
-  /* flex: 1; */
   height: 30%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 12px;
-  /* background-color: red; */
 `
 
 export default RepresentativeArticlesRowItem

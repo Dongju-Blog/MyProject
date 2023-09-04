@@ -6,7 +6,7 @@ function SourceCodeIDEEmpty() {
     <div css={wrapperCSS}>
       <div css={titleCSS}>dj-blog's Playground</div>
       <div css={contentWrapperCSS}>
-        <div css={textCSS}>
+        {/* <div css={textCSS}>
           1. 파일 사전 인덱싱으로 더욱 빠른 속도로 탐색 가능
         </div>
         <div css={textCSS}>2. 파일 트리 방식의 편리한 파일 탐색 제공</div>
@@ -24,7 +24,7 @@ function SourceCodeIDEEmpty() {
         </div>
         <div css={textCSS}>
           7. 코드 라인 인디케이터 / 코드 강제 줄 바꿈 옵션 제공
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -38,11 +38,13 @@ const wrapperCSS = css`
   /* justify-content: center; */
   align-items: center;
   gap: 36px;
+  white-space: nowrap;
 `;
 
 const titleCSS = css`
   font-size: 48px;
   color: rgba(0, 0, 0, 0.3);
+  user-select: none;
 `;
 
 const contentWrapperCSS = css`

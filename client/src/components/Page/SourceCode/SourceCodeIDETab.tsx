@@ -4,7 +4,7 @@ import SourceCodeExplorerListItemIcon from "./SourceCodeExplorer/SourceCodeExplo
 import { css } from "@emotion/react";
 import { ideIndicatorCSS } from "./SourceCodeIDECodeBlocksItem";
 import { useRouter } from "next/router";
-import SourceCodeHeader from "./SourceCodeHeader";
+import SourceCodeIDETabHeader from "./SourceCodeIDETabHeader";
 
 function SourceCodeIDETab() {
   const {
@@ -14,7 +14,7 @@ function SourceCodeIDETab() {
     setSelectedFilesTab,
     selectedFileIndex,
     setSelectedFileIndex,
-    setSelectedFileNameIncludePath
+    setSelectedFileNameIncludePath,
   } = useSourceCodeContext();
 
   const router = useRouter();
@@ -33,7 +33,7 @@ function SourceCodeIDETab() {
         });
       } else {
         setSelectedFileIndex(() => 0);
-        setSelectedFileNameIncludePath(() => newSetArray[0])
+        setSelectedFileNameIncludePath(() => newSetArray[0]);
         router.push(
           { query: { ...router.query, init: newSetArray[0] } },
           undefined,
@@ -47,7 +47,6 @@ function SourceCodeIDETab() {
   };
 
   const onClickTabHandler = (idx: number, pathIncludeName: string) => {
-    // setSelectedFileIndex(() => idx);
     router.push(
       { query: { ...router.query, init: pathIncludeName } },
       undefined,
@@ -106,18 +105,16 @@ function SourceCodeIDETab() {
 
   return (
     <div css={outerWrapperCSS}>
-      {selectedFileIndex !== -1 &&
-      <div css={innerWrapperCSS}>
-        <div css={tabWrapperCSS}>
-          {/* {selectedFileIndex !== -1 && <div css={[ideIndicatorCSS, indicatorSpaceCSS]} />} */}
-          {renderTab}
-          <div css={tabLineCSS} />
+      {selectedFileIndex !== -1 && (
+        <div css={innerWrapperCSS}>
+          <div css={tabWrapperCSS}>
+            {renderTab}
+            <div css={tabLineCSS} />
+          </div>
         </div>
-      </div>}
-      
-      {sourceCodeQueryData && (
-        <SourceCodeHeader/>
       )}
+
+      {sourceCodeQueryData && <SourceCodeIDETabHeader />}
     </div>
   );
 }
@@ -126,25 +123,22 @@ const outerWrapperCSS = css`
   width: 100%;
   height: var(--source-code-header-height);
   max-height: var(--source-code-header-height);
-  /* display: grid; */
-  /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
-  
   display: flex;
   flex-direction: column;
+
 `;
 
 const innerWrapperCSS = css`
   flex: 1;
   width: 100%;
   display: grid;
-`
+`;
 
 const tabWrapperCSS = css`
   height: 100%;
   display: flex;
   width: 100%;
   overflow: scroll;
-  /* max-height: 35px; */
   scrollbar-width: none; /* 파이어폭스 */
   &::-webkit-scrollbar {
     display: none; /* 크롬, 사파리, 오페라, 엣지 */
@@ -216,7 +210,6 @@ const closeTabWrapperCSS = css`
 
 const indicatorSpaceCSS = css`
   margin-right: 0px;
-  /* border-top: 1px solid rgba(0, 0, 0, 0.1); */
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   background-color: white;
 `;
