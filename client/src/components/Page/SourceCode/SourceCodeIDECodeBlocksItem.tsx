@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo, useEffect } from "react";
+import React, { useRef, useState, useMemo, useEffect, ReactNode } from "react";
 
 import { css } from "@emotion/react";
 import { useAtom } from "jotai";
@@ -6,7 +6,7 @@ import { codeBlockOption } from "@/store/store";
 import { debounce, throttle } from "lodash";
 import { useSourceCodeContext } from "./SourceCodeContext";
 import { useRouter } from "next/router";
-import Prism from "prismjs";
+
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import "overlayscrollbars/overlayscrollbars.css";
 // import "prismjs/components/prism-java";
@@ -59,11 +59,13 @@ import SourceCodeIDECodeBlocksItemDiv from "./SourceCodeIDECodeBlocksItemDiv";
 type SourceCodeIDECodeBlocksItemPropsType = {
   content: string;
   language: string;
+  Prism?: typeof import("c:/Users/jook1/OneDrive/\uBC14\uD0D5 \uD654\uBA74/MyProject/client/client/node_modules/@types/prismjs/index") | undefined;
 };
 
 function SourceCodeIDECodeBlocksItem({
   content,
   language,
+  Prism
 }: SourceCodeIDECodeBlocksItemPropsType) {
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] =
     useAtom(codeBlockOption);

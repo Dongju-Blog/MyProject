@@ -3,6 +3,7 @@ import { useSourceCodeContext } from "./SourceCodeContext";
 import { css } from "@emotion/react";
 import dynamic from "next/dynamic";
 import SourceCodeIDECodeBlocksItem from "@/components/Page/SourceCode/SourceCodeIDECodeBlocksItem";
+import Prism from "prismjs";
 // const SourceCodeIDECodeBlocksItem = dynamic(
 //   () => import("@/components/Page/SourceCode/SourceCodeIDECodeBlocksItem"),
 //   { ssr: false }
@@ -35,7 +36,7 @@ function SourceCodeIDECodeBlocks() {
               key={`ide-${pathIncludeName}`}
               css={ideItemWrapperCSS({ selectedFileIndex, currentIndex: idx })}
             >
-              <SourceCodeIDECodeBlocksItem language={type} content={content} />
+              {Prism && <SourceCodeIDECodeBlocksItem language={type} content={content} Prism={Prism} />}
             </div>
           );
         }
