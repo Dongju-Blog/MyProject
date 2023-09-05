@@ -6,9 +6,10 @@ import { codeBlockOption } from "@/store/store";
 import { debounce, throttle } from "lodash";
 import { useSourceCodeContext } from "./SourceCodeContext";
 import { useRouter } from "next/router";
-
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import "overlayscrollbars/overlayscrollbars.css";
+import Prism from "prismjs";
+
 // import "prismjs/components/prism-java";
 // import "prismjs/components/prism-docker";
 // import "prismjs/components/prism-gradle";
@@ -27,23 +28,6 @@ import "overlayscrollbars/overlayscrollbars.css";
 // import "prismjs/components/prism-cshtml";
 // import "prismjs/components/prism-rust";
 
-require("prismjs/components/prism-java")
-require("prismjs/components/prism-docker")
-require("prismjs/components/prism-gradle")
-require("prismjs/components/prism-yaml")
-require("prismjs/components/prism-properties")
-require("prismjs/components/prism-git")
-require("prismjs/components/prism-batch")
-require("prismjs/components/prism-json")
-require("prismjs/components/prism-markdown")
-require("prismjs/components/prism-javascript")
-require("prismjs/components/prism-jsx")
-require("prismjs/components/prism-typescript")
-require("prismjs/components/prism-tsx")
-require("prismjs/components/prism-ignore.js")
-require("prismjs/components/prism-kotlin")
-require("prismjs/components/prism-cshtml")
-require("prismjs/components/prism-rust")
 
 import {
   Highlight,
@@ -59,20 +43,37 @@ import SourceCodeIDECodeBlocksItemDiv from "./SourceCodeIDECodeBlocksItemDiv";
 type SourceCodeIDECodeBlocksItemPropsType = {
   content: string;
   language: string;
-  Prism?: typeof import("prismjs/index") | undefined;
 };
 
 function SourceCodeIDECodeBlocksItem({
   content,
   language,
-  Prism
 }: SourceCodeIDECodeBlocksItemPropsType) {
   const [codeBlockOptionAtom, useCodeBlockOptionAtom] =
     useAtom(codeBlockOption);
   const router = useRouter();
   const [renderRange, setRenderRange] = useState(0);
-
   const { fileIndexes } = useSourceCodeContext();
+
+  useEffect(() => {
+    require("prismjs/components/prism-java")
+    require("prismjs/components/prism-docker")
+    require("prismjs/components/prism-gradle")
+    require("prismjs/components/prism-yaml")
+    require("prismjs/components/prism-properties")
+    require("prismjs/components/prism-git")
+    require("prismjs/components/prism-batch")
+    require("prismjs/components/prism-json")
+    require("prismjs/components/prism-markdown")
+    require("prismjs/components/prism-javascript")
+    require("prismjs/components/prism-jsx")
+    require("prismjs/components/prism-typescript")
+    require("prismjs/components/prism-tsx")
+    require("prismjs/components/prism-ignore.js")
+    require("prismjs/components/prism-kotlin")
+    require("prismjs/components/prism-cshtml")
+    require("prismjs/components/prism-rust")
+  }, [])
 
   const findFileByToken = (e: any) => {
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
