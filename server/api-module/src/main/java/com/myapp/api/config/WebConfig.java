@@ -37,8 +37,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "http://localhost:8081", "https://server.dj-blog.com", "https://www.dj-blog.com", "https://dj-blog.com")
-                .exposedHeaders("Authorization")	//make client read header("jwt-token")
+                .allowedOrigins(
+//                        "http://localhost:3000", "http://localhost:8081",
+                        "https://server.dj-blog.com", "https://www.dj-blog.com", "https://dj-blog.com")
+                .exposedHeaders("Authorization")
                 .allowCredentials(true)
                 .allowedMethods(
                 HttpMethod.GET.name(),
