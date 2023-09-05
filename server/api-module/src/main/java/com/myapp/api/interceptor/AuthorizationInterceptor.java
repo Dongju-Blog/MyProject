@@ -48,15 +48,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        // 컨트롤러 실행 후, 뷰가 렌더링되기 전에 호출됩니다.
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        // 뷰가 렌더링된 후에 호출됩니다.
-    }
 
     private boolean isAuthorizedUser(String token, Set<Role> allowedRoles) {
         Role userRole = getUserRoleFromToken(token);
