@@ -9,23 +9,41 @@ import { useRouter } from "next/router";
 import Prism from "prismjs";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import "overlayscrollbars/overlayscrollbars.css";
-import "prismjs/components/prism-java";
-import "prismjs/components/prism-docker";
-import "prismjs/components/prism-gradle";
-import "prismjs/components/prism-yaml";
-import "prismjs/components/prism-properties";
-import "prismjs/components/prism-git";
-import "prismjs/components/prism-batch";
-import "prismjs/components/prism-json";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-tsx";
-import "prismjs/components/prism-ignore.js";
-import "prismjs/components/prism-kotlin";
-import "prismjs/components/prism-cshtml";
-import "prismjs/components/prism-rust";
+// import "prismjs/components/prism-java";
+// import "prismjs/components/prism-docker";
+// import "prismjs/components/prism-gradle";
+// import "prismjs/components/prism-yaml";
+// import "prismjs/components/prism-properties";
+// import "prismjs/components/prism-git";
+// import "prismjs/components/prism-batch";
+// import "prismjs/components/prism-json";
+// import "prismjs/components/prism-markdown";
+// import "prismjs/components/prism-javascript";
+// import "prismjs/components/prism-jsx";
+// import "prismjs/components/prism-typescript";
+// import "prismjs/components/prism-tsx";
+// import "prismjs/components/prism-ignore.js";
+// import "prismjs/components/prism-kotlin";
+// import "prismjs/components/prism-cshtml";
+// import "prismjs/components/prism-rust";
+
+require("prismjs/components/prism-java")
+require("prismjs/components/prism-docker")
+require("prismjs/components/prism-gradle")
+require("prismjs/components/prism-yaml")
+require("prismjs/components/prism-properties")
+require("prismjs/components/prism-git")
+require("prismjs/components/prism-batch")
+require("prismjs/components/prism-json")
+require("prismjs/components/prism-markdown")
+require("prismjs/components/prism-javascript")
+require("prismjs/components/prism-jsx")
+require("prismjs/components/prism-typescript")
+require("prismjs/components/prism-tsx")
+require("prismjs/components/prism-ignore.js")
+require("prismjs/components/prism-kotlin")
+require("prismjs/components/prism-cshtml")
+require("prismjs/components/prism-rust")
 
 import {
   Highlight,
