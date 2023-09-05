@@ -10,12 +10,12 @@ import { SEARCH_ICON } from "@/components/Assets/CommonIcons";
 
 type MobileNavbarSidePropsType = {
   categoryList: categoryType[];
-  closeModalHandler?: Function;
+  closeComp?: Function;
 };
 
 function MobileNavbarSide({
   categoryList,
-  closeModalHandler,
+  closeComp,
 }: MobileNavbarSidePropsType) {
   const router = useRouter();
   const auth = useAuthority();
@@ -26,7 +26,7 @@ function MobileNavbarSide({
       if (as !== router.asPath) {
         window.history.pushState("", "");
         router.push(router.asPath);
-        closeModalHandler && closeModalHandler();
+        closeComp && closeComp();
         return false;
       }
 
@@ -45,7 +45,7 @@ function MobileNavbarSide({
           css={categoryMenuItemCSS}
           onClick={() => {
             menu.function();
-            closeModalHandler && closeModalHandler();
+            closeComp && closeComp();
           }}
         >
           {menu.label}
@@ -85,7 +85,7 @@ function MobileNavbarSide({
             <span
               onClick={() => {
                 router.push("/user/change");
-                closeModalHandler && closeModalHandler();
+                closeComp && closeComp();
               }}
             >
               {auth.currentUser.username}
@@ -96,7 +96,7 @@ function MobileNavbarSide({
           theme={"dark"}
           onClick={() => {
             auth.logoutHandler();
-            closeModalHandler && closeModalHandler();
+            closeComp && closeComp();
           }}
         >
           Logout
@@ -144,7 +144,7 @@ function MobileNavbarSide({
   const searchHandler = () => {
     router.push(`/search?keyword=${searchInputState}`);
     setSearchInputState(() => "");
-    closeModalHandler && closeModalHandler();
+    closeComp && closeComp();
   };
 
   const handleKeyDown = (event: any) => {
@@ -186,11 +186,11 @@ const sideMenuWrapperCSS = css`
   background-color: black;
   box-shadow: 0px 0px 40px 40px rgba(0, 0, 0, 1);
   user-select: none;
-  /* display: flex;
+  display: flex;
   flex-direction: column;
-  align-items: center; */
 
-  padding: 36px 36px 36px 24px;
+
+  padding: 36px 36px 0px 24px;
   /* opacity: 90%; */
 `;
 
@@ -206,6 +206,15 @@ const categoryWrapperCSS = css`
   animation-delay: 100ms;
   -webkit-animation-delay: 100ms;
   transform: translateX(150%);
+
+  flex: 1;
+  overflow-y: scroll;
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+  &::-webkit-scrollbar {
+    display: none; 
+  }
+
   @keyframes side {
     from {
       transform: translateX(150%);
