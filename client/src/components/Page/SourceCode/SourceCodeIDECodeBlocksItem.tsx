@@ -59,7 +59,7 @@ import SourceCodeIDECodeBlocksItemDiv from "./SourceCodeIDECodeBlocksItemDiv";
 type SourceCodeIDECodeBlocksItemPropsType = {
   content: string;
   language: string;
-  Prism?: typeof import("c:/Users/jook1/OneDrive/\uBC14\uD0D5 \uD654\uBA74/MyProject/client/client/node_modules/@types/prismjs/index") | undefined;
+  Prism?: typeof import("prismjs/index") | undefined;
 };
 
 function SourceCodeIDECodeBlocksItem({
