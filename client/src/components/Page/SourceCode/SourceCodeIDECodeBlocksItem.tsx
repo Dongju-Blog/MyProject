@@ -56,24 +56,27 @@ function SourceCodeIDECodeBlocksItem({
   const { fileIndexes } = useSourceCodeContext();
 
   useEffect(() => {
-    require("prismjs/components/prism-java")
-    require("prismjs/components/prism-docker")
-    require("prismjs/components/prism-gradle")
-    require("prismjs/components/prism-yaml")
-    require("prismjs/components/prism-properties")
-    require("prismjs/components/prism-git")
-    require("prismjs/components/prism-batch")
-    require("prismjs/components/prism-json")
-    require("prismjs/components/prism-markdown")
-    require("prismjs/components/prism-javascript")
-    require("prismjs/components/prism-jsx")
-    require("prismjs/components/prism-typescript")
-    require("prismjs/components/prism-tsx")
-    require("prismjs/components/prism-ignore.js")
-    require("prismjs/components/prism-kotlin")
-    require("prismjs/components/prism-cshtml")
-    require("prismjs/components/prism-rust")
-  }, [])
+    if (Prism) {
+      require("prismjs/components/prism-java")
+      require("prismjs/components/prism-docker")
+      require("prismjs/components/prism-gradle")
+      require("prismjs/components/prism-yaml")
+      require("prismjs/components/prism-properties")
+      require("prismjs/components/prism-git")
+      require("prismjs/components/prism-batch")
+      require("prismjs/components/prism-json")
+      require("prismjs/components/prism-markdown")
+      require("prismjs/components/prism-javascript")
+      require("prismjs/components/prism-jsx")
+      require("prismjs/components/prism-typescript")
+      require("prismjs/components/prism-tsx")
+      require("prismjs/components/prism-ignore.js")
+      require("prismjs/components/prism-kotlin")
+      require("prismjs/components/prism-cshtml")
+      require("prismjs/components/prism-rust")
+    }
+    
+  }, [Prism])
 
   const findFileByToken = (e: any) => {
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -149,40 +152,42 @@ function SourceCodeIDECodeBlocksItem({
       [renderRange]
     );
   };
-
-  return useMemo(
-    () => (
-      <OverlayScrollbarsComponent css={scrollWrapperCSS} defer>
-        <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
-          <div css={topDummyCSS}>
-            <div className="indicator" css={ideIndicatorCSS} />
+  if (Prism) {
+    return useMemo(
+      () => (
+        <OverlayScrollbarsComponent css={scrollWrapperCSS} defer>
+          <div css={outerWrapperCSS({ wrap: codeBlockOptionAtom.wrap })}>
+            <div css={topDummyCSS}>
+              <div className="indicator" css={ideIndicatorCSS} />
+            </div>
+  
+            <Highlight
+              prism={Prism}
+              theme={themes.github}
+              code={content}
+              language={language}
+            >
+              {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                <pre onClick={findFileByToken} onMouseOver={call}>
+                  {renderDividedToken({
+                    dividedTokensArr: dividedTokensArr({ tokens }),
+                    getLineProps,
+                    getTokenProps,
+                  })}
+                </pre>
+              )}
+            </Highlight>
+  
+            <div css={bottomDummyCSS}>
+              <div className="indicator" css={ideIndicatorCSS} />
+            </div>
           </div>
-
-          <Highlight
-            prism={Prism}
-            theme={themes.github}
-            code={content}
-            language={language}
-          >
-            {({ className, style, tokens, getLineProps, getTokenProps }) => (
-              <pre onClick={findFileByToken} onMouseOver={call}>
-                {renderDividedToken({
-                  dividedTokensArr: dividedTokensArr({ tokens }),
-                  getLineProps,
-                  getTokenProps,
-                })}
-              </pre>
-            )}
-          </Highlight>
-
-          <div css={bottomDummyCSS}>
-            <div className="indicator" css={ideIndicatorCSS} />
-          </div>
-        </div>
-      </OverlayScrollbarsComponent>
-    ),
-    [content, codeBlockOptionAtom.wrap]
-  );
+        </OverlayScrollbarsComponent>
+      ),
+      [content, codeBlockOptionAtom.wrap, Prism]
+    );
+  }
+  
 }
 
 const scrollWrapperCSS = css`
