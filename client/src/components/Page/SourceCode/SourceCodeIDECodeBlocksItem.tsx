@@ -37,6 +37,7 @@ import {
   TokenInputProps,
   TokenOutputProps,
   themes,
+  // Prism
 } from "prism-react-renderer";
 import SourceCodeIDECodeBlocksItemDiv from "./SourceCodeIDECodeBlocksItemDiv";
 
@@ -75,7 +76,8 @@ function SourceCodeIDECodeBlocksItem({
       require("prismjs/components/prism-cshtml")
       require("prismjs/components/prism-rust")
     }
-    
+
+
   }, [Prism])
 
   const findFileByToken = (e: any) => {
@@ -152,7 +154,7 @@ function SourceCodeIDECodeBlocksItem({
       [renderRange]
     );
   };
-  if (Prism) {
+  if (Prism && Prism.languages.markup) {
     return useMemo(
       () => (
         <OverlayScrollbarsComponent css={scrollWrapperCSS} defer>
