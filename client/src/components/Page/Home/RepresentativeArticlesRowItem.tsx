@@ -85,14 +85,14 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
   )
 
   return (
-    <div ref={itemRef} css={carouselArticleitemWrapperCSS({isModalOn})} onClick={onClickHandler}>
+    <div ref={itemRef} css={carouselArticleitemWrapperCSS} onClick={onClickHandler}>
       {isModalOn && calc && <ModalArticle calc={calc} parentRef={itemRef} setIsModalOn={setIsModalOn} article={article} thumbnail={render} />}
       {render}
     </div>
   )
 }
 
-export const carouselArticleitemWrapperCSS = ({isModalOn}: {isModalOn: boolean}) => css`
+export const carouselArticleitemWrapperCSS = css`
   width: 100%;
   height: 80%;
   display: flex;
