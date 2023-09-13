@@ -85,14 +85,14 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
   )
 
   return (
-    <div ref={itemRef} css={carouselArticleitemWrapperCSS} onClick={onClickHandler}>
+    <div ref={itemRef} css={carouselArticleitemWrapperCSS({isModalOn})} onClick={onClickHandler}>
       {isModalOn && calc && <ModalArticle calc={calc} parentRef={itemRef} setIsModalOn={setIsModalOn} article={article} thumbnail={render} />}
       {render}
     </div>
   )
 }
 
-export const carouselArticleitemWrapperCSS = css`
+export const carouselArticleitemWrapperCSS = ({isModalOn}: {isModalOn: boolean}) => css`
   width: 100%;
   height: 80%;
   display: flex;
@@ -103,11 +103,13 @@ export const carouselArticleitemWrapperCSS = css`
   border-radius: 20px;;
   position: relative;
   cursor: pointer;
-
+  
   transition: transform 1s, box-shadow 1s;
   &:hover {
-    transform: scale(105%);
+    /* transform: scale(105%); */
+    /* transform: translateY(-5px); */
     box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.4);
+    /* box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.6); */
   }
 `
 
