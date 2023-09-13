@@ -30,6 +30,7 @@ import Skeleton from "@/components/Interface/Loading/Skeleton";
 // https://mdxeditor.dev/editor/docs/getting-started
 
 type CreateMarkdownPropsType = {
+  title: string
   files: filesType;
   setFiles: React.Dispatch<React.SetStateAction<filesType>>;
   content: string;
@@ -39,6 +40,7 @@ type CreateMarkdownPropsType = {
 };
 
 function CreateMarkdown({
+  title,
   content,
   setContent,
   files,
@@ -102,57 +104,12 @@ function CreateMarkdown({
                 return;
               }
             }
-            // if (file.type === "image/gif") {
-            //   if (editorRef.current) {
-            //     if (!ffmpeg.isLoaded()) {
-            //       await ffmpeg.load();
-            //     } else {
-            //       await ffmpeg.exit()
-            //       await ffmpeg.load();
-                  
-            //     }
 
-            //     await ffmpeg.FS(
-            //       "writeFile",
-            //       "input.gif",
-            //       await fetchFile(file)
-            //     );
-            //     await ffmpeg.run(
-            //       "-f",
-            //       "gif",
-            //       "-i",
-            //       "input.gif",
-            //       "-movflags",
-            //       "+faststart",
-            //       "-pix_fmt",
-            //       "yuv420p",
-            //       "-vf",
-            //       "scale=trunc(iw/2)*2:trunc(ih/2)*2",
-            //       "output.mp4"
-            //     );
-
-                
-
-                
-
-            //     const data = ffmpeg.FS("readFile", "output.mp4");
-
-            //     const converted = new File([data.buffer], "output.mp4", {
-            //       type: "video/mp4",
-            //     });
-            //     const convertedUrl = URL.createObjectURL(converted);
-
-            //     setFiles((prev) => {
-            //       return { ...prev, [`${convertedUrl}`]: converted };
-            //     });
-
-            //     editorRef.current.getInstance()
-            //       .insertText(`<video autoPlay loop muted playsInline width="100%" height="100%">
-            //       <source src="${convertedUrl}" type="video/mp4" />
-            //     </video>`);
-            //     return;
-            //   }
-            // }
+            if (title.includes('/noCompress')) {
+              const url = URL.createObjectURL(file);
+              callback(url, "image");
+              return
+            }
 
             const options = {
               maxSizeMB: 1, // 이미지 최대 용량
