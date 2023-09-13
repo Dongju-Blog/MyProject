@@ -49,17 +49,22 @@ function Navbar() {
         {
           id: 0,
           label: "Introduce",
-          function: util.Example1,
+          function: util.NAVIGATE_TO_INTRODUCE,
         },
         {
           id: 1,
-          label: "Portfolio",
-          function: util.Example2,
+          label: "Presentation",
+          function: util.NAVIGATE_TO_PRESENTATION,
         },
         {
           id: 2,
+          label: "Portfolio",
+          function: util.NAVIGATE_TO_PORTFOLIO,
+        },
+        {
+          id: 3,
           label: "Contact",
-          function: util.Example3,
+          function: util.NAVIGATE_TO_CONTACT,
         },
       ],
     },

@@ -4,16 +4,20 @@ import { useRouter } from "next/router";
 function useNavbarUtil() {
   const router = useRouter();
 
-  const Example1 = () => {
+  const NAVIGATE_TO_INTRODUCE = () => {
     router.push("/#1");
   };
 
-  const Example2 = () => {
-    router.push("/#2");
+  const NAVIGATE_TO_PORTFOLIO = () => {
+    router.push("/#3");
   };
 
-  const Example3 = () => {
-    router.push("/#3");
+  const NAVIGATE_TO_CONTACT = () => {
+    router.push("/#4");
+  };
+
+  const NAVIGATE_TO_PRESENTATION = () => {
+    router.push("/#2");
   };
 
   const NAVIGATE_TO_PLAYGROUND = () => {
@@ -21,9 +25,10 @@ function useNavbarUtil() {
   };
 
   const returnObject = {
-    Example1,
-    Example2,
-    Example3,
+    NAVIGATE_TO_INTRODUCE,
+    NAVIGATE_TO_PORTFOLIO,
+    NAVIGATE_TO_CONTACT,
+    NAVIGATE_TO_PRESENTATION,
     NAVIGATE_TO_PLAYGROUND,
   };
 
