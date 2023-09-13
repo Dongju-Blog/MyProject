@@ -21,6 +21,7 @@ import { debounce } from "lodash";
 import Portal from "@/components/Interface/Portal/Portal";
 import useNotification from "@/components/Interface/StackNotification/useNotification";
 import NotiTemplate from "@/components/Interface/StackNotification/NotiTemplate";
+import Loading from "@/components/Interface/Loading/Loading";
 
 const ArticleViewer = dynamic(
   () => import("@/components/Page/Article/ArticleViewer"),
@@ -40,7 +41,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
   const [test, setTest] = useState<boolean>();
   const [contentCount, setContentCount] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const noti = useNotification()
+  const noti = useNotification();
 
   const article = useQuery<getArticleResponseType>(
     [`HomePPT`],
@@ -54,27 +55,34 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
 
   useEffect(() => {
     window.addEventListener("keydown", keyDownHandler);
-    
+
     return () => {
       window.removeEventListener("keydown", keyDownHandler);
-    }
-  }, [contentCount, content])
+    };
+  }, [contentCount, content]);
 
   useEffect(() => {
     if (isFullscreen) {
-      noti({content: <NotiTemplate type={"ok"} content={"전체 화면을 종료하려면 ESC를 눌러주세요."}/>})
+      noti({
+        content: (
+          <NotiTemplate
+            type={"ok"}
+            content={"전체 화면을 종료하려면 ESC를 눌러주세요."}
+          />
+        ),
+      });
     }
-  }, [isFullscreen])
+  }, [isFullscreen]);
 
   const keyDownHandler = (e: KeyboardEvent) => {
-    console.log(e.key)
+    console.log(e.key);
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-      setIsFullscreen(() => true)
+      setIsFullscreen(() => true);
     }
     if (e.key === "Escape") {
-      setIsFullscreen(() => false)
+      setIsFullscreen(() => false);
     }
-  }
+  };
 
   const parellelogram = (
     <div
@@ -183,7 +191,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
       ) {
         return (
           <div css={contentItemWrapperCSS}>
-            <div css={contentItemInnerWrapperCSS({isFullscreen})}>
+            <div css={contentItemInnerWrapperCSS({ isFullscreen })}>
               <img
                 css={css`
                   width: 100%;
@@ -197,10 +205,34 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
       } else if (el.includes(".mp4")) {
         return (
           <div css={contentItemWrapperCSS}>
-            <div css={contentItemInnerWrapperCSS({isFullscreen})}>
-              <video autoPlay loop muted playsInline width="90%" height="90%">
-                <source src={el} type="video/mp4" />
-              </video>
+            <div css={contentItemInnerWrapperCSS({ isFullscreen })}>
+              <div
+                css={css`
+                  width: auto;
+                  height: 90%;
+                  border-radius: 20px;
+                  overflow: hidden;
+                  position: relative;
+                `}
+              >
+                <video
+                  preload="none"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  width="100%"
+                  height="100%"
+                  css={css`
+                    position: relative;
+                    left: 0;
+                    top: 0;
+                    object-fit: cover !important;
+                  `}
+                >
+                  <source src={el} type="video/mp4" />
+                </video>
+              </div>
             </div>
           </div>
         );
@@ -209,13 +241,8 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
 
   const dummy = [
     <div css={contentItemWrapperCSS}>
-      <div css={contentItemInnerWrapperCSS({isFullscreen})}>
-        <Skeleton
-          css={css`
-            width: 100%;
-            height: 100%;
-          `}
-        />
+      <div css={contentItemInnerWrapperCSS({ isFullscreen })}>
+        <Loading label={"컨텐츠를 불러오는 중입니다."}/>
       </div>
     </div>,
   ];
@@ -240,11 +267,11 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
             onClick={() => {
               setIsFullscreen((prev) => !prev);
             }}
-            css={carouselButtonWrapperCSS({isFullscreen})}
+            css={carouselButtonWrapperCSS({ isFullscreen })}
           >
-            <img src={"/assets/expand.svg"}/>
+            <img src={"/assets/expand.svg"} />
           </div>
-          {renderContent ? (
+          {renderContent.length !== 0 ? (
             <SwipeableGallery
               key={`content-${content.length}`}
               content={renderContent}
@@ -300,24 +327,28 @@ const contentItemWrapperCSS = css`
   height: 100%;
 `;
 
-const contentItemInnerWrapperCSS = ({isFullscreen}: {isFullscreen: boolean}) => {
+const contentItemInnerWrapperCSS = ({
+  isFullscreen,
+}: {
+  isFullscreen: boolean;
+}) => {
   return css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  transition-property: transform;
-  will-change: transform;
-  transition-duration: 0.5s;
-  transform: ${!isFullscreen && `scale(90%)`};
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: ${isFullscreen ? `0px` : `10px`};
-  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
-`;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    transition-property: transform;
+    will-change: transform;
+    transition-duration: 0.5s;
+    transform: ${!isFullscreen && `scale(90%)`};
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: ${isFullscreen ? `0px` : `10px`};
+    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+  `;
+};
 
 const carouselWrapperCSS = ({ isFullscreen }: { isFullscreen: boolean }) => {
   return css`
@@ -332,7 +363,11 @@ const carouselWrapperCSS = ({ isFullscreen }: { isFullscreen: boolean }) => {
   `;
 };
 
-const carouselOuterWrapper = ({ isFullscreen }: { isFullscreen: boolean }) => css`
+const carouselOuterWrapper = ({
+  isFullscreen,
+}: {
+  isFullscreen: boolean;
+}) => css`
   position: fixed;
   width: 100%;
   height: 100%;
@@ -343,10 +378,13 @@ const carouselOuterWrapper = ({ isFullscreen }: { isFullscreen: boolean }) => cs
   align-items: center;
   z-index: 99999;
   pointer-events: none;
-  
 `;
 
-const carouselButtonWrapperCSS = ({isFullscreen}: {isFullscreen: boolean}) => {
+const carouselButtonWrapperCSS = ({
+  isFullscreen,
+}: {
+  isFullscreen: boolean;
+}) => {
   return css`
     position: absolute;
     z-index: 99;
@@ -355,23 +393,21 @@ const carouselButtonWrapperCSS = ({isFullscreen}: {isFullscreen: boolean}) => {
     will-change: opacity, background-color;
     transition-property: opacity background-color;
     transition-duration: 0.5s;
-    opacity: ${isFullscreen && '0%'};
+    opacity: ${isFullscreen && "0%"};
     border-radius: 10px;
     width: 32px;
     height: 32px;
-    
+
     display: flex;
     justify-content: center;
     align-items: center;
 
     cursor: pointer;
-
+    pointer-events: ${isFullscreen && `none`};
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.1);
     }
-
   `;
-
-} 
+};
 export default HomeContainer4;
