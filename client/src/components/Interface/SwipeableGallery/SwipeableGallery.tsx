@@ -9,11 +9,13 @@ type SwipeableGalleryPropsType = {
   content: any[];
   contentCount: number;
   setContentCount: React.Dispatch<React.SetStateAction<number>>;
+  noButton?: boolean
 };
 const SwipeableGallery = ({
   content,
   contentCount,
   setContentCount,
+  noButton
 }: SwipeableGalleryPropsType) => {
   const movingDiv = useRef<HTMLInputElement>(null);
   const [positionx, setPositionx] = useState<number>(0);
@@ -44,6 +46,23 @@ const SwipeableGallery = ({
     setEndSwipe(true);
   };
 
+  useEffect(() => {
+    window.addEventListener("keydown", keyDownHandler);
+    
+    return () => {
+      window.removeEventListener("keydown", keyDownHandler);
+    }
+  }, [contentCount, content])
+
+  const keyDownHandler = (e: KeyboardEvent) => {
+      
+    if (e.key === "ArrowLeft") {
+      onClickPrevBtn()
+    } else if (e.key === "ArrowRight") {
+      onClickNextBtn()
+    }
+  }
+
   const onClickNextBtn = useCallback(() => {
     if (contentCount < content.length - 1) {
       setContentCount((prev) => prev + 1);
@@ -60,6 +79,8 @@ const SwipeableGallery = ({
     }
   }, [contentCount]);
 
+  
+
   const indicator = content.map((el: any, idx: number) => {
     return (
       <div
@@ -71,10 +92,10 @@ const SwipeableGallery = ({
 
   const indicatorBtn = (
     <>
-      <div css={prevBtnCSS} onClick={onClickPrevBtn}>
+      <div css={prevBtnCSS({noButton})} onClick={onClickPrevBtn}>
         ⇠
       </div>
-      <div css={nextBtnCSS} onClick={onClickNextBtn}>
+      <div css={nextBtnCSS({noButton})} onClick={onClickNextBtn}>
         ⇢
       </div>
     </>
@@ -142,11 +163,13 @@ const contentCSS = ({
     /* display: inline-block; */
     /* justify-content: center;
 		align-items: center; */
+    content-visibility: auto;
     position: absolute;
     /* background-color: rgb(250, 250, 250); */
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+    will-change: transform;
     transition: ${endSwipe && `transform 1s`};
     transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
     transform: translateX(
@@ -168,11 +191,12 @@ const swipeWrapperCSS = css`
   overflow: hidden;
   display: flex;
   position: relative;
+  
   /* flex-wrap: wrap;
 	flex-direction: row; */
 `;
 
-const prevBtnCSS = css`
+const prevBtnCSS = ({noButton}: {noButton: boolean | undefined}) => css`
   z-index: 9;
   position: absolute;
   left: 0;
@@ -184,17 +208,19 @@ const prevBtnCSS = css`
   margin-left: -8px;
   /* color: white; */
   color: rgba(0, 0, 0, 0.5);
-  transition-property: color;
+  transition-property: color opacity;
   transition-duration: 1s;
   cursor: pointer;
   user-select: none;
+  opacity: ${noButton ? '0%' : '100%'};
+
 
   &:hover {
     color: rgba(0, 0, 0, 1);
   }
 `;
 
-const nextBtnCSS = css`
+const nextBtnCSS = ({noButton}: {noButton: boolean | undefined}) => css`
   z-index: 9;
   position: absolute;
   right: 0;
@@ -206,10 +232,11 @@ const nextBtnCSS = css`
   margin-right: -8px;
   /* color: white; */
   color: rgba(0, 0, 0, 0.5);
-  transition-property: color;
+  transition-property: color opacity;
   transition-duration: 1s;
   cursor: pointer;
   user-select: none;
+  opacity: ${noButton ? '0%' : '100%'};
 
   &:hover {
     color: rgba(0, 0, 0, 1);

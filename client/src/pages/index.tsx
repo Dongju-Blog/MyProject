@@ -35,14 +35,15 @@ export default function Home() {
           />
         </Container.Step>
         <Container.Step>
-          <HomeContainer2 setCondition={setCondition} currentStep={2} />
+          <HomeContainer4 setCondition={setCondition} currentStep={2} />
         </Container.Step>
         <Container.Step>
-          <HomeContainer3 setCondition={setCondition} currentStep={3} />
+          <HomeContainer2 setCondition={setCondition} currentStep={3} />
         </Container.Step>
-        {/* <Container.Step>
-          <HomeContainer4 setCondition={setCondition} currentStep={4} />
-        </Container.Step> */}
+        <Container.Step>
+          <HomeContainer3 setCondition={setCondition} currentStep={4} />
+        </Container.Step>
+        
       </Container>
     </div>
   );
