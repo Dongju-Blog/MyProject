@@ -40,7 +40,7 @@ function DesktopNavbarCategory({category}: DesktopNavbarCategoryPropsType) {
 
 const categoryItemCSS = css`
   position: relative;
-
+  z-index: 999;
   font-size: 24px;
   font-weight: 700;
   cursor: pointer;

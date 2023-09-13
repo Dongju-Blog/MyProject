@@ -376,7 +376,7 @@ const carouselOuterWrapper = ({
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99999;
+  z-index: ${isFullscreen ? `99` : `10`};
   pointer-events: none;
 `;
 
