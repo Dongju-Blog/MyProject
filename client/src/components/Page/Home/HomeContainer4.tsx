@@ -37,7 +37,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
   const condition = setCondition(currentStep);
   const { Animator, render } = useAnimator(condition.immediate);
   const [content, setContent] = useState<string[]>([]);
-  const viewerRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<{[prop: string]: HTMLVideoElement}>({});
   const [test, setTest] = useState<boolean>();
   const [contentCount, setContentCount] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -73,6 +73,23 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
       window.removeEventListener("keydown", keyDownHandler);
     };
   }, [contentCount, content]);
+
+  useEffect(() => {
+    if (videoRefs.current[contentCount]) {
+      videoRefs.current[contentCount].currentTime = 0
+      videoRefs.current[contentCount].play()
+    }
+
+    return () => {
+      if (videoRefs.current[contentCount]) {
+        videoRefs.current[contentCount].pause()
+        setTimeout(() => {
+          videoRefs.current[contentCount].currentTime = 0
+        }, 500)
+        
+      }
+    }
+  }, [contentCount])
 
 
 
@@ -206,7 +223,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
 
   const renderContent =
     content &&
-    content.map((el) => {
+    content.map((el, idx) => {
       if (
         el.includes(".png") ||
         el.includes(".jpg") ||
@@ -215,7 +232,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
         el.includes(".webp")
       ) {
         return (
-          <div css={contentItemWrapperCSS}>
+          <div key={`image-${idx}`} css={contentItemWrapperCSS}>
             <div css={contentItemInnerWrapperCSS({ isFullscreen })}>
               <img
                 css={css`
@@ -230,7 +247,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
         );
       } else if (el.includes(".mp4")) {
         return (
-          <div css={contentItemWrapperCSS}>
+          <div key={`video-${idx}`} css={contentItemWrapperCSS}>
             <div css={contentItemInnerWrapperCSS({ isFullscreen })}>
               <div
                 css={css`
@@ -242,6 +259,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
                 `}
               >
                 <video
+                  ref={(e) => {if (e) videoRefs.current[idx] = e;}}
                   preload="none"
                   autoPlay
                   loop
