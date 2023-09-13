@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { throttle } from "lodash";
 import useGetCategory from "@/hooks/useGetCategory";
+import Portal from "../Portal/Portal";
 
 export type categoryType = {
   id: number;
