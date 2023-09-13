@@ -54,14 +54,6 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", keyDownHandler);
-
-    return () => {
-      window.removeEventListener("keydown", keyDownHandler);
-    };
-  }, [contentCount, content]);
-
-  useEffect(() => {
     if (isFullscreen) {
       noti({
         content: (
@@ -74,9 +66,42 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
     }
   }, [isFullscreen]);
 
+  useEffect(() => {
+    window.addEventListener("keydown", keyDownHandler);
+
+    return () => {
+      window.removeEventListener("keydown", keyDownHandler);
+    };
+  }, [contentCount, content]);
+
+
+
+
+
+  const onClickNextBtn = useCallback(() => {
+    if (contentCount < content.length - 1) {
+      setContentCount((prev) => prev + 1);
+    } else {
+      setContentCount(() => 0);
+    }
+  }, [contentCount, content]);
+
+  const onClickPrevBtn = useCallback(() => {
+    if (contentCount > 0) {
+      setContentCount((prev) => prev - 1);
+    } else {
+      setContentCount(() => content.length - 1);
+    }
+  }, [contentCount, content]);
+
+  
+
   const keyDownHandler = (e: KeyboardEvent) => {
-    console.log(e.key);
-    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    if (e.key === "ArrowLeft") {
+      onClickPrevBtn()
+      setIsFullscreen(() => true);
+    } else if (e.key === "ArrowRight") {
+      onClickNextBtn()
       setIsFullscreen(() => true);
     }
     if (e.key === "Escape") {
@@ -196,6 +221,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
                 css={css`
                   width: 100%;
                   height: auto;
+
                 `}
                 src={el}
               />
@@ -308,6 +334,7 @@ function HomeContainer4({ setCondition, currentStep }: HomeContainer1Type) {
 const containerWrapperCSS = css`
   background-color: #00bbff;
   overflow: hidden;
+  
   /* opacity: 70%; */
 `;
 
@@ -353,6 +380,7 @@ const contentItemInnerWrapperCSS = ({
 const carouselWrapperCSS = ({ isFullscreen }: { isFullscreen: boolean }) => {
   return css`
     transition-property: width height;
+
     will-change: width, height;
     transition-duration: 0.5s;
     position: relative;
@@ -371,8 +399,7 @@ const carouselOuterWrapper = ({
   position: fixed;
   width: 100%;
   height: 100%;
-  left: 0;
-  top: 0;
+  content-visibility: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -410,4 +437,4 @@ const carouselButtonWrapperCSS = ({
     }
   `;
 };
-export default HomeContainer4;
+export default React.memo(HomeContainer4);

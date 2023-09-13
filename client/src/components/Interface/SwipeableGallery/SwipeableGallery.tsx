@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { jsx, css } from "@emotion/react";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Swipe from "react-easy-swipe";
 import styles from "./SwipeableGallery.module.css";
 // import { useIsResponsive } from "@/components/Responsive/useIsResponsive";
@@ -46,22 +46,7 @@ const SwipeableGallery = ({
     setEndSwipe(true);
   };
 
-  useEffect(() => {
-    window.addEventListener("keydown", keyDownHandler);
-    
-    return () => {
-      window.removeEventListener("keydown", keyDownHandler);
-    }
-  }, [contentCount, content])
 
-  const keyDownHandler = (e: KeyboardEvent) => {
-      
-    if (e.key === "ArrowLeft") {
-      onClickPrevBtn()
-    } else if (e.key === "ArrowRight") {
-      onClickNextBtn()
-    }
-  }
 
   const onClickNextBtn = useCallback(() => {
     if (contentCount < content.length - 1) {
@@ -115,7 +100,7 @@ const SwipeableGallery = ({
         onSwipeMove={onSwipeMove}
         css={swipeWrapperCSS}
       >
-        {content.map((el: any, idx: number) => {
+        {useMemo(() => content.map((el: any, idx: number) => {
           return (
             <div
               key={`banner-${idx}`}
@@ -124,7 +109,7 @@ const SwipeableGallery = ({
               {el}
             </div>
           ); //, height: height + 'px'
-        })}
+        }), [content])}
       </Swipe>
     </div>
   );
