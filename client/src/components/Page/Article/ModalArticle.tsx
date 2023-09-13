@@ -10,41 +10,47 @@ import { useAtom } from "jotai";
 import { pauseAnimation } from "@/store/store";
 // import Article from "./Article";
 
-const Article = dynamic(
-  () => import("@/components/Page/Article/Article"),
-  { ssr: false }
-);
-
+const Article = dynamic(() => import("@/components/Page/Article/Article"), {
+  ssr: false,
+});
 
 type ModalArticlePropsType = {
   parentRef: React.RefObject<HTMLDivElement>;
   setIsModalOn: React.Dispatch<React.SetStateAction<boolean>>;
   article: getArticlesItemType;
-  thumbnail: ReactNode
+  thumbnail: ReactNode;
+  calc: {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  }
 };
 
 function ModalArticle({
   parentRef,
   setIsModalOn,
   article,
-  thumbnail
+  thumbnail,
+  calc
 }: ModalArticlePropsType) {
   const [isTriggered, setIsTriggered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isTop, setIsTop] = useState(true)
-  const [pauseAnimationAtom, setPauseAnimationAtom] = useAtom(pauseAnimation)
-  const router = useRouter()
+  const [isTop, setIsTop] = useState(true);
+  const [pauseAnimationAtom, setPauseAnimationAtom] = useAtom(pauseAnimation);
+  const router = useRouter();
+  
 
   const onScrollHandler = throttle((e: any) => {
     if (e.target && e.target.scrollTop > 0) {
-      setIsTop(() => false)
+      setIsTop(() => false);
     } else {
-      setIsTop(() => true)
+      setIsTop(() => true);
     }
-  }, 500)
-
+  }, 500);
 
   useEffect(() => {
+    
     setTimeout(() => {
       setIsTriggered(() => true);
     }, 10);
@@ -54,36 +60,75 @@ function ModalArticle({
   }, []);
 
   const closeHandler = () => {
-    setIsExpanded(() => false)
-    
+    setIsExpanded(() => false);
+
     setTimeout(() => {
       setIsTriggered(() => false);
     }, 500);
     setTimeout(() => {
       setIsModalOn(() => false);
-      setPauseAnimationAtom(() => false)
+      setPauseAnimationAtom(() => false);
     }, 1000);
   };
 
+  if (!calc) {
+    return
+  }
 
   return (
     <Portal>
-      <div css={backdropCSS} onClick={closeHandler} onWheel={(e) => {e.stopPropagation()}}>
-        <div css={wrapperCSS({ parentRef, isTriggered })} onClick={(e) => {e.stopPropagation()}}>
-          <div css={renderThumbnailWrapperCSS({isTriggered, isExpanded})}>
+      <div
+        css={backdropCSS}
+        onClick={closeHandler}
+        onWheel={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <div
+          css={wrapperCSS({ calc, parentRef, isTriggered })}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <div css={renderThumbnailWrapperCSS({ isTriggered, isExpanded })}>
             {thumbnail}
           </div>
-          <div css={articleWrapperCSS({isExpanded})} onScroll={onScrollHandler}>
-            <div css={headerCSS({isTop})}>
+          <div
+            css={articleWrapperCSS({ isExpanded })}
+            onScroll={onScrollHandler}
+          >
+            <div css={headerCSS({ isTop })}>
               <div css={headerContentWrapperCSS}>
-
-                <Button onClick={() => {router.push(`/board/${article.boardName}`)}} theme={"grey"}>Board <span css={css`color: rgba(0, 0, 0, 0.3);`}>&nbsp;/&nbsp;</span> {article.boardName}</Button>
+                <Button
+                  onClick={() => {
+                    router.push(`/board/${article.boardName}`);
+                  }}
+                  theme={"grey"}
+                >
+                  Board{" "}
+                  <span
+                    css={css`
+                      color: rgba(0, 0, 0, 0.3);
+                    `}
+                  >
+                    &nbsp;/&nbsp;
+                  </span>{" "}
+                  {article.boardName}
+                </Button>
               </div>
               <div css={headerContentWrapperCSS}>
-                <Button onClick={closeHandler} theme={"grey"}>Close ✕</Button>
+                <Button onClick={closeHandler} theme={"grey"}>
+                  Close ✕
+                </Button>
               </div>
             </div>
-            {isTriggered && <Article articleId={article.id} boardName={article.boardName} isDelayed={!isExpanded}/>}
+            {isTriggered && (
+              <Article
+                articleId={article.id}
+                boardName={article.boardName}
+                isDelayed={!isExpanded}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -104,14 +149,24 @@ const backdropCSS = css`
 `;
 
 const wrapperCSS = ({
+  calc,
   parentRef,
   isTriggered,
 }: {
+  calc: {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  }
   parentRef: React.RefObject<HTMLDivElement>;
   isTriggered: boolean;
 }) => {
-  const parent = parentRef.current;
-
+  // const parent = parentRef.current;
+  // const left = parent && parent.getBoundingClientRect().left;
+  // const top = parent && parent.getBoundingClientRect().top;
+  // const width = parent ? parent.clientWidth : 0;
+  // const height = parent ? parent.clientHeight : 0;
   return css`
     /* background-color: #ff0000; */
     will-change: width height transform box-shadow;
@@ -122,26 +177,30 @@ const wrapperCSS = ({
     transition-property: width height transform background-color;
     transition-duration: 0.5s;
     max-width: 1080px;
-    width: ${isTriggered ? `80%` : `${parent && parent.clientWidth}px`};
-    height: ${isTriggered ? `90%` : `${parent && parent.clientHeight}px`};
+    width: ${isTriggered ? `80%` : `${calc.width}px`};
+    height: ${isTriggered ? `90%` : `${calc.height}px`};
     border-radius: ${isTriggered ? `10px` : `20px`};
     box-shadow: ${isTriggered && `0px 0px 50px 0px rgba(0, 0, 0, 0.4)`};
     ${isTriggered
       ? `transform: translate(0px, 0px)`
-      : `transform: translate(calc(${
-          parent && parent.getBoundingClientRect().left
-        }px - 50vw + ${parent && parent.clientWidth / 2}px), calc(${
-          parent && parent.getBoundingClientRect().top
-        }px - 50vh + ${parent && parent.clientHeight / 2}px))`};
+      : `transform: translate(calc(${calc.left}px - 50vw + ${
+        calc.width / 2
+        }px), calc(${calc.top}px - 50vh + ${calc.height / 2}px))`};
     display: flex;
     flex-direction: column;
   `;
 };
 
-const renderThumbnailWrapperCSS = ({ isTriggered, isExpanded }: { isTriggered: boolean; isExpanded: boolean }) => {
+const renderThumbnailWrapperCSS = ({
+  isTriggered,
+  isExpanded,
+}: {
+  isTriggered: boolean;
+  isExpanded: boolean;
+}) => {
   return css`
     pointer-events: none;
-    opacity: ${isTriggered  ? `0%` : `100%`};
+    opacity: ${isTriggered ? `0%` : `100%`};
     will-change: opacity;
     transition-property: opacity;
     transition-duration: 0.5s;
@@ -149,8 +208,8 @@ const renderThumbnailWrapperCSS = ({ isTriggered, isExpanded }: { isTriggered: b
     width: 100%;
     height: 100%;
     z-index: 9999;
-  `
-}
+  `;
+};
 
 // const thumbnailWrapperCSS = ({ isTriggered }: { isTriggered: boolean }) => {
 //   return css`
@@ -195,36 +254,32 @@ const articleWrapperCSS = ({ isExpanded }: { isExpanded: boolean }) => {
     height: 100vh;
     overflow-y: scroll;
     position: relative;
-  `
-} 
+  `;
+};
 
-const headerCSS = ({isTop}: {isTop: boolean}) => {
+const headerCSS = ({ isTop }: { isTop: boolean }) => {
   return css`
-  transition-property: box-shadow background-color padding transform;
-  transition-duration: 1s;
+    transition-property: box-shadow background-color padding transform;
+    transition-duration: 1s;
+    /* will-change: transform; */
+    width: 100%;
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    background-color: ${!isTop && `rgba(255, 255, 255, 0.9)`};
+    position: fixed;
+    z-index: 99;
+    pointer-events: none;
+    box-shadow: ${!isTop && `0px 0px 10px 0px rgba(0, 0, 0, 0.1)`};
 
-  width: 100%;
-  height: 64px;
-  display: flex;
-  justify-content: space-between;
-  background-color: ${!isTop && `rgba(255, 255, 255, 0.9)`};
-  position: fixed;
-  z-index: 99;
-  pointer-events: none;
-  box-shadow: ${!isTop && `0px 0px 10px 0px rgba(0, 0, 0, 0.1)`};
-
-  align-items: center;
-  transform: ${isTop && `translateY(20px)`};
-  padding: ${!isTop ? `24px 24px` : `24px 40px`};
-
-`
-} 
+    align-items: center;
+    transform: ${isTop && `translateY(20px)`};
+    padding: ${!isTop ? `24px 24px` : `24px 40px`};
+  `;
+};
 
 const headerContentWrapperCSS = css`
   pointer-events: auto;
-`
-
-
-
+`;
 
 export default ModalArticle;

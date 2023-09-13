@@ -2,7 +2,7 @@ import { getArticlesItemType } from '@/types/board'
 import { dateFormatter } from '@/util/dateFormatter'
 import { css } from '@emotion/react'
 import { useRouter } from 'next/router'
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import ModalArticle from '../Article/ModalArticle'
 import useResponsive from '@/hooks/useResponsive'
 import mediaQuery from '@/util/responsive'
@@ -19,6 +19,12 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
   const [isModalOn, setIsModalOn] = useState(false)
   const isMobile = useResponsive(mediaQuery.tablet)
   const [pauseAnimationAtom, setPauseAnimationAtom] = useAtom(pauseAnimation)
+  const [calc, setCalc] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  }>();
 
   const onClickHandler = () => {
     if (isMobile) {
@@ -28,6 +34,25 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
       setIsModalOn(() => true)
     }
   }
+
+  useEffect(() => {
+    if (isModalOn && itemRef.current) {
+
+      const left =  itemRef.current.getBoundingClientRect().left
+      const top = itemRef.current.getBoundingClientRect().top
+      const width = itemRef.current.clientWidth
+      const height = itemRef.current.clientHeight
+  setCalc(() => {
+    return {
+      top,
+      left,
+      width,
+      height,
+    };
+  }); 
+    }
+    
+  }, [isModalOn])
 
   const render = (
     <React.Fragment>
@@ -61,7 +86,7 @@ function RepresentativeArticlesRowItem({article}: RepresentativeArticlesRowItemP
 
   return (
     <div ref={itemRef} css={carouselArticleitemWrapperCSS} onClick={onClickHandler}>
-      {isModalOn && <ModalArticle parentRef={itemRef} setIsModalOn={setIsModalOn} article={article} thumbnail={render} />}
+      {isModalOn && calc && <ModalArticle calc={calc} parentRef={itemRef} setIsModalOn={setIsModalOn} article={article} thumbnail={render} />}
       {render}
     </div>
   )

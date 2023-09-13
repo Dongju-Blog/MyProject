@@ -187,7 +187,7 @@ function HomeContainer2({ setCondition, currentStep }: HomeContainer1Type) {
                   {/* <div css={portfolioTitleCSS}>Portfolio</div> */}
                   <div css={galleryInnerWrapperCSS} onTouchEnd={(e) => {e.stopPropagation()}}>
             
-            {isMobile ? render && <RepresentativeArticles articleSize={1} key={`mobile-representative`} /> : render && <RepresentativeArticles articleSize={3} key={`desktop-representative`} />}
+            {isMobile ? condition.maintain && <RepresentativeArticles articleSize={1} key={`mobile-representative`} /> : condition.maintain && <RepresentativeArticles articleSize={3} key={`desktop-representative`} />}
               
           </div>
         </div>

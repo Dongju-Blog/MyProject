@@ -295,4 +295,4 @@ const commentsWrapperCSS = css`
 
 
 
-export default Article;
+export default React.memo(Article);
