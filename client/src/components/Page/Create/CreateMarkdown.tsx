@@ -107,6 +107,9 @@ function CreateMarkdown({
 
             if (title.includes('/noCompress')) {
               const url = URL.createObjectURL(file);
+              setFiles((prev) => {
+                return { ...prev, [`${url}`]: file };
+              });
               callback(url, "image");
               return
             }
