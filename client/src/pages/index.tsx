@@ -26,7 +26,7 @@ export default function Home() {
   const router = useRouter()
   useEffect(() => {
     if (!isDesktop) {
-      router.push('/#1')
+      setTimeout(() => router.push('/#1'), 100)
     }
   }, [isDesktop])
 
@@ -71,6 +71,7 @@ export default function Home() {
         height: 100%;
       `}
     >
+      
       {isDesktop ? desktop : mobile}
     </div>
   );

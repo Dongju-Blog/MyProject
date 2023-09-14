@@ -26,7 +26,7 @@ export type categoryMenuType = {
 
 function Navbar() {
   const util = useNavbarUtil();
-  const isMobile = useResponsive(mediaQuery.tablet);
+  const isDesktop = useResponsive(mediaQuery.overTablet);
   const router = useRouter();
   const category = useGetCategory();
 
@@ -42,7 +42,26 @@ function Navbar() {
     };
   });
 
-  const categoryList: categoryType[] = [
+  const mobileCategoryList: categoryType[] = [
+    {
+      id: 0,
+      label: "HOME",
+      menu: [
+        {
+          id: 0,
+          label: "Introduce",
+          function: util.NAVIGATE_TO_INTRODUCE,
+        },
+      ]
+    },
+    {
+      id: 1,
+      label: "BOARD",
+      menu: manufacturedCategories ? manufacturedCategories : [],
+    },
+  ];
+
+  const desktopCategoryList: categoryType[] = [
     {
       id: 0,
       label: "HOME",
@@ -67,7 +86,7 @@ function Navbar() {
           label: "Contact",
           function: util.NAVIGATE_TO_CONTACT,
         },
-      ],
+      ]
     },
     {
       id: 1,
@@ -106,10 +125,11 @@ function Navbar() {
 
   return (
     <React.Fragment>
-      {isMobile ? (
-        <MobileNavbar categoryList={categoryList} isTop={isTop} />
+      {isDesktop ? (
+        <DesktopNavbar categoryList={desktopCategoryList} isTop={isTop} />
       ) : (
-        <DesktopNavbar categoryList={categoryList} isTop={isTop} />
+        <MobileNavbar categoryList={mobileCategoryList} isTop={isTop} />
+        
       )}
     </React.Fragment>
   );
