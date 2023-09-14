@@ -38,7 +38,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-//                        "http://localhost:3000", "http://localhost:8081",
+                        "http://localhost:3000", "http://localhost:8081",
                         "https://server.dj-blog.com", "https://www.dj-blog.com", "https://dj-blog.com")
                 .exposedHeaders("Authorization")
                 .allowCredentials(true)
@@ -50,8 +50,4 @@ public class WebConfig implements WebMvcConfigurer {
                 HttpMethod.DELETE.name());
         ;
     }
-
-
-
-
 }

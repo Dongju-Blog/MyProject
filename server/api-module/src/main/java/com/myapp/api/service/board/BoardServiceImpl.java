@@ -503,7 +503,7 @@ public class BoardServiceImpl implements BoardService {
 
         Map<String, Object> returnObject = new HashMap<>();
 
-        boolean last = returnArticles.size() <= size;
+        boolean last = returnArticles.size() < size;
         Long nextLastId = returnArticles.get(returnArticles.size() - 1).getId();
 
         returnObject.put("content", returnArticles);
@@ -566,7 +566,7 @@ public class BoardServiceImpl implements BoardService {
 
         Map<String, Object> returnObject = new HashMap<>();
 
-        boolean last = returnArticles.size() <= size;
+        boolean last = returnArticles.size() < size;
         Long nextLastId = returnArticles.get(returnArticles.size() - 1).getId();
 
         returnObject.put("content", returnArticles);
