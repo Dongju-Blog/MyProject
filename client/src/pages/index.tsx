@@ -25,7 +25,7 @@ export default function Home() {
 
   const router = useRouter()
   useEffect(() => {
-    if (!isDesktop) {
+    if (isDesktop === false) {
       setTimeout(() => router.push('/#1'), 100)
     }
   }, [isDesktop])
